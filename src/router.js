@@ -1,6 +1,7 @@
 import Vue from "vue"
 import Router from "vue-router"
 import Home from "./views/Home.vue"
+import Lore from "./views/Lore.vue"
 
 Vue.use(Router)
 
@@ -20,6 +21,11 @@ export default new Router({
       // which is lazy-loaded when the route is visited.
       component: () =>
         import(/* webpackChunkName: "about" */ "./views/About.vue")
+    },
+    {
+      path: "/lore",
+      name: "Lore",
+      component: Lore
     }
   ]
 })
