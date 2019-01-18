@@ -2,6 +2,7 @@ import Vue from "vue"
 import Router from "vue-router"
 import Home from "./views/Home.vue"
 import Lore from "./views/Lore.vue"
+import Cooling from "./views/Cooling.vue"
 
 Vue.use(Router)
 
@@ -26,6 +27,11 @@ export default new Router({
       path: "/lore",
       name: "Lore",
       component: Lore
+    },
+    {
+      path: "/cooling",
+      name: "Cooling",
+      component: Cooling
     }
   ]
 })
