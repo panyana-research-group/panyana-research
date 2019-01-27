@@ -28,7 +28,7 @@
               <td>{{ props.item.missingPics }}</td>
               <td>{{ props.item.addWiki }}</td>
               <td>
-                <v-btn color="secondary" icon>
+                <v-btn color="secondary" icon @click="editStory(props.item)">
                   <v-icon>edit</v-icon>
                 </v-btn>
               </td>
@@ -39,6 +39,14 @@
           </v-alert>
         </v-data-table>
       </v-card>
+      <v-dialog v-model="addLore" max-width="500px">
+        <v-card>
+          <v-card-title>Add/Edit Lore</v-card-title>
+          <v-card-text>
+            <v-btn color="secondary" dark @click="addLore=false">Close</v-btn>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-flex>
   </v-container>
 </template>

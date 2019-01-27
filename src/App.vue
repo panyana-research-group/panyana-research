@@ -1,28 +1,31 @@
 <template>
   <v-app>
-    <v-toolbar color="primary" app>
-      <v-toolbar-side-icon color="secondary" @click.stop="drawer = !drawer" />
-      <v-toolbar-title color="secondary">Panyana Research</v-toolbar-title>
+    <v-toolbar color="info" app>
+      <v-toolbar-side-icon class="secondary--text" @click.stop="drawer = !drawer" />
+      <v-toolbar-title color="secondary" class="secondary--text">Panyana Research</v-toolbar-title>
+      <v-spacer />
       <v-toolbar-items>
-        <v-btn flat to="/">Home</v-btn>
-        <v-btn flat to="/about">About</v-btn>
+        <v-btn color="secondary" flat to="/">Home</v-btn>
+        <v-btn color="secondary" flat to="/about">About</v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <v-content> <router-view /> </v-content>
-    <v-navigation-drawer v-model="drawer" class="primary darken-1" temporary absolute dark>
+    <v-navigation-drawer v-model="drawer" class="info darken-1" temporary absolute dark>
       <v-list>
-        <v-list-tile v-for="type in dataTypes" :key="type.name" avatar>
+        <v-list-tile v-for="type in scienceTypes" :key="type.name" :to="'/'+type.name.toLowerCase()" active-class="secondary--text" avatar>
+          <v-list-tile-avatar>
+            <v-icon>{{ type.icon }}</v-icon>
+          </v-list-tile-avatar>
+          <v-list-tile-content>{{ type.name }}</v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+      <v-list>
+        <v-list-tile v-for="type in dataTypes" :key="type.name" avatar :to="'/'+type.name.toLowerCase()" active-class="secondary--text">
           <v-list-tile-avatar>
             <v-icon>{{ type.icon }}</v-icon>
           </v-list-tile-avatar>
 
           <v-list-tile-content>{{ type.name }}</v-list-tile-content>
-
-          <v-list-tile-action>
-            <v-btn icon ripple :to="'/'+type.name.toLowerCase()">
-              <v-icon>edit</v-icon>
-            </v-btn>
-          </v-list-tile-action>
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
@@ -55,6 +58,12 @@ export default {
         {
           name: "Schematics",
           icon: "settings"
+        }
+      ],
+      scienceTypes: [
+        {
+          name: "Cooling",
+          icon: "wb_sunny"
         }
       ]
     }

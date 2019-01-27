@@ -1,9 +1,15 @@
 <template>
-  <v-container class="primary" xs12>
+  <v-container class="accent" xs12 fluid>
     <v-flex xs10 offset-xs1>
-      <table>
+      <table id="cooling-data">
         <tr>
-          <td class="upper-corner" />
+          <td class="upper-corner">
+            <v-select v-model="select"
+                      :items="qualities"
+                      label="Q"
+                      single-line
+            />
+          </td>
           <td v-for="mat in Object.keys(baseData)" :key="mat" class="material">
             {{ mat }}
           </td>
@@ -23,19 +29,34 @@ export default {
   name: "Cooling",
   data() {
     return {
-      baseData: require("../assets/data/cooling_factors.json")
+      baseData: require("../assets/data/cooling_factors.json"),
+      qualities: [10,9,8,7,6,5,4,3,2,1]
     }
   }
 }
 </script>
 <style lang="scss">
+#cooling-data {
+  table-layout: fixed;
+  width: auto;
+  margin: auto;
+  border-collapse: collapse;
+}
+.upper-corner {
+  width: 80px;
+  height: 80px;
+}
 .material {
-  width: 40px;
-  height: 40px;
+  width: 80px;
+  height: 80px;
   text-align: center;
+  margin: auto;
 }
 
 .number {
+  width: 80px;
+  height: 80px;
   text-align: center;
+  border: 1px solid #000
 }
 </style>
