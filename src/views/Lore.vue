@@ -3,7 +3,7 @@
     <v-flex xs10 offset-xs1>
       <v-card class="primary lighten-2 mb-2 elevation-4">
         <v-card-title class="primary lighten-2 headline">
-          <v-btn color="info" class="mr-3" @click="openNewLore">Add Story</v-btn>
+          <v-btn color="info" class="mr-3" @click="openNewLore()">Add Story</v-btn>
           <v-text-field
             v-model="search"
             append-icon="search"
@@ -116,6 +116,10 @@
         </v-card>
       </v-dialog>
     </v-flex>
+    <v-snackbar v-model="showError" :timeout="5000" color="error">
+      {{ errorText }}
+      <v-btn dark flat @click.native="showError = false">Close</v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 <script>
@@ -141,6 +145,8 @@ export default {
       search: "",
       lore: require("../assets/lore.json").lore,
       pages: [],
+      showError: false,
+      errorText: "none specified",
       addLore: false,
       editLore: false,
       addComplete: false,
@@ -169,6 +175,10 @@ export default {
     }
   },
   methods: {
+    showErrorMsg(msg) {
+      this.errorText = msg
+      this.showError = true
+    },
     isOnWiki(page) {
       if (this.currentEdit.missingWiki === "N/A") return true
       return this.currentEdit.missingWiki.split(",").indexOf(page) < 0
@@ -178,8 +188,14 @@ export default {
 
     },
     openNewLore() {
-      this.$refs.newLore.reset()
-      this.addLore = true
+      if (this.$store.state.loggedIn && this.$auth.user && this.$auth.user.roles && this.$auth.user.roles.includes("Admin")) {
+        this.$refs.newLore.reset()
+        this.addLore = true
+      }
+      else if (!this.$store.state.loggedIn || !this.$auth.user) {
+        this.showErrorMsg("Not logged in!")
+      }
+      else this.showErrorMsg("Insufficient permissions!")
     },
     editStory(item) {
       this.currentEdit = item

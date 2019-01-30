@@ -1,10 +1,11 @@
 import auth0 from "auth0-js"
+import store from "./store"
 import Vue from "vue"
 
 let webAuth = new auth0.WebAuth({
   domain: 'machinemaker.auth0.com',
   clientID: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7',
-  redirectUri: 'http://localhost:8080/callback',
+  redirectUri: 'https://panyanaresearch.com/callback',
   responseType: 'token id_token',
   scope: 'openid profile roles'
 })
@@ -34,6 +35,7 @@ let auth = new Vue({
       set: function(expiresIn) {
         let expiresAt = JSON.stringify(expiresIn * 1000 + new Date().getTime())
         localStorage.setItem("expires_at", expiresAt)
+        console.log(localStorage.getItem("expires_at"))
       }
     },
     user: {
@@ -46,20 +48,24 @@ let auth = new Vue({
     }
   },
   methods: {
+    getExpiration() {
+      return localStorage.getItem("expires_at")
+    },
     login() {
       webAuth.authorize()
     },
     logout() {
-      return new Promise(() => {
-        localStorage.removeItem("access_token")
-        localStorage.removeItem("id_token")
-        localStorage.removeItem("expires_at")
-        localStorage.removeItem("user")
-        webAuth.authorize()
-      })
+      localStorage.removeItem("access_token")
+      localStorage.removeItem("id_token")
+      localStorage.removeItem("expires_at")
+      localStorage.removeItem("user")
+      console.log('logout')
+      store.commit('logOut')
     },
     isAuthenticated() {
-      return new Date().getTime() < this.expiresAt
+      // console.log(this.expiresAt)
+      // console.log(new Date().getTime() < this.expiresAt)
+      return new Date().getTime() < this.getExpiration()
     },
     handleAuthentication() {
       return new Promise((resolve, reject) => {
@@ -68,9 +74,10 @@ let auth = new Vue({
             this.expiresAt = authResult.expiresIn
             this.accessToken = authResult.accessToken
             this.token = authResult.idToken
-            authResult.idTokenPayload.roles = authResult.idTokenPayload["http://example.com/roles"]
+            if (authResult.idTokenPayload["http://example.com/roles"])
+              authResult.idTokenPayload.roles = authResult.idTokenPayload["http://example.com/roles"]
             this.user = authResult.idTokenPayload
-            resolve()
+            resolve(this.user)
           } else if (err) {
             this.logout()
             reject(err)

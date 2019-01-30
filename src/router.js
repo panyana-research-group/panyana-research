@@ -5,6 +5,8 @@ import Lore from "./views/Lore.vue"
 import Cooling from "./views/Cooling.vue"
 import Callback from "./views/Callback.vue"
 
+import store from "./store"
+
 Vue.use(Router)
 
 const router = new Router({
@@ -40,6 +42,13 @@ const router = new Router({
       component: Callback
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  if (router.app.$auth.isAuthenticated() || from.name === "callback")
+    store.commit('logIn')
+  else (store.commit('logOut'))
+  next()
 })
 
 // router.beforeEach((to, from, next) => {
