@@ -3,10 +3,11 @@ import Router from "vue-router"
 import Home from "./views/Home.vue"
 import Lore from "./views/Lore.vue"
 import Cooling from "./views/Cooling.vue"
+import Callback from "./views/Callback.vue"
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: "history",
   routes: [
     {
@@ -32,6 +33,23 @@ export default new Router({
       path: "/cooling",
       name: "Cooling",
       component: Cooling
+    },
+    {
+      path: "/callback",
+      name: "callback",
+      component: Callback
     }
   ]
 })
+
+// router.beforeEach((to, from, next) => {
+//   if(to.name == 'callback') {
+//     next()
+//   } else if (router.app.$auth.isAuthenticated()) {
+//     next()
+//   } else {
+//     router.app.$auth.login()
+//   }
+// })
+
+export default router

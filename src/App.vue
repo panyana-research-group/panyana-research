@@ -5,8 +5,24 @@
       <v-toolbar-title color="secondary" class="secondary--text">Panyana Research</v-toolbar-title>
       <v-spacer />
       <v-toolbar-items>
-        <v-btn color="secondary" flat to="/">Home</v-btn>
-        <v-btn color="secondary" flat to="/about">About</v-btn>
+        <!-- <v-btn color="secondary" flat to="/">Home</v-btn>
+        <v-btn color="secondary" flat to="/about">About</v-btn> -->
+        <v-menu :nudge-width="200"
+                :close-on-content-click="false"
+                :disabled="!$auth.isAuthenticated()"
+                offset-y
+                transition="scale-transition"
+                origin="top right"
+        >
+          <v-btn slot="activator" color="secondary" flat @click="showInfo()">
+            <v-icon :color="$auth.isAuthenticated() ? 'green' : 'red'" large>account_circle</v-icon>
+          </v-btn>
+          <v-card>
+            <v-card-title class="title">
+              Account
+            </v-card-title>
+          </v-card>
+        </v-menu>
       </v-toolbar-items>
     </v-toolbar>
     <v-content> <router-view /> </v-content>
@@ -66,6 +82,11 @@ export default {
           icon: "wb_sunny"
         }
       ]
+    }
+  },
+  methods: {
+    showInfo() {
+      console.log(this.$auth.user)
     }
   }
 }
