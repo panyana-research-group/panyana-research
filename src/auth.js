@@ -35,7 +35,6 @@ let auth = new Vue({
       set: function(expiresIn) {
         let expiresAt = JSON.stringify(expiresIn * 1000 + new Date().getTime())
         localStorage.setItem("expires_at", expiresAt)
-        console.log(localStorage.getItem("expires_at"))
       }
     },
     user: {
@@ -52,6 +51,7 @@ let auth = new Vue({
       return localStorage.getItem("expires_at")
     },
     login() {
+      localStorage.setItem("prev_path", window.location.pathname)
       webAuth.authorize()
     },
     logout() {
@@ -59,7 +59,6 @@ let auth = new Vue({
       localStorage.removeItem("id_token")
       localStorage.removeItem("expires_at")
       localStorage.removeItem("user")
-      console.log('logout')
       store.commit('logOut')
     },
     isAuthenticated() {

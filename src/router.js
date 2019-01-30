@@ -45,9 +45,12 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (router.app.$auth.isAuthenticated() || from.name === "callback")
+  if (router.app.$auth.isAuthenticated())
     store.commit('logIn')
-  else (store.commit('logOut'))
+  else {
+    store.commit('logOut')
+    router.app.$auth.logout()
+  }
   next()
 })
 

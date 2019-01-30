@@ -8,7 +8,8 @@ export default {
   mounted() {
     this.$auth.handleAuthentication().then(() => {
       this.$store.commit('logIn')
-      this.$router.push({ name: "home" })
+      this.$router.push({ path: localStorage.getItem("prev_path") })
+      localStorage.removeItem("prev_path")
     })
   }
 }

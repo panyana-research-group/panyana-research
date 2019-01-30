@@ -8,8 +8,7 @@
             v-model="search"
             append-icon="search"
             label="Search Lore"
-            single-line
-            hide-details
+            persistent-hint
             box
             class="ml-3"
             color="secondary"
@@ -96,10 +95,12 @@
               <template slot="items" slot-scope="props">
                 <td>{{ props.item }}</td>
                 <td>
-                  <v-checkbox :input-value="isOnWiki(String(props.item))" :disabled="isOnWiki(String(props.item))" @click="addToWiki(props.item)" />
+                  <v-layout justify-center>
+                    <v-checkbox :input-value="isOnWiki(String(props.item))" :disabled="isOnWiki(String(props.item)) || (currentEdit.addWiki && !currentEdit.addWiki.split(',').includes(String(props.item)))" style="max-width: 24px;" hide-details @click="addToWiki(props.item)" />
+                  </v-layout>
                 </td>
                 <td class="text-xs-center">
-                  <upload-btn :ripple="false">
+                  <upload-btn :ripple="false" :disabled="currentEdit.missingPics && !currentEdit.missingPics.split(',').includes(String(props.item))" :title="currentEdit.missingPics && !currentEdit.missingPics.split(',').includes(String(props.item)) ? 'Uploaded' : 'Upload'">
                     <template slot="icon-left">
                       <v-icon>attach_file</v-icon>
                     </template>
@@ -134,6 +135,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       pagination: {sortBy: "title", descending: true, rowsPerPage: -1},
       titleRules: [
         v => !!v || "Name is required"
@@ -152,7 +154,7 @@ export default {
       addComplete: false,
       editHeaders: [
         { text: "Page", sortable: false },
-        { text: "On wiki", sortable: false },
+        { text: "On wiki", align: "center", sortable: false },
         { text: "Upload image", align: "center", sortable: false }
       ],
       headers: [
@@ -175,9 +177,18 @@ export default {
     }
   },
   methods: {
-    showErrorMsg(msg) {
-      this.errorText = msg
-      this.showError = true
+    checkAdmin() {
+      if (!this.$store.state.loggedIn || !this.$auth.user) {
+        this.errorText = "Not logged in!"
+        this.showError = true
+        return false
+      }
+      else if (!this.$auth.user.roles || !this.$auth.user.roles.includes("Admin")) {
+        this.errorText = "Insufficient permission!"
+        this.showError = true
+        return false
+      }
+      return true
     },
     isOnWiki(page) {
       if (this.currentEdit.missingWiki === "N/A") return true
@@ -188,16 +199,12 @@ export default {
 
     },
     openNewLore() {
-      if (this.$store.state.loggedIn && this.$auth.user && this.$auth.user.roles && this.$auth.user.roles.includes("Admin")) {
-        this.$refs.newLore.reset()
-        this.addLore = true
-      }
-      else if (!this.$store.state.loggedIn || !this.$auth.user) {
-        this.showErrorMsg("Not logged in!")
-      }
-      else this.showErrorMsg("Insufficient permissions!")
+      if (!this.checkAdmin()) return
+      this.$refs.newLore.reset()
+      this.addLore = true
     },
     editStory(item) {
+      if (!this.checkAdmin()) return
       this.currentEdit = item
       this.pages = _.range(1, parseInt(item.onWiki.split("/")[1])+1)
       this.editLore = true
@@ -278,5 +285,9 @@ export default {
       transition: none;
     }
   }
+}
+
+.upload-btn.v-btn--disabled {
+  background-color: gray !important;
 }
 </style>
