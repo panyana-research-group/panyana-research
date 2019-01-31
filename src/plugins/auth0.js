@@ -5,7 +5,7 @@ import Vue from "vue"
 let webAuth = new auth0.WebAuth({
   domain: 'machinemaker.auth0.com',
   clientID: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7',
-  redirectUri: 'http://localhost:8080/callback',
+  redirectUri: process.env.NODE_ENV === "development" ? 'http://localhost:8080/callback' : "https://panyanaresearch.com/callback",
   responseType: 'token id_token',
   scope: 'openid profile roles'
 })
