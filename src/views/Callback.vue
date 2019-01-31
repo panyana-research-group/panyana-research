@@ -7,7 +7,7 @@ export default {
   name: "Callback",
   mounted() {
     this.$auth.handleAuthentication().then(() => {
-      this.$store.commit('logIn')
+      this.$store.commit('authLogIn')
       this.$router.push({ path: localStorage.getItem("prev_path") })
       localStorage.removeItem("prev_path")
     })

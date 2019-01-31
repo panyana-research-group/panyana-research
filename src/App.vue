@@ -9,8 +9,8 @@
         <v-btn color="secondary" flat to="/about">About</v-btn> -->
         <v-menu :close-on-content-click="false" offset-y>
           <v-btn slot="activator" color="secondary" flat class="title" dark>
-            {{ $store.state.loggedIn ? $auth.user.name : "Guest" }}
-            <v-icon :color="$store.state.loggedIn ? 'green' : 'red'" class="pl-1" large>
+            {{ $store.state.authLoggedIn ? $auth.user.name : "Guest" }}
+            <v-icon :color="$store.state.authLoggedIn ? 'green' : 'red'" class="pl-1" large>
               account_circle
             </v-icon>
           </v-btn>
@@ -18,12 +18,15 @@
             <v-card-title class="title">
               Account
             </v-card-title>
-            <v-card-text v-if="$store.state.loggedIn">
+            <v-card-text v-if="$store.state.authLoggedIn">
               Roles: {{ $auth.user.roles ? $auth.user.roles.join(",") : "None" }}
             </v-card-text>
+            <v-card-title class="title">
+              Auth0
+            </v-card-title>
             <v-card-actions>
-              <v-btn v-if="!$store.state.loggedIn" color="success" @click="$auth.login()">Login</v-btn>
-              <v-btn v-if="$store.state.loggedIn" color="error" @click="$auth.logout()">Logout</v-btn>
+              <v-btn v-if="!$store.state.authLoggedIn" color="success" @click="$auth.login()">Login</v-btn>
+              <v-btn v-if="$store.state.authLoggedIn" color="error" @click="$auth.logout()">Logout</v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -38,6 +41,14 @@
           </v-list-tile-avatar>
           <v-list-tile-content>
             Home
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile to="/about" avatar active-class="secondary--text">
+          <v-list-tile-avatar>
+            <v-icon>chat</v-icon>
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            About
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -65,6 +76,10 @@
 <script>
 export default {
   name: "App",
+  metaInfo: {
+    titleTemplate: "%s | Panyana Research",
+    title: "Unnamed"
+  },
   data() {
     return {
       drawer: false,
@@ -98,12 +113,11 @@ export default {
         }
       ]
     }
-  },
-  created() {
-    if (this.$auth.isAuthenticated())
-      this.$store.commit("logIn")
-    else
-      this.$store.commit("logOut")
   }
 }
 </script>
+<style lang="scss">
+.v-list__tile--active .v-icon {
+  color: inherit;
+}
+</style>

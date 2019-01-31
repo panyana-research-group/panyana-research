@@ -30,6 +30,9 @@
 <script>
 export default {
   name: "Cooling",
+  metaInfo: {
+    title: "Cooling Factor"
+  },
   data() {
     return {
       baseData: require("../assets/data/cooling_factors.json"),

@@ -1,11 +1,11 @@
 import auth0 from "auth0-js"
-import store from "./store"
+import store from "../store"
 import Vue from "vue"
 
 let webAuth = new auth0.WebAuth({
   domain: 'machinemaker.auth0.com',
   clientID: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7',
-  redirectUri: 'https://panyanaresearch.com/callback',
+  redirectUri: 'http://localhost:8080/callback',
   responseType: 'token id_token',
   scope: 'openid profile roles'
 })
@@ -59,7 +59,7 @@ let auth = new Vue({
       localStorage.removeItem("id_token")
       localStorage.removeItem("expires_at")
       localStorage.removeItem("user")
-      store.commit('logOut')
+      store.commit('authLogOut')
     },
     isAuthenticated() {
       // console.log(this.expiresAt)
@@ -87,8 +87,8 @@ let auth = new Vue({
   }
 })
 
-export default {
-  install: function(Vue) {
+Vue.use({
+  install: (Vue) => {
     Vue.prototype.$auth = auth
   }
-}
+})

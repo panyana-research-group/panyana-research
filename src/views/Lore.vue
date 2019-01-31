@@ -1,9 +1,10 @@
 <template>
-  <v-container class="primary" xs12>
-    <v-flex xs10 offset-xs1>
+  <v-container class="primary" xs12 fluid>
+    <v-flex xs12 class="px-2">
       <v-card class="primary lighten-2 mb-2 elevation-4">
         <v-card-title class="primary lighten-2 headline">
-          <v-btn color="info" class="mr-3" @click="openNewLore()">Add Story</v-btn>
+          <v-btn color="info" @click="openNewLore()">Add Story</v-btn>
+          <v-btn color="success" class="mr-3" @click="refreshLore()">Refresh Lore</v-btn>
           <v-text-field
             v-model="search"
             append-icon="search"
@@ -12,6 +13,7 @@
             box
             class="ml-3"
             color="secondary"
+            clearable
           />
         </v-card-title>
         <v-data-table
@@ -23,6 +25,8 @@
           item-key="title"
           hide-actions
           :pagination.sync="pagination"
+          :loading="loading"
+          :must-sort="true"
         >
           <template slot="items" slot-scope="props">
             <tr :class="getClasses(props.item)">
@@ -31,8 +35,14 @@
               <td>{{ props.item.missingWiki }}</td>
               <td>{{ props.item.missingPics }}</td>
               <td>{{ props.item.addWiki }}</td>
-              <td>
-                <v-btn color="primary" class="lighten-2" icon @click="editStory(props.item)">
+              <td class="text-xs-center">
+                <v-tooltip top>
+                  <v-btn slot="activator" :href="props.item.driveFolder" color="orange" small target="_blank">Pictures</v-btn>
+                  Images of the story's pages
+                </v-tooltip>
+              </td>
+              <td class="text-xs-center">
+                <v-btn :disabled="props.item.missingWiki==='COMPLETED'" color="error" class="lighten-2" icon @click="editStory(props.item)">
                   <v-icon>edit</v-icon>
                 </v-btn>
               </td>
@@ -57,7 +67,7 @@
                 color="info"
                 clearable
                 persistent-hint
-                :rules="titleRules"
+                :rules="rules.titleRules"
               />
               <v-text-field
                 id="pageCount"
@@ -68,7 +78,7 @@
                 box
                 color="info"
                 clearable
-                :rules="pageCountRules"
+                :rules="rules.pageCountRules"
               />
             </v-form>
           </v-card-text>
@@ -87,10 +97,9 @@
           <v-card-text>
             <v-data-table
               :headers="editHeaders"
-              :items="pages"
+              :items="currentEdit.pages"
               hide-actions
               class="elevation-1"
-              loading="true"
             >
               <template slot="items" slot-scope="props">
                 <td>{{ props.item }}</td>
@@ -125,28 +134,33 @@
 </template>
 <script>
 import _ from "lodash"
-// import fs from "fs"
 import UploadButton from "vuetify-upload-button"
+import SheetsService from "../services/SheetsService.js"
 
 export default {
   name: "Lore",
+  metaInfo: {
+    title: "Lore"
+  },
   components: {
     'upload-btn': UploadButton
   },
   data() {
     return {
-      loading: false,
       pagination: {sortBy: "title", descending: true, rowsPerPage: -1},
-      titleRules: [
-        v => !!v || "Name is required"
-      ],
-      pageCountRules: [
-        v => !!v || "Page count is required",
-        v => !isNaN(v) || "Must be a number"
-      ],
+      rules: {
+        titleRules: [
+          v => !!v || "Name is required",
+          v => (!!v && v.indexOf('"') < 0) || `You cannot use " in the name! Use ' instead`
+        ],
+        pageCountRules: [
+          v => !!v || "Page count is required",
+          v => !isNaN(v) || "Must be a number"
+        ],
+      },
       search: "",
-      lore: require("../assets/lore.json").lore,
-      pages: [],
+      lore: [],
+      loading: true,
       showError: false,
       errorText: "none specified",
       addLore: false,
@@ -158,27 +172,44 @@ export default {
         { text: "Upload image", align: "center", sortable: false }
       ],
       headers: [
-        { text: "Title", value: "title", width: "25%", class:"primary lighten-2" },
-        { text: "On Wiki", value: "onWiki", width: "10%", class:"primary lighten-2" },
-        { text: "Missing from wiki", value: "missingWiki", width: "20%", class:"primary lighten-2" },
-        { text: "Missing images", value: "missingPics", width: "20%", class:"primary lighten-2" },
-        { text: "Add to wiki", value: "addWiki", width: "15%", class:"primary lighten-2" },
-        { text: "Edit", sortable: false, width: "10%", class: "primary lighten-2"}
+        { text: "Title", value: "title", width: "23%", class:"primary lighten-2" },
+        { text: "On Wiki", value: "onWiki", width: "7%", class:"primary lighten-2" },
+        { text: "Missing from wiki", value: "missingWiki", width: "18%", class:"primary lighten-2" },
+        { text: "Missing images", value: "missingPics", width: "17%", class:"primary lighten-2" },
+        { text: "Add to wiki", value: "addWiki", width: "10%", class:"primary lighten-2" },
+        { text: "Drive Folder", sortable: false, width: "15%", class: "primary lighten-2", align: "center" },
+        { text: "Edit", sortable: false, width: "10%", class: "primary lighten-2", align: "center"}
       ],
       loreTitle: null,
       pageCount: null,
-      currentEdit: {
-        title: "",
-        onWiki: "",
-        missingWiki: "",
-        missingPics: "",
-        addWiki: "",
-      },
+      currentEdit: {title: "", onWiki: "", missingWiki: "", missingPics: "", addWiki: "", pages: []}
     }
   },
+  created() {
+    this.refreshLore()
+    console.log(process.env)
+  },
   methods: {
+    refreshLore() {
+      this.loading = true
+      this.lore = []
+      SheetsService.getSheet("lore").then((res, err) => {
+        if (err) return console.error(err)
+        res.data.data.values.forEach(story => {
+          this.lore.push({
+            title: story[0],
+            onWiki: story[1],
+            missingWiki: story[2],
+            missingPics: story[3],
+            addWiki: story[4],
+            driveFolder: "https://drive.google.com/drive/folders/" + story[7]
+          })
+        })
+        this.loading = false
+      })
+    },
     checkAdmin() {
-      if (!this.$store.state.loggedIn || !this.$auth.user) {
+      if (!this.$store.state.authLoggedIn || !this.$auth.user) {
         this.errorText = "Not logged in!"
         this.showError = true
         return false
@@ -191,12 +222,8 @@ export default {
       return true
     },
     isOnWiki(page) {
-      if (this.currentEdit.missingWiki === "N/A") return true
+      if (this.currentEdit.missingWiki === "COMPLETED") return true
       return this.currentEdit.missingWiki.split(",").indexOf(page) < 0
-    },
-    addToWiki() {
-      console.log(this.currentEdit.missingWiki)
-
     },
     openNewLore() {
       if (!this.checkAdmin()) return
@@ -206,29 +233,24 @@ export default {
     editStory(item) {
       if (!this.checkAdmin()) return
       this.currentEdit = item
-      this.pages = _.range(1, parseInt(item.onWiki.split("/")[1])+1)
+      this.currentEdit.pages = _.range(1, parseInt(item.onWiki.split("/")[1])+1)
       this.editLore = true
     },
     submit() {
       this.addLore = false
-      this.lore.push({
-        title: this.loreTitle,
-        onWiki: `0/${this.pageCount}`,
-        missingWiki: _.range(1, parseInt(this.pageCount)+1).join(","),
-        missingPics: _.range(1, parseInt(this.pageCount)+1).join(","),
-        addWiki: ""
-      })
-      this.lore.sort((a, b) => {
-        return a.title < b.title ? -1 : 1
-      })
-      // fs.writeFile("../assets/lore.json", JSON.stringify({ lore: this.lore }, null, 2), (err) => {
-      //   if (err) return console.error(err)
-      //   console.log("Updated lore")
+      // this.lore.push({
+      //   title: this.loreTitle,
+      //   onWiki: `0/${this.pageCount}`,
+      //   missingWiki: _.range(1, parseInt(this.pageCount)+1).join(","),
+      //   missingPics: _.range(1, parseInt(this.pageCount)+1).join(","),
+      //   addWiki: ""
       // })
-
+      // this.lore.sort((a, b) => {
+      //   return a.title < b.title ? -1 : 1
+      // })
     },
     getClasses(item) {
-      if (item.missingWiki === "N/A") return "green lighten-2"
+      if (item.missingWiki === "COMPLETED") return "green lighten-2"
       else if (item.addWiki !== "") return "cyan lighten-2"
       else if (item.missingPics.split(",").length > 10) return "red lighten-2"
       else if (item.missingPics.split(",").length > 5) return "orange lighten-3"
