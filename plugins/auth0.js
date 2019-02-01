@@ -6,7 +6,7 @@ const webAuth = new auth0.WebAuth({
   clientID: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7',
   redirectUri:
     process.env.NODE_ENV === 'development'
-      ? 'http://localhost:8080/callback'
+      ? 'http://localhost:3000/callback'
       : 'https://panyanaresearch.com/callback',
   responseType: 'token id_token',
   scope: 'openid profile roles'

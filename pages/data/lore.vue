@@ -62,47 +62,6 @@
             </v-alert>
           </v-data-table>
         </v-card>
-        <v-dialog v-model="addLore" max-width="500px">
-          <v-card dark>
-            <v-card-title class="title justify-center">
-              Add Lore
-            </v-card-title>
-            <v-card-text>
-              <v-form ref="newLore" v-model="addComplete">
-                <v-text-field
-                  id="loreTitle"
-                  v-model="loreTitle"
-                  name="loreTitle"
-                  label="Lore Title"
-                  box
-                  color="info"
-                  clearable
-                  persistent-hint
-                  :rules="rules.titleRules"
-                />
-                <v-text-field
-                  id="pageCount"
-                  v-model="pageCount"
-                  name="pageCount"
-                  label="Page Count"
-                  persistent-hint
-                  box
-                  color="info"
-                  clearable
-                  :rules="rules.pageCountRules"
-                />
-              </v-form>
-            </v-card-text>
-            <v-card-actions class="justify-center">
-              <v-btn color="error" dark @click="addLore=false">
-                Cancel
-              </v-btn>
-              <v-btn color="success" :disabled="!addComplete" @click="submit()">
-                Add
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
         <v-dialog v-model="editLore" max-width="500px">
           <v-card dark>
             <v-card-title class="title justify-center pb-0">
@@ -148,6 +107,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <new-story ref="newStory" :show="show.newLore" @close="show.newLore = false" />
       </v-flex>
       <v-snackbar v-model="showError" :timeout="5000" color="error">
         {{ errorText }}
@@ -160,38 +120,29 @@
 </template>
 <script>
 import _ from 'lodash'
-import UploadButton from 'vuetify-upload-button'
+import UploadButton from '@/components/UploadButton'
+import NewStory from '@/components/NewStory'
 export default {
   name: 'Lore',
   metaInfo: {
     title: 'Lore'
   },
   components: {
-    'upload-btn': UploadButton
+    'upload-btn': UploadButton,
+    'new-story': NewStory
   },
   data() {
     return {
       pagination: { sortBy: 'title', descending: true, rowsPerPage: -1 },
-      rules: {
-        titleRules: [
-          v => !!v || 'Name is required',
-          v =>
-            (!!v && v.indexOf('"') < 0) ||
-            `You cannot use " in the name! Use ' instead`
-        ],
-        pageCountRules: [
-          v => !!v || 'Page count is required',
-          v => !isNaN(v) || 'Must be a number'
-        ]
-      },
       search: '',
       lore: [],
       loading: true,
       showError: false,
       errorText: 'none specified',
-      addLore: false,
       editLore: false,
-      addComplete: false,
+      show: {
+        newLore: false
+      },
       editHeaders: [
         { text: 'Page', sortable: false },
         { text: 'On wiki', align: 'center', sortable: false },
@@ -257,7 +208,6 @@ export default {
   },
   created() {
     this.refreshLore()
-    console.log(process.env)
   },
   methods: {
     refreshLore() {
@@ -299,8 +249,8 @@ export default {
     },
     openNewLore() {
       if (!this.checkAdmin()) return
-      this.$refs.newLore.reset()
-      this.addLore = true
+      this.$refs.newStory.$refs.newLore.reset()
+      this.show.newLore = true
     },
     editStory(item) {
       if (!this.checkAdmin()) return
@@ -310,19 +260,6 @@ export default {
         parseInt(item.onWiki.split('/')[1]) + 1
       )
       this.editLore = true
-    },
-    submit() {
-      this.addLore = false
-      // this.lore.push({
-      //   title: this.loreTitle,
-      //   onWiki: `0/${this.pageCount}`,
-      //   missingWiki: _.range(1, parseInt(this.pageCount)+1).join(","),
-      //   missingPics: _.range(1, parseInt(this.pageCount)+1).join(","),
-      //   addWiki: ""
-      // })
-      // this.lore.sort((a, b) => {
-      //   return a.title < b.title ? -1 : 1
-      // })
     },
     getClasses(item) {
       if (item.missingWiki === 'COMPLETED') return 'green lighten-2'

@@ -38,7 +38,11 @@
         </v-menu>
       </v-toolbar-items>
     </v-toolbar>
-    <v-content> <nuxt /> </v-content>
+    <v-content>
+      <no-ssr>
+        <nuxt />
+      </no-ssr>
+    </v-content>
     <v-navigation-drawer v-model="drawer" class="info darken-1" temporary absolute dark>
       <v-list>
         <v-list-tile to="/" avatar active-class="secondary--text" nuxt>
@@ -134,8 +138,13 @@ export default {
       ]
     }
   },
-  created() {
-    // console.log(this)
+  mounted() {
+    if (process.browser) {
+      if (this.$auth.isAuthenticated()) this.$store.commit('authLogIn')
+    }
+    // if (process.browser) {
+    //   if (this.$auth.isAuthenticated()) this.$store.commit('authLogIn')
+    // }
   }
 }
 </script>
