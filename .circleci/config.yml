@@ -47,6 +47,4 @@ workflows:
       - build:
           filters:
             branches:
-              only: 
-                - master
-                - nuxt-rework
+              only: master
