@@ -2,7 +2,7 @@
   <v-dialog :value="show" max-width="500px">
     <v-card dark>
       <v-card-title class="title justify-center">
-        Add Lore
+        New Story
       </v-card-title>
       <v-card-text>
         <v-form ref="newLore" v-model="addComplete">
@@ -31,13 +31,17 @@
         </v-form>
       </v-card-text>
       <v-card-actions class="justify-center">
-        <v-btn color="error" dark @click="close">
+        <v-btn color="error" dark @click="$emit('close')">
           Cancel
         </v-btn>
         <v-btn color="success" :disabled="!addComplete" @click="submit()">
           Add
         </v-btn>
       </v-card-actions>
+      <div v-if="loading" class="text-xs-center" style="height: 40px">
+        <v-progress-circular v-show="loading" indeterminate color="secondary" class="ml-2 dark" />
+        Updating...
+      </div>
     </v-card>
   </v-dialog>
 </template>
@@ -49,8 +53,8 @@ export default {
   },
   data() {
     return {
+      loading: false,
       addComplete: false,
-      showDialog: true,
       pageCount: '',
       loreTitle: '',
       rules: {
@@ -67,15 +71,33 @@ export default {
       }
     }
   },
-  mounted() {
-    this.showDialog = this.show
-  },
   methods: {
     submit() {
-      this.addLore = false
-    },
-    close() {
-      this.$emit('close')
+      const rows = []
+      rows.push([
+        this.loreTitle,
+        'title',
+        true,
+        false,
+        parseInt(this.pageCount)
+      ])
+      for (let i = 1; i <= parseInt(this.pageCount); i++) {
+        rows.push([this.loreTitle, i, false, false])
+      }
+      this.loading = true
+      this.$api
+        .newLore(rows)
+        .then(res => {
+          console.log(res)
+          this.$emit('close', 'success')
+        })
+        .catch(err => {
+          console.log(err.response.data)
+          this.$emit('close', 'error')
+        })
+        .finally(() => {
+          this.loading = false
+        })
     }
   }
 }

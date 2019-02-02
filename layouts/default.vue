@@ -78,7 +78,7 @@
         </v-list-tile>
       </v-list>
       <v-list>
-        <v-list-tile 
+        <v-list-tile
           v-for="type in dataTypes" 
           :key="type.name" 
           avatar 
@@ -100,8 +100,7 @@
 <script>
 export default {
   name: 'App',
-  metaInfo: {
-    titleTemplate: '%s | Panyana Research',
+  head: {
     title: 'Unnamed'
   },
   data() {
@@ -142,9 +141,6 @@ export default {
     if (process.browser) {
       if (this.$auth.isAuthenticated()) this.$store.commit('authLogIn')
     }
-    // if (process.browser) {
-    //   if (this.$auth.isAuthenticated()) this.$store.commit('authLogIn')
-    // }
   }
 }
 </script>

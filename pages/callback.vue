@@ -7,6 +7,9 @@
 <script>
 export default {
   name: 'Callback',
+  head: {
+    title: 'Login'
+  },
   mounted() {
     this.$auth.handleAuthentication().then(() => {
       this.$store.commit('authLogIn')

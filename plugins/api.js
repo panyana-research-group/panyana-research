@@ -9,6 +9,9 @@ const api = {
   },
   appendRows(name, data) {
     return axios.post(url + 'sheets/' + name + '/append/', data)
+  },
+  newLore(data) {
+    return axios.post(url + '/sheets/lore/new', data)
   }
 }
 

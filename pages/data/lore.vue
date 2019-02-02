@@ -1,11 +1,11 @@
 <template>
-  <v-container class="primary" xs12 fluid>
+  <v-container class="primary" xs12 fluid persistent>
     <no-ssr>
       <v-flex xs12 class="px-2">
         <v-card class="primary lighten-2 mb-2 elevation-4">
           <v-card-title class="primary lighten-2 headline">
             <v-btn color="info" @click="openNewLore()">
-              Add Story
+              New Story
             </v-btn>
             <v-btn color="success" class="mr-3" @click="refreshLore()">
               Refresh Lore
@@ -62,56 +62,12 @@
             </v-alert>
           </v-data-table>
         </v-card>
-        <v-dialog v-model="editLore" max-width="500px">
-          <v-card dark>
-            <v-card-title class="title justify-center pb-0">
-              {{ currentEdit.title }}
-            </v-card-title>
-            <v-card-title class="heading justify-center pt-0">
-              {{ currentEdit.onWiki.split("/")[1] }} Page(s)
-            </v-card-title>
-            <v-card-text>
-              <v-data-table
-                :headers="editHeaders"
-                :items="currentEdit.pages"
-                hide-actions
-                class="elevation-1"
-              >
-                <template slot="items" slot-scope="props">
-                  <td>{{ props.item }}</td>
-                  <td>
-                    <v-layout justify-center>
-                      <v-checkbox :input-value="isOnWiki(String(props.item))" :disabled="isOnWiki(String(props.item)) || (currentEdit.addWiki && !currentEdit.addWiki.split(',').includes(String(props.item)))" style="max-width: 24px;" hide-details @click="addToWiki(props.item)" />
-                    </v-layout>
-                  </td>
-                  <td class="text-xs-center">
-                    <upload-btn :ripple="false" :disabled="currentEdit.missingPics && !currentEdit.missingPics.split(',').includes(String(props.item))" :title="currentEdit.missingPics && !currentEdit.missingPics.split(',').includes(String(props.item)) ? 'Uploaded' : 'Upload'">
-                      <template slot="icon-left">
-                        <v-icon>attach_file</v-icon>
-                      </template>
-                    </upload-btn>
-                  </td>
-                </template>
-              </v-data-table>
-            </v-card-text>
-            <v-card-actions class="justify-center">
-              <v-btn color="error" dark @click="editLore=false">
-                Cancel
-              </v-btn>
-              <v-btn color="success" @click="edit()">
-                Edit
-              </v-btn>
-              <v-btn color="info" @click="reset()">
-                Reset
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <new-story ref="newStory" :show="show.newLore" @close="show.newLore = false" />
+        <edit-story ref="editStory" :show="show.editLore" :current-edit="currentEdit" @close="onClose('editLore', $event)" />
+        <new-story ref="newStory" :show="show.newLore" @close="onClose('newLore', $event)" />
       </v-flex>
-      <v-snackbar v-model="showError" :timeout="5000" color="error">
-        {{ errorText }}
-        <v-btn dark flat @click.native="showError = false">
+      <v-snackbar v-model="snack.show" :timeout="5000" :color="snack.color">
+        {{ snack.text }}
+        <v-btn dark flat @click.native="snack.show = false">
           Close
         </v-btn>
       </v-snackbar>
@@ -120,34 +76,32 @@
 </template>
 <script>
 import _ from 'lodash'
-import UploadButton from '@/components/UploadButton'
 import NewStory from '@/components/NewStory'
+import EditStory from '@/components/EditStory'
 export default {
   name: 'Lore',
-  metaInfo: {
+  head: {
     title: 'Lore'
   },
   components: {
-    'upload-btn': UploadButton,
-    'new-story': NewStory
+    'new-story': NewStory,
+    'edit-story': EditStory
   },
   data() {
     return {
       pagination: { sortBy: 'title', descending: true, rowsPerPage: -1 },
+      snack: {
+        text: 'none',
+        color: 'error',
+        show: false
+      },
       search: '',
       lore: [],
       loading: true,
-      showError: false,
-      errorText: 'none specified',
-      editLore: false,
       show: {
-        newLore: false
+        newLore: false,
+        editLore: false
       },
-      editHeaders: [
-        { text: 'Page', sortable: false },
-        { text: 'On wiki', align: 'center', sortable: false },
-        { text: 'Upload image', align: 'center', sortable: false }
-      ],
       headers: [
         {
           text: 'Title',
@@ -194,8 +148,6 @@ export default {
           align: 'center'
         }
       ],
-      loreTitle: null,
-      pageCount: null,
       currentEdit: {
         title: '',
         onWiki: '',
@@ -210,6 +162,21 @@ export default {
     this.refreshLore()
   },
   methods: {
+    onClose(type, value) {
+      console.log(value)
+      this.show[type] = false
+      switch (value) {
+        case 'success':
+          this.snack.color = 'success'
+          this.snack.text = 'Successfully updated lore!'
+          break
+        case 'error':
+          this.snack.color = 'error'
+          this.snack.text = 'Error updating lore!'
+          break
+      }
+      if (value) this.snack.show = true
+    },
     refreshLore() {
       this.loading = true
       this.lore = []
@@ -230,22 +197,18 @@ export default {
     },
     checkAdmin() {
       if (!this.$store.state.authLoggedIn || !this.$auth.user) {
-        this.errorText = 'Not logged in!'
-        this.showError = true
+        this.snack.text = 'Not logged in!'
+        this.snack.show = true
         return false
       } else if (
         !this.$auth.user.roles ||
         !this.$auth.user.roles.includes('Admin')
       ) {
-        this.errorText = 'Insufficient permission!'
-        this.showError = true
+        this.snack.text = 'Insufficient permission!'
+        this.snack.show = true
         return false
       }
       return true
-    },
-    isOnWiki(page) {
-      if (this.currentEdit.missingWiki === 'COMPLETED') return true
-      return this.currentEdit.missingWiki.split(',').indexOf(page) < 0
     },
     openNewLore() {
       if (!this.checkAdmin()) return
@@ -259,7 +222,7 @@ export default {
         1,
         parseInt(item.onWiki.split('/')[1]) + 1
       )
-      this.editLore = true
+      this.show.editLore = true
     },
     getClasses(item) {
       if (item.missingWiki === 'COMPLETED') return 'green lighten-2'
