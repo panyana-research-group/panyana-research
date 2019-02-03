@@ -100,9 +100,6 @@
 <script>
 export default {
   name: 'App',
-  head: {
-    title: 'Unnamed'
-  },
   data() {
     return {
       drawer: false,
