@@ -40,7 +40,6 @@ jobs:
             git add .
             git commit -am "Automated deployment to GitHub Pages: ${CIRCLE_SHA1}" --allow-empty
             git push --force --quiet $CIRCLE_REPOSITORY_URL master:gh-pages
-
 workflows:
   version: 2
   buildy:
