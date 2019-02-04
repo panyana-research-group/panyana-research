@@ -14,16 +14,10 @@ module.exports = {
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: pkg.description },
-      { hid: 'og:title', name: 'og:title', content: 'Panyana Research Group' },
       {
         hid: 'og:site_name',
         name: 'og:site_name',
         content: 'Panyana Research'
-      },
-      {
-        hid: 'og:description',
-        name: 'og:description',
-        content: pkg.description
       },
       { hid: 'og:image', name: 'og:image', content: '/assets/research.png' },
       { name: 'msapplication-TileColor', content: '#da532c' },

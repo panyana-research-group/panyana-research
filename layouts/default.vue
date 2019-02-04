@@ -20,6 +20,9 @@
             <v-card-title class="title">
               Account
             </v-card-title>
+            <v-card-text v-if="!$store.state.authLoggedIn">
+              If you have permissions, logging in allows you to change certain data
+            </v-card-text>
             <v-card-text v-if="$store.state.authLoggedIn">
               Roles: {{ $auth.user.roles ? $auth.user.roles.join(",") : "None" }}
             </v-card-text>
@@ -64,55 +67,6 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
-      <!-- <v-list>
-        <v-list-tile to="/" avatar active-class="secondary--text" nuxt>
-          <v-list-tile-avatar>
-            <v-icon>home</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            Home
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile to="/about" avatar active-class="secondary--text" nuxt>
-          <v-list-tile-avatar>
-            <v-icon>chat</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            About
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-      <v-list>
-        <v-list-tile 
-          v-for="type in scienceTypes" 
-          :key="type.name" 
-          :to="'/'+type.name.toLowerCase()" 
-          active-class="secondary--text" 
-          avatar 
-          nuxt
-        >
-          <v-list-tile-avatar>
-            <v-icon>{{ type.icon }}</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>{{ type.name }}</v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-      <v-list>
-        <v-list-tile
-          v-for="type in dataTypes" 
-          :key="type.name" 
-          avatar 
-          :to="'/data/'+type.name.toLowerCase()" 
-          active-class="secondary--text" 
-          nuxt
-        >
-          <v-list-tile-avatar>
-            <v-icon>{{ type.icon }}</v-icon>
-          </v-list-tile-avatar>
-
-          <v-list-tile-content>{{ type.name }}</v-list-tile-content>
-        </v-list-tile>
-      </v-list> -->
     </v-navigation-drawer>
   </v-app>
 </template>

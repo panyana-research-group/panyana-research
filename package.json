@@ -1,7 +1,7 @@
 {
   "name": "panyana-science",
   "version": "1.0.0",
-  "description": "Panyana Research Group information site",
+  "description": "A site for data collection and viewing from the Panyana Research Group",
   "author": "Jake Potrebic",
   "private": true,
   "scripts": {
