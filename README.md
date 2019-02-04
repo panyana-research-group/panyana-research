@@ -1,6 +1,6 @@
 # panyana-science
 
-> My stupendous Nuxt.js project
+> A site for data collection and viewing from the Panyana Research Group
 
 ## Build Setup
 

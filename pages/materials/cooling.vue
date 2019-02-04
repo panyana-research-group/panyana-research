@@ -1,6 +1,6 @@
 <template>
   <v-container class="primary" xs12 fluid>
-    <v-flex xs8 offset-xs2>
+    <v-flex xs12>
       <div class="label">
         Casing
       </div>
@@ -99,6 +99,8 @@ export default {
   width: auto;
   margin: auto;
   border-collapse: collapse;
+  position: relative;
+  left: -30px;
 }
 .upper-corner {
   width: 65px;
