@@ -1,80 +1,78 @@
 <template>
-  <v-container class="primary" xs12 fluid>
-    <v-layout justify-center row>
-      <v-flex xs6 class="mx-4">
-        <v-toolbar color="info">
-          <v-toolbar-title class="white--text">
-            Optimal Engine Materials
-          </v-toolbar-title>
-          <v-spacer />
-          <v-btn icon>
-            <v-icon>link</v-icon>
+  <v-layout justify-center row>
+    <v-flex xs6 class="mx-4">
+      <v-toolbar color="info">
+        <v-toolbar-title class="white--text">
+          Optimal Engine Materials
+        </v-toolbar-title>
+        <v-spacer />
+        <v-btn icon>
+          <v-icon>link</v-icon>
+        </v-btn>
+      </v-toolbar>
+      <v-card color="accent">
+        <v-form ref="optEngineMats" v-model="engineMats">
+          <v-container>
+            <v-layout row wrap>
+              <v-flex xs2 offset-xs1>
+                <v-text-field v-model="optEngineMats.res" box label="Resilience" color="secondary" :rules="[rules.required, rules.number]" />
+              </v-flex>
+              <v-flex xs2>
+                <v-text-field v-model="optEngineMats.pwr" box label="Power" color="secondary" :rules="[rules.required, rules.number]" />
+              </v-flex>
+              <v-flex xs2>
+                <v-text-field v-model="optEngineMats.oh" box label="Overheat" color="secondary" :rules="[rules.required, rules.number]" />
+              </v-flex>
+              <v-flex xs2>
+                <v-text-field v-model="optEngineMats.su" box label="Spin Up" color="secondary" :rules="[rules.required, rules.number]" />
+              </v-flex>
+              <v-flex xs2>
+                <v-text-field v-model="optEngineMats.fe" box label="Fuel Eff." color="secondary" :rules="[rules.required, rules.number]" />
+              </v-flex>
+              <v-flex v-if="optEngineMats.output" xs3>
+                <v-text-field v-model="optEngineMats.output.casing" box :disabled="true" label="Casing" />
+              </v-flex>
+              <v-flex v-if="optEngineMats.output" xs3>
+                <v-text-field v-model="optEngineMats.output.mech" box :disabled="true" label="Mech. Internals" />
+              </v-flex>
+              <v-flex v-if="optEngineMats.output" xs3>
+                <v-text-field v-model="optEngineMats.output.comb" box :disabled="true" label="Comb. Internals" />
+              </v-flex>
+              <v-flex v-if="optEngineMats.output" xs3>
+                <v-text-field v-model="optEngineMats.output.prop" box :disabled="true" label="Prop" />
+              </v-flex>
+              <v-flex v-if="optEngineMats.output" xs5 offset-xs1>
+                <v-text-field v-model="optEngineMats.output.speed" box :disabled="true" label="Speed" />
+              </v-flex>
+              <v-flex v-if="optEngineMats.output" xs5>
+                <v-text-field v-model="optEngineMats.output.weight" box :disabled="true" label="Weight" />
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-form>
+        <v-card-actions class="justify-center">
+          <v-btn color="success" :disabled="!engineMats" @click="optMatsCalc">
+            Calculate
           </v-btn>
-        </v-toolbar>
-        <v-card color="accent">
-          <v-form ref="optEngineMats" v-model="engineMats">
-            <v-container>
-              <v-layout row wrap>
-                <v-flex xs2 offset-xs1>
-                  <v-text-field v-model="optEngineMats.res" box label="Resilience" color="secondary" :rules="[rules.required, rules.number]" />
-                </v-flex>
-                <v-flex xs2>
-                  <v-text-field v-model="optEngineMats.pwr" box label="Power" color="secondary" :rules="[rules.required, rules.number]" />
-                </v-flex>
-                <v-flex xs2>
-                  <v-text-field v-model="optEngineMats.oh" box label="Overheat" color="secondary" :rules="[rules.required, rules.number]" />
-                </v-flex>
-                <v-flex xs2>
-                  <v-text-field v-model="optEngineMats.su" box label="Spin Up" color="secondary" :rules="[rules.required, rules.number]" />
-                </v-flex>
-                <v-flex xs2>
-                  <v-text-field v-model="optEngineMats.fe" box label="Fuel Eff." color="secondary" :rules="[rules.required, rules.number]" />
-                </v-flex>
-                <v-flex v-if="optEngineMats.output" xs3>
-                  <v-text-field v-model="optEngineMats.output.casing" box :disabled="true" label="Casing" />
-                </v-flex>
-                <v-flex v-if="optEngineMats.output" xs3>
-                  <v-text-field v-model="optEngineMats.output.mech" box :disabled="true" label="Mech. Internals" />
-                </v-flex>
-                <v-flex v-if="optEngineMats.output" xs3>
-                  <v-text-field v-model="optEngineMats.output.comb" box :disabled="true" label="Comb. Internals" />
-                </v-flex>
-                <v-flex v-if="optEngineMats.output" xs3>
-                  <v-text-field v-model="optEngineMats.output.prop" box :disabled="true" label="Prop" />
-                </v-flex>
-                <v-flex v-if="optEngineMats.output" xs5 offset-xs1>
-                  <v-text-field v-model="optEngineMats.output.speed" box :disabled="true" label="Speed" />
-                </v-flex>
-                <v-flex v-if="optEngineMats.output" xs5>
-                  <v-text-field v-model="optEngineMats.output.weight" box :disabled="true" label="Weight" />
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-form>
-          <v-card-actions class="justify-center">
-            <v-btn color="success" :disabled="!engineMats" @click="optMatsCalc">
-              Calculate
-            </v-btn>
-            <v-btn color="warning" @click="reset('optEngineMats')">
-              Reset
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-      <v-flex xs6 class="mx-4">
-        <v-toolbar color="info">
-          <v-toolbar-title class="white--text">
-            Optimal Power/OH Ciphering
-          </v-toolbar-title>
-          <v-spacer />
-          <v-btn icon>
-            <v-icon>link</v-icon>
+          <v-btn color="warning" @click="reset('optEngineMats')">
+            Reset
           </v-btn>
-        </v-toolbar>
-        <v-card color="accent" />
-      </v-flex>
-    </v-layout>
-  </v-container>
+        </v-card-actions>
+      </v-card>
+    </v-flex>
+    <v-flex xs6 class="mx-4">
+      <v-toolbar color="info">
+        <v-toolbar-title class="white--text">
+          Optimal Power/OH Ciphering
+        </v-toolbar-title>
+        <v-spacer />
+        <v-btn icon>
+          <v-icon>link</v-icon>
+        </v-btn>
+      </v-toolbar>
+      <v-card color="accent" />
+    </v-flex>
+  </v-layout>
 </template>
 <script>
 // eslint-disable-file

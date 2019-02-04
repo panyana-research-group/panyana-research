@@ -1,5 +1,27 @@
 <template>
   <v-app>
+    <v-navigation-drawer v-model="drawer" class="info darken-1" temporary absolute dark>
+      <v-list v-for="type in Object.keys(navDrawer)" :key="type">
+        <v-subheader class="nav">
+          {{ type }}
+        </v-subheader>
+        <v-list-tile
+          v-for="item in navDrawer[type]"
+          :key="item.name"
+          :to="item.to || ''"
+          active-class="secondary--text"
+          avatar
+          nuxt
+        >
+          <v-list-tile-avatar>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            {{ item.name }}
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+    </v-navigation-drawer>
     <v-toolbar color="info" app>
       <v-toolbar-side-icon class="white--text" @click.stop="drawer = !drawer" />
       <v-toolbar-title class="white--text">
@@ -7,8 +29,6 @@
       </v-toolbar-title>
       <v-spacer />
       <v-toolbar-items>
-        <!-- <v-btn color="secondary" flat to="/">Home</v-btn>
-        <v-btn color="secondary" flat to="/about">About</v-btn> -->
         <v-menu :close-on-content-click="false" offset-y>
           <v-btn slot="activator" color="secondary" flat class="title" dark>
             {{ $store.state.authLoggedIn ? $auth.user.name : "Guest" }}
@@ -42,32 +62,10 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-content>
-      <no-ssr>
+      <v-container class="grey darken-2" fluid>
         <nuxt />
-      </no-ssr>
+      </v-container>
     </v-content>
-    <v-navigation-drawer v-model="drawer" class="info darken-1" temporary absolute dark>
-      <v-list v-for="type in Object.keys(navDrawer)" :key="type">
-        <v-subheader class="nav">
-          {{ type }}
-        </v-subheader>
-        <v-list-tile
-          v-for="item in navDrawer[type]"
-          :key="item.name"
-          :to="item.to || ''"
-          active-class="secondary--text"
-          avatar
-          nuxt
-        >
-          <v-list-tile-avatar>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            {{ item.name }}
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
   </v-app>
 </template>
 
