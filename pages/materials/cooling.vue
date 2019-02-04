@@ -43,16 +43,18 @@
 <script>
 export default {
   name: 'Cooling',
-  head: {
-    title: 'Cooling Factor',
-    meta: [
-      { hid: 'og:title', name: 'og:title', content: 'Cooling Factor' },
-      {
-        hid: 'og:description',
-        name: 'og:description',
-        content: 'Shows various materials affects on the Cooling Factor'
-      }
-    ]
+  head() {
+    return {
+      title: 'Cooling Factor',
+      meta: [
+        { hid: 'og:title', name: 'og:title', content: 'Cooling Factor' },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Shows various materials affects on the Cooling Factor'
+        }
+      ]
+    }
   },
   data() {
     return {

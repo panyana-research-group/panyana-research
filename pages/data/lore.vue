@@ -78,16 +78,18 @@ import NewStory from '@/components/NewStory'
 import EditStory from '@/components/EditStory'
 export default {
   name: 'Lore',
-  head: {
-    title: 'Lore',
-    meta: [
-      { hid: 'og:title', name: 'og:title', content: 'Lore' },
-      {
-        hid: 'og:description',
-        name: 'og:description',
-        content: 'A ongoing collection of all the lore in WA'
-      }
-    ]
+  head() {
+    return {
+      title: 'Lore',
+      meta: [
+        { hid: 'og:title', name: 'og:title', content: 'Lore' },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'A ongoing collection of all the lore in WA'
+        }
+      ]
+    }
   },
   components: {
     'new-story': NewStory,

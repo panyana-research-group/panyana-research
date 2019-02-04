@@ -80,16 +80,18 @@
 // eslint-disable-file
 export default {
   name: 'EngineCalculators',
-  head: {
-    title: 'Engine Calculators',
-    meta: [
-      { hid: 'og:title', name: 'og:title', content: 'Engine Calculators' },
-      {
-        hid: 'og:description',
-        name: 'og:description',
-        content: 'Various calculators related to crafting engines'
-      }
-    ]
+  head() {
+    return {
+      title: 'Engine Calculators',
+      meta: [
+        { hid: 'og:title', name: 'og:title', content: 'Engine Calculators' },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Various calculators related to crafting engines'
+        }
+      ]
+    }
   },
   data() {
     return {

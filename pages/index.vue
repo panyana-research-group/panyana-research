@@ -8,8 +8,10 @@ export default {
   components: {
     HelloWorld
   },
-  head: {
-    title: 'Home'
+  head() {
+    return {
+      title: 'Home'
+    }
   }
 }
 </script>

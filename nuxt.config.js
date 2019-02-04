@@ -8,7 +8,6 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'Home',
     titleTemplate: '%s | Panyana Research Group',
     meta: [
       { charset: 'utf-8' },
@@ -70,12 +69,7 @@ module.exports = {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: [
-    '@/plugins/vuetify',
-    '@/plugins/auth0',
-    '@/plugins/vue-meta',
-    '@/plugins/api'
-  ],
+  plugins: ['@/plugins/vuetify', '@/plugins/auth0', '@/plugins/api'],
 
   /*
   ** Nuxt.js modules

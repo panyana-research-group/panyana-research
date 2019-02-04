@@ -7,8 +7,10 @@
 <script>
 export default {
   name: 'Callback',
-  head: {
-    title: 'Login'
+  head() {
+    return {
+      title: 'Login'
+    }
   },
   mounted() {
     this.$auth.handleAuthentication().then(() => {
