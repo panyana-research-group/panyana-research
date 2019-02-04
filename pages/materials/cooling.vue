@@ -1,8 +1,12 @@
 <template>
-  <v-container class="accent" xs12 fluid>
-    <v-flex xs10 offset-xs1>
+  <v-container class="primary" xs12 fluid>
+    <v-flex xs8 offset-xs2>
+      <div class="label">
+        Casing
+      </div>
       <table id="cooling-data">
         <tr>
+          <td />
           <td class="upper-corner text-xs-center body-2">
             Quality
             <v-select
@@ -10,22 +14,26 @@
               :items="qualities"
               single-line
               hide-details
-              color="secondary"
               class="quality-select pt-0 mt-0 mx-1"
             />
           </td>
-          <td v-for="mat in Object.keys(baseData)" :key="mat" class="material" :class="mat.toLowerCase()">
+          <td v-for="mat in materials" :key="mat.name" class="material top-row" :class="mat.name.toLowerCase()">
             <div style="width: 65px;">
-              {{ mat }}
+              {{ mat.name }}
             </div>
           </td>
         </tr>
-        <tr v-for="mat in Object.keys(baseData)" :key="mat+'Row'">
-          <td class="material" :class="mat.toLowerCase()">
-            {{ mat }}
+        <tr v-for="(mat, index) in materials" :key="mat.name+'Row'">
+          <td v-if="index===0" :rowspan="materials.length+1">
+            <span class="label rotated">
+              Propeller/Barrel
+            </span>
           </td>
-          <td v-for="mat2 in Object.keys(baseData)" :key="mat2+'Item'" class="number" :class="cfClass(baseData[mat2]+baseData[mat]*(2/3)*(10+quality)/20)">
-            {{ baseData[mat2]+baseData[mat]*(2/3)*(10+quality)/20 }}
+          <td class="material left-column" :class="mat.name.toLowerCase()">
+            {{ mat.name }}
+          </td>
+          <td v-for="mat2 in materials" :key="mat2.name+'Item'" class="number" :class="cfClass(mat2.cf+mat.cf*(2/3)*(10+quality)/20)">
+            {{ mat2.cf+mat.cf*(2/3)*(10+quality)/20 }}
           </td>
         </tr>
       </table>
@@ -40,7 +48,7 @@ export default {
   },
   data() {
     return {
-      baseData: require('../assets/data/cooling_factors.json'),
+      materials: require('~/assets/data/materials.json'),
       quality: 10,
       qualities: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
     }
@@ -62,6 +70,20 @@ export default {
 }
 </script>
 <style lang="scss">
+.label {
+  width: 100%;
+  font-size: 30px;
+  text-align: center;
+  word-wrap: break-word;
+  white-space: nowrap;
+
+  &.rotated {
+    float: left;
+    transform: rotate(-90deg);
+    white-space: nowrap;
+    width: 50px;
+  }
+}
 #cooling-data {
   table-layout: fixed;
   width: auto;
@@ -129,6 +151,14 @@ export default {
   }
   &.gold {
     background-color: #ffe694;
+  }
+  &.top-row {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+  &.left-column {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
   }
 }
 .value-0 {

@@ -1,77 +1,75 @@
 <template>
-  <v-container class="primary" xs12 fluid persistent>
-    <no-ssr>
-      <v-flex xs12 class="px-2">
-        <v-card class="primary lighten-2 mb-2 elevation-4">
-          <v-card-title class="primary lighten-2 headline">
-            <v-btn color="info" @click="openNewLore()">
-              New Story
-            </v-btn>
-            <v-btn color="success" class="mr-3" @click="refreshLore()">
-              Refresh Lore
-            </v-btn>
-            <v-text-field
-              v-model="search"
-              append-icon="search"
-              label="Search Lore"
-              persistent-hint
-              box
-              class="ml-3"
-              color="secondary"
-              clearable
-            />
-          </v-card-title>
-          <v-data-table
-            id="lore-table"
-            :items="lore"
-            :headers="headers"
-            :custom-sort="customSort"
-            :search="search"
-            item-key="title"
-            hide-actions
-            :pagination.sync="pagination"
-            :loading="loading"
-            :must-sort="true"
-          >
-            <template slot="items" slot-scope="props">
-              <tr :class="getClasses(props.item)">
-                <td>{{ props.item.title }}</td>
-                <td class="text-xs-center">
-                  {{ props.item.onWiki }}
-                </td>
-                <td>{{ props.item.missingWiki }}</td>
-                <td>{{ props.item.missingPics }}</td>
-                <td>{{ props.item.addWiki }}</td>
-                <td class="text-xs-center">
-                  <v-tooltip top>
-                    <v-btn slot="activator" :href="props.item.driveFolder" color="orange" small target="_blank">
-                      Pictures
-                    </v-btn>
-                    Images of the story's pages
-                  </v-tooltip>
-                </td>
-                <td class="text-xs-center">
-                  <v-btn :disabled="props.item.missingWiki==='COMPLETED'" color="error" class="lighten-2" icon @click="editStory(props.item)">
-                    <v-icon>edit</v-icon>
+  <v-container class="primary" xs12 fluid>
+    <v-flex xs12 class="px-2">
+      <v-card class="primary lighten-2 mb-2 elevation-4">
+        <v-card-title class="primary lighten-2 headline">
+          <v-btn color="info" @click="openNewLore()">
+            New Story
+          </v-btn>
+          <v-btn color="success" class="mr-3" @click="refreshLore()">
+            Refresh Lore
+          </v-btn>
+          <v-text-field
+            v-model="search"
+            append-icon="search"
+            label="Search Lore"
+            persistent-hint
+            box
+            class="ml-3"
+            color="secondary"
+            clearable
+          />
+        </v-card-title>
+        <v-data-table
+          id="lore-table"
+          :items="lore"
+          :headers="headers"
+          :custom-sort="customSort"
+          :search="search"
+          item-key="title"
+          hide-actions
+          :pagination.sync="pagination"
+          :loading="loading"
+          :must-sort="true"
+        >
+          <template slot="items" slot-scope="props">
+            <tr :class="getClasses(props.item)">
+              <td>{{ props.item.title }}</td>
+              <td class="text-xs-center">
+                {{ props.item.onWiki }}
+              </td>
+              <td>{{ props.item.missingWiki }}</td>
+              <td>{{ props.item.missingPics }}</td>
+              <td>{{ props.item.addWiki }}</td>
+              <td class="text-xs-center">
+                <v-tooltip top>
+                  <v-btn slot="activator" :href="props.item.driveFolder" color="orange" small target="_blank">
+                    Pictures
                   </v-btn>
-                </td>
-              </tr>
-            </template>
-            <v-alert slot="no-results" :value="true" color="error" icon="warning">
-              Your search for "{{ search }}" found no results.
-            </v-alert>
-          </v-data-table>
-        </v-card>
-        <edit-story ref="editStory" :show="show.editLore" :current-edit="currentEdit" @close="onClose('editLore', $event)" />
-        <new-story ref="newStory" :show="show.newLore" @close="onClose('newLore', $event)" />
-      </v-flex>
-      <v-snackbar v-model="snack.show" :timeout="5000" :color="snack.color">
-        {{ snack.text }}
-        <v-btn dark flat @click.native="snack.show = false">
-          Close
-        </v-btn>
-      </v-snackbar>
-    </no-ssr>
+                  Images of the story's pages
+                </v-tooltip>
+              </td>
+              <td class="text-xs-center">
+                <v-btn :disabled="props.item.missingWiki==='COMPLETED'" color="error" class="lighten-2" icon @click="editStory(props.item)">
+                  <v-icon>edit</v-icon>
+                </v-btn>
+              </td>
+            </tr>
+          </template>
+          <v-alert slot="no-results" :value="true" color="error" icon="warning">
+            Your search for "{{ search }}" found no results.
+          </v-alert>
+        </v-data-table>
+      </v-card>
+      <edit-story ref="editStory" :show="show.editLore" :current-edit="currentEdit" @close="onClose('editLore', $event)" />
+      <new-story ref="newStory" :show="show.newLore" @close="onClose('newLore', $event)" />
+    </v-flex>
+    <v-snackbar v-model="snack.show" :timeout="5000" :color="snack.color">
+      {{ snack.text }}
+      <v-btn dark flat @click.native="snack.show = false">
+        Close
+      </v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 <script>

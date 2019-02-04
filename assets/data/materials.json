@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Aluminum",
+    "weight": 0.33,
+    "rarity": "exotic",
+    "cf": 15
+  },
+  {
+    "name": "Titanium",
+    "weight": 0.35,
+    "rarity": "rare",
+    "cf": 6
+  },
+  {
+    "name": "Tin",
+    "weight": 0.38,
+    "rarity": "uncommon",
+    "cf": 27
+  },
+  {
+    "name": "Iron",
+    "weight": 0.39,
+    "rarity": "common",
+    "cf": 15
+  },
+  {
+    "name": "Bronze",
+    "weight": 0.42,
+    "rarity": "common",
+    "cf": 18
+  },
+  {
+    "name": "Nickel",
+    "weight": 0.43,
+    "rarity": "rare",
+    "cf": 24
+  },
+  {
+    "name": "Orthite",
+    "weight": 0.43,
+    "rarity": "uncommon",
+    "cf": 21
+  },
+  {
+    "name": "Epilar",
+    "weight": 0.46,
+    "rarity": "rare",
+    "cf": 21
+  },
+  {
+    "name": "Steel",
+    "weight": 0.50,
+    "rarity": "uncommon",
+    "cf": 12
+  },
+  {
+    "name": "Eternium",
+    "weight": 0.50,
+    "rarity": "exotic",
+    "cf": 6
+  },
+  {
+    "name": "Copper",
+    "weight": 0.55,
+    "rarity": "uncommon",
+    "cf": 39
+  },
+  {
+    "name": "Lead",
+    "weight": 0.56,
+    "rarity": "common",
+    "cf": 12
+  },
+  {
+    "name": "Silver",
+    "weight": 0.66,
+    "rarity": "rare",
+    "cf": 45
+  },
+  {
+    "name": "Tungsten",
+    "weight": 0.70,
+    "rarity": "exotic",
+    "cf": 12
+  },
+  {
+    "name": "Gold",
+    "weight": 0.73,
+    "rarity": "exotic",
+    "cf": 51
+  }
+]

@@ -9,11 +9,23 @@ module.exports = {
   */
   head: {
     title: 'Home',
-    titleTemplate: '%s | PanyanaResearch',
+    titleTemplate: '%s | Panyana Research Group',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: pkg.description },
+      { hid: 'og:title', name: 'og:title', content: 'Panyana Research Group' },
+      {
+        hid: 'og:site_name',
+        name: 'og:site_name',
+        content: 'Panyana Research'
+      },
+      {
+        hid: 'og:description',
+        name: 'og:description',
+        content: pkg.description
+      },
+      { hid: 'og:image', name: 'og:image', content: '/assets/research.png' },
       { name: 'msapplication-TileColor', content: '#da532c' },
       { name: 'msapplication-config', content: '/favicons/browserconfig.xml' },
       { name: 'theme-color', content: '#ffffff' }

@@ -44,7 +44,27 @@
       </no-ssr>
     </v-content>
     <v-navigation-drawer v-model="drawer" class="info darken-1" temporary absolute dark>
-      <v-list>
+      <v-list v-for="type in Object.keys(navDrawer)" :key="type">
+        <v-subheader class="nav">
+          {{ type }}
+        </v-subheader>
+        <v-list-tile
+          v-for="item in navDrawer[type]"
+          :key="item.name"
+          :to="item.to || ''"
+          active-class="secondary--text"
+          avatar
+          nuxt
+        >
+          <v-list-tile-avatar>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            {{ item.name }}
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+      <!-- <v-list>
         <v-list-tile to="/" avatar active-class="secondary--text" nuxt>
           <v-list-tile-avatar>
             <v-icon>home</v-icon>
@@ -92,7 +112,7 @@
 
           <v-list-tile-content>{{ type.name }}</v-list-tile-content>
         </v-list-tile>
-      </v-list>
+      </v-list> -->
     </v-navigation-drawer>
   </v-app>
 </template>
@@ -104,34 +124,27 @@ export default {
     return {
       drawer: false,
       accountMenu: false,
-      dataTypes: [
-        {
-          name: 'Clothing',
-          icon: 'accessibility_new'
-        },
-        {
-          name: 'Salvage',
-          icon: 'attachment'
-        },
-        {
-          name: 'Procedurals',
-          icon: 'memory'
-        },
-        {
-          name: 'Lore',
-          icon: 'library_books'
-        },
-        {
-          name: 'Schematics',
-          icon: 'settings'
-        }
-      ],
-      scienceTypes: [
-        {
-          name: 'Cooling',
-          icon: 'wb_sunny'
-        }
-      ]
+      navDrawer: {
+        Calculators: [
+          { name: 'Engine', icon: '', to: '/calculators/engines' },
+          { name: 'Fuel Efficiency', icon: 'local_gas_station' },
+          { name: 'Skycore Capacity', icon: '' }
+        ],
+        'Material Info': [
+          { name: 'Cooling', icon: 'waves', to: '/materials/cooling' },
+          { name: 'Engines', icon: '' },
+          { name: 'Wings', icon: '' },
+          { name: 'Cannons/Swivels', icon: '' },
+          { name: 'Resilience', icon: '' }
+        ],
+        Data: [
+          { name: 'Clothing', icon: 'accessibility_new' },
+          { name: 'Salvage', icon: 'attachment' },
+          { name: 'Procedurals', icon: 'memory' },
+          { name: 'Lore', icon: 'library_books', to: '/data/lore' },
+          { name: 'Schematics', icon: 'settings' }
+        ]
+      }
     }
   },
   mounted() {
@@ -144,5 +157,8 @@ export default {
 <style lang="scss">
 .v-list__tile--active .v-icon {
   color: inherit;
+}
+.v-subheader.nav {
+  height: 20px;
 }
 </style>
