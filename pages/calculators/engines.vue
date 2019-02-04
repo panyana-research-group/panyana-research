@@ -81,7 +81,14 @@
 export default {
   name: 'EngineCalculators',
   head: {
-    title: 'Engine Calculators'
+    title: 'Engine Calculators',
+    meta: [
+      {
+        hid: 'og:description',
+        name: 'og:description',
+        content: 'Various calculators related to crafting engines'
+      }
+    ]
   },
   data() {
     return {
