@@ -83,6 +83,7 @@ export default {
   head: {
     title: 'Engine Calculators',
     meta: [
+      { hid: 'og:title', name: 'og:title', content: 'Engine Calculators' },
       {
         hid: 'og:description',
         name: 'og:description',

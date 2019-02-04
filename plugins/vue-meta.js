@@ -2,5 +2,6 @@ import Vue from 'vue'
 import Meta from 'vue-meta'
 
 Vue.use(Meta, {
-  keyName: 'head'
+  keyName: 'head',
+  tagIDKeyName: 'hid'
 })
