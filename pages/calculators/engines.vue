@@ -1,6 +1,10 @@
 <template>
-  <v-layout justify-center row>
-    <v-flex xs6 class="mx-4">
+  <v-layout justify-center row wrap>
+    <v-flex xs12>
+      <v-card color="secondary darken-2 pt-3">
+      </v-card>
+    </v-flex>
+    <v-flex xs12 md12 lg6 class="pr-1">
       <v-toolbar color="info">
         <v-toolbar-title class="white--text">
           Optimal Engine Materials
@@ -14,19 +18,19 @@
         <v-form ref="optEngineMats" v-model="engineMats">
           <v-container>
             <v-layout row wrap>
-              <v-flex xs2 offset-xs1>
+              <v-flex shrink>
                 <v-text-field v-model="optEngineMats.res" box label="Resilience" color="secondary" :rules="[rules.required, rules.number]" />
               </v-flex>
-              <v-flex xs2>
+              <v-flex shrink>
                 <v-text-field v-model="optEngineMats.pwr" box label="Power" color="secondary" :rules="[rules.required, rules.number]" />
               </v-flex>
-              <v-flex xs2>
+              <v-flex shrink>
                 <v-text-field v-model="optEngineMats.oh" box label="Overheat" color="secondary" :rules="[rules.required, rules.number]" />
               </v-flex>
-              <v-flex xs2>
+              <v-flex shrink>
                 <v-text-field v-model="optEngineMats.su" box label="Spin Up" color="secondary" :rules="[rules.required, rules.number]" />
               </v-flex>
-              <v-flex xs2>
+              <v-flex shrink>
                 <v-text-field v-model="optEngineMats.fe" box label="Fuel Eff." color="secondary" :rules="[rules.required, rules.number]" />
               </v-flex>
               <v-flex v-if="optEngineMats.output" xs3>
@@ -60,7 +64,7 @@
         </v-card-actions>
       </v-card>
     </v-flex>
-    <v-flex xs6 class="mx-4">
+    <v-flex xs12 md12 lg6 class="pl-1">
       <v-toolbar color="info">
         <v-toolbar-title class="white--text">
           Optimal Power/OH Ciphering
@@ -95,6 +99,13 @@ export default {
     return {
       materials: require('~/assets/data/materials.json'),
       engineMats: false,
+      engine: {
+        res: '',
+        pwr: '',
+        oh: '',
+        su: '',
+        fe: ''
+      },
       optEngineMats: {
         res: '',
         pwr: '',
