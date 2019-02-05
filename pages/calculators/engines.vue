@@ -1,85 +1,102 @@
 <template>
   <v-layout justify-center row wrap>
     <v-flex xs12>
-      <v-card color="secondary darken-2 pt-3">
+      <v-card color="secondary darken-2">
+        <v-form ref="engineForm" v-model="engine.form">
+          <v-container grid-list-md fluid>
+            <v-layout row wrap justify-center>
+              <v-flex grow>
+                <v-text-field v-model="engine.res" :rules="[rules.required, rules.number]" box label="Resilience" color="secondary" />
+              </v-flex>
+              <v-flex grow>
+                <v-text-field v-model="engine.pwr" :rules="[rules.required, rules.number]" box label="Power" color="secondary" />
+              </v-flex>
+              <v-flex grow>
+                <v-text-field v-model="engine.oh" :rules="[rules.required, rules.number]" box label="Overheat" color="secondary" />
+              </v-flex>
+              <v-flex grow>
+                <v-text-field v-model="engine.su" :rules="[rules.required, rules.number]" box label="Spin Up" color="secondary" />
+              </v-flex>
+              <v-flex grow>
+                <v-text-field v-model="engine.fe" :rules="[rules.required, rules.number]" box label="Fuel Eff." color="secondary" />
+              </v-flex>
+              <v-flex shrink>
+                <v-btn color="warning" @click="reset">
+                  Reset
+                </v-btn>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-form>
       </v-card>
     </v-flex>
-    <v-flex xs12 md12 lg6 class="pr-1">
+    <v-flex xs12 md12 lg6>
       <v-toolbar color="info">
         <v-toolbar-title class="white--text">
           Optimal Engine Materials
         </v-toolbar-title>
         <v-spacer />
-        <v-btn icon>
-          <v-icon>link</v-icon>
+        <v-btn :disabled="!engine.form" color="secondary" @click="optMatsCalc">
+          Calculate
         </v-btn>
-      </v-toolbar>
-      <v-card color="accent">
-        <v-form ref="optEngineMats" v-model="engineMats">
-          <v-container>
-            <v-layout row wrap>
-              <v-flex shrink>
-                <v-text-field v-model="optEngineMats.res" box label="Resilience" color="secondary" :rules="[rules.required, rules.number]" />
-              </v-flex>
-              <v-flex shrink>
-                <v-text-field v-model="optEngineMats.pwr" box label="Power" color="secondary" :rules="[rules.required, rules.number]" />
-              </v-flex>
-              <v-flex shrink>
-                <v-text-field v-model="optEngineMats.oh" box label="Overheat" color="secondary" :rules="[rules.required, rules.number]" />
-              </v-flex>
-              <v-flex shrink>
-                <v-text-field v-model="optEngineMats.su" box label="Spin Up" color="secondary" :rules="[rules.required, rules.number]" />
-              </v-flex>
-              <v-flex shrink>
-                <v-text-field v-model="optEngineMats.fe" box label="Fuel Eff." color="secondary" :rules="[rules.required, rules.number]" />
-              </v-flex>
-              <v-flex v-if="optEngineMats.output" xs3>
-                <v-text-field v-model="optEngineMats.output.casing" box :disabled="true" label="Casing" />
-              </v-flex>
-              <v-flex v-if="optEngineMats.output" xs3>
-                <v-text-field v-model="optEngineMats.output.mech" box :disabled="true" label="Mech. Internals" />
-              </v-flex>
-              <v-flex v-if="optEngineMats.output" xs3>
-                <v-text-field v-model="optEngineMats.output.comb" box :disabled="true" label="Comb. Internals" />
-              </v-flex>
-              <v-flex v-if="optEngineMats.output" xs3>
-                <v-text-field v-model="optEngineMats.output.prop" box :disabled="true" label="Prop" />
-              </v-flex>
-              <v-flex v-if="optEngineMats.output" xs5 offset-xs1>
-                <v-text-field v-model="optEngineMats.output.speed" box :disabled="true" label="Speed" />
-              </v-flex>
-              <v-flex v-if="optEngineMats.output" xs5>
-                <v-text-field v-model="optEngineMats.output.weight" box :disabled="true" label="Weight" />
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-form>
-        <v-card-actions class="justify-center">
-          <v-btn color="success" :disabled="!engineMats" @click="optMatsCalc">
-            Calculate
+        <v-tooltip bottom>
+          <v-btn slot="activator" icon class="white--text">
+            <v-icon>link</v-icon>
           </v-btn>
-          <v-btn color="warning" @click="reset('optEngineMats')">
-            Reset
+          Copy link to this calculator
+        </v-tooltip>
+      </v-toolbar>
+      <v-card v-if="output.opt" color="accent">
+        <v-container grid-list-md fluid>
+          <v-layout row wrap>
+            <v-flex>
+              <v-text-field v-model="output.opt.casing" :disabled="true" outline hide-details label="Casing" />
+            </v-flex>
+            <v-flex>
+              <v-text-field v-model="output.opt.mech" :disabled="true" outline hide-details label="Mech. Internals" />
+            </v-flex>
+            <v-flex>
+              <v-text-field v-model="output.opt.comb" :disabled="true" outline hide-details label="Comb. Internals" />
+            </v-flex>
+            <v-flex>
+              <v-text-field v-model="output.opt.prop" :disabled="true" outline hide-details label="Propeller" />
+            </v-flex>
+            <v-flex>
+              <v-text-field v-model="output.opt.speed" :disabled="true" outline hide-details label="Speed" />
+            </v-flex>
+            <v-flex>
+              <v-text-field v-model="output.opt.weight" :disabled="true" outline hide-details label="Weight" />
+            </v-flex>
+          </v-layout>
+        </v-container>
+        <v-card-actions class="justify-center">
+          <v-btn color="success" @click="output.opt = null">
+            Clear
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
-    <v-flex xs12 md12 lg6 class="pl-1">
+    <v-flex xs12 md12 lg6>
       <v-toolbar color="info">
         <v-toolbar-title class="white--text">
           Optimal Power/OH Ciphering
         </v-toolbar-title>
         <v-spacer />
-        <v-btn icon>
-          <v-icon>link</v-icon>
+        <v-btn color="secondary">
+          Calculate
         </v-btn>
+        <v-tooltip bottom>
+          <v-btn slot="activator" icon class="white--text">
+            <v-icon>link</v-icon>
+          </v-btn>
+          Copy link to this calculator
+        </v-tooltip>
       </v-toolbar>
       <v-card color="accent" />
     </v-flex>
   </v-layout>
 </template>
 <script>
-// eslint-disable-file
 export default {
   name: 'EngineCalculators',
   head() {
@@ -104,15 +121,11 @@ export default {
         pwr: '',
         oh: '',
         su: '',
-        fe: ''
-      },
-      optEngineMats: {
-        res: '',
-        pwr: '',
-        oh: '',
-        su: '',
         fe: '',
-        output: null
+        form: false
+      },
+      output: {
+        opt: null
       },
       rules: {
         required: v => !!v || 'Required!',
@@ -189,31 +202,29 @@ export default {
     }
   },
   methods: {
-    reset(calc) {
-      this.$refs[calc].reset()
-      this.optEngineMats.output = null
+    reset() {
+      this.$refs.engineForm.reset()
+      this.output.opt = null
     },
     optMatsCalc() {
-      this.optEngineMats.output = { speed: 0 }
-      Object.keys(this.optEngineMats).map((key, index) => {
-        this.optEngineMats[key] =
-          key === 'output'
-            ? this.optEngineMats[key]
-            : parseInt(this.optEngineMats[key])
+      this.output.opt = { speed: 0 }
+      Object.keys(this.engine).map((key, index) => {
+        this.engine[key] =
+          key === 'form' ? this.engine[key] : parseInt(this.engine[key])
       })
       for (let mech = 0; mech < this.materials.length; mech++) {
         for (let comb = 0; comb < this.materials.length; comb++) {
           for (let casing = 0; casing < this.materials.length; casing++) {
             for (let prop = 0; prop < this.materials.length; prop++) {
-              let pwr =
-                this.optEngineMats.pwr +
-                this.optEngineMats.pwr * this.mechPwr[mech] +
-                this.optEngineMats.pwr * this.combPwr[comb]
-              let oh =
-                this.optEngineMats.oh +
-                this.optEngineMats.oh * this.mechOH[mech] +
-                this.optEngineMats.oh * this.combOH[comb]
-              let cf = this.getCF(
+              const pwr =
+                this.engine.pwr +
+                this.engine.pwr * this.mechPwr[mech] +
+                this.engine.pwr * this.combPwr[comb]
+              const oh =
+                this.engine.oh +
+                this.engine.oh * this.mechOH[mech] +
+                this.engine.oh * this.combOH[comb]
+              const cf = this.getCF(
                 this.materials[casing].name,
                 this.materials[prop].name
               )
@@ -224,39 +235,33 @@ export default {
               let speed = 50 * Math.sqrt((2 * pwr) / weight)
 
               if (!isNaN(this.ohTime(pwr, oh, cf))) speed = 0
-              if (speed > this.optEngineMats.output.speed) {
-                this.optEngineMats.output = {
+              if (speed > this.output.opt.speed) {
+                this.output.opt = {
                   casing: this.materials[casing].name,
                   mech: this.materials[mech].name,
                   comb: this.materials[comb].name,
                   prop: this.materials[prop].name,
-                  speed,
-                  weight
+                  speed: this.round(speed, 2),
+                  weight: this.round(weight, 2)
                 }
               }
             }
           }
         }
       }
-      this.optEngineMats.output.done = true
     },
-    /* eslint prefer-const: "off" */
     getWeight(mCasing, mMech, mComb, mProp) {
-      let casing =
-        (this.optEngineMats.res +
-          this.optEngineMats.pwr +
-          this.optEngineMats.su) *
+      const casing =
+        (this.engine.res + this.engine.pwr + this.engine.su) *
         this.materials.find(x => x.name === mCasing).weight
-      let mech =
-        (this.optEngineMats.pwr + this.optEngineMats.fe) *
+      const mech =
+        (this.engine.pwr + this.engine.fe) *
         this.materials.find(x => x.name === mMech).weight
-      let comb =
-        (this.optEngineMats.pwr +
-          this.optEngineMats.fe +
-          this.optEngineMats.oh) *
+      const comb =
+        (this.engine.pwr + this.engine.fe + this.engine.oh) *
         this.materials.find(x => x.name === mComb).weight
-      let prop =
-        (this.optEngineMats.su + this.optEngineMats.oh) *
+      const prop =
+        (this.engine.su + this.engine.oh) *
         this.materials.find(x => x.name === mProp).weight
       return 0.7 * 2 * (casing + mech + comb + prop)
     },
@@ -288,6 +293,9 @@ export default {
             Math.pow(parseInt(oh), 0.25) *
             Math.pow(parseInt(pwr), -0.335))
       )
+    },
+    round(value, decimals) {
+      return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals)
     }
   }
 }

@@ -62,7 +62,7 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-content>
-      <v-container class="grey darken-2" fluid>
+      <v-container grid-list-md class="grey darken-2" fluid>
         <nuxt />
       </v-container>
     </v-content>
