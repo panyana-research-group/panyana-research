@@ -55,8 +55,11 @@
             </td>
           </tr>
         </template>
-        <v-alert slot="no-results" :value="true" color="error" icon="warning">
+        <v-alert slot="no-results" :value="true" type="error" icon="warning">
           Your search for "{{ search }}" found no results.
+        </v-alert>
+        <v-alert slot="no-data" :value="true" type="error" icon="warning">
+          No lore data availible. Probably a network issue :)
         </v-alert>
       </v-data-table>
     </v-card>
@@ -72,6 +75,7 @@
 </template>
 <script>
 import _ from 'lodash'
+import axios from 'axios'
 import NewStory from '@/components/NewStory'
 import EditStory from '@/components/EditStory'
 export default {
@@ -186,20 +190,28 @@ export default {
     refreshLore() {
       this.loading = true
       this.lore = []
-      this.$api.getSheet('lore').then((res, err) => {
-        if (err) return console.error(err)
-        res.data.data.values.forEach(story => {
-          this.lore.push({
-            title: story[0],
-            onWiki: story[1],
-            missingWiki: story[2],
-            missingPics: story[3],
-            addWiki: story[4],
-            driveFolder: 'https://drive.google.com/drive/folders/' + story[7]
+      axios
+        .get('https://panyana-api.glitch.me/lore/all')
+        .then(res => {
+          console.log(res)
+          res.data.forEach(story => {
+            this.lore.push(story)
+            // this.lore.push({
+            //   title: story[0],
+            //   onWiki: story[1],
+            //   missingWiki: story[2],
+            //   missingPics: story[3],
+            //   addWiki: story[4],
+            //   driveFolder: 'https://drive.google.com/drive/folders/' + story[7]
+            // })
           })
+          this.loading = false
         })
-        this.loading = false
-      })
+        .catch(err => {
+          console.error(err)
+          this.lore = []
+          this.loading = false
+        })
     },
     checkAdmin() {
       if (!this.$store.state.authLoggedIn || !this.$auth.user) {
