@@ -25,7 +25,7 @@ module.exports = {
       { hid: 'og:image', name: 'og:image', content: '/assets/research.png' },
       { name: 'msapplication-TileColor', content: '#da532c' },
       { name: 'msapplication-config', content: '/favicons/browserconfig.xml' },
-      { name: 'theme-color', content: '#ffffff' }
+      { name: 'theme-color', content: '#fec108' }
     ],
     link: [
       {

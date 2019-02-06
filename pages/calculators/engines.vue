@@ -31,23 +31,17 @@
       </v-card>
     </v-flex>
     <v-flex xs12 md12 lg6>
-      <v-toolbar color="info">
-        <v-toolbar-title class="white--text">
-          Optimal Engine Materials
-        </v-toolbar-title>
-        <v-spacer />
-        <v-btn :disabled="!engine.form" color="secondary" @click="optMatsCalc">
-          Calculate
-        </v-btn>
-        <v-tooltip bottom>
-          <v-btn slot="activator" icon class="white--text">
-            <v-icon>link</v-icon>
+      <v-card color="accent" elevation="5">
+        <v-toolbar color="info" dense card>
+          <v-toolbar-title class="white--text">
+            Optimal Engine Materials
+          </v-toolbar-title>
+          <v-spacer />
+          <v-btn :disabled="!engine.form" small color="secondary" @click="optMatsCalc">
+            Calculate
           </v-btn>
-          Copy link to this calculator
-        </v-tooltip>
-      </v-toolbar>
-      <v-card v-if="output.opt" color="accent">
-        <v-container grid-list-md fluid>
+        </v-toolbar>
+        <v-container v-if="output.opt" grid-list-md fluid>
           <v-layout row wrap>
             <v-flex>
               <v-text-field v-model="output.opt.casing" :disabled="true" outline hide-details label="Casing" />
@@ -69,7 +63,7 @@
             </v-flex>
           </v-layout>
         </v-container>
-        <v-card-actions class="justify-center">
+        <v-card-actions v-if="output.opt" class="justify-center">
           <v-btn color="success" @click="output.opt = null">
             Clear
           </v-btn>
@@ -77,20 +71,14 @@
       </v-card>
     </v-flex>
     <v-flex xs12 md12 lg6>
-      <v-toolbar color="info">
+      <v-toolbar color="info" dense>
         <v-toolbar-title class="white--text">
           Optimal Power/OH Ciphering
         </v-toolbar-title>
         <v-spacer />
-        <v-btn color="secondary">
+        <v-btn :disabled="!engine.form" small color="secondary">
           Calculate
         </v-btn>
-        <v-tooltip bottom>
-          <v-btn slot="activator" icon class="white--text">
-            <v-icon>link</v-icon>
-          </v-btn>
-          Copy link to this calculator
-        </v-tooltip>
       </v-toolbar>
       <v-card color="accent" />
     </v-flex>
@@ -216,14 +204,22 @@ export default {
         for (let comb = 0; comb < this.materials.length; comb++) {
           for (let casing = 0; casing < this.materials.length; casing++) {
             for (let prop = 0; prop < this.materials.length; prop++) {
+              // const pwr =
+              //   this.engine.pwr +
+              //   this.engine.pwr * this.materials[mech].boosts.engine.mech.pwr +
+              //   this.engine.pwr * this.materials[mech].boosts.engine.comb.pwr
+              // const oh =
+              //   this.engine.oh +
+              //   this.engine.oh * this.materials[mech].boosts.engine.mech.oh +
+              //   this.engine.oh * this.materials[mech].boosts.engine.comb.oh
               const pwr =
                 this.engine.pwr +
-                this.engine.pwr * this.mechPwr[mech] +
-                this.engine.pwr * this.combPwr[comb]
+                this.engine.pwr * this.materials[mech].boosts.engine.mech.pwr +
+                this.engine.pwr * this.materials[comb].boosts.engine.comb.pwr
               const oh =
                 this.engine.oh +
-                this.engine.oh * this.mechOH[mech] +
-                this.engine.oh * this.combOH[comb]
+                this.engine.oh * this.materials[mech].boosts.engine.mech.oh +
+                this.engine.oh * this.materials[comb].boosts.engine.comb.oh
               const cf = this.getCF(
                 this.materials[casing].name,
                 this.materials[prop].name

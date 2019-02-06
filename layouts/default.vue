@@ -62,10 +62,36 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-content>
-      <v-container grid-list-md class="grey darken-2" fluid>
+      <v-container grid-list-md class="grey darken-2" fluid style="min-height: 100%">
         <nuxt />
       </v-container>
     </v-content>
+    <v-footer height="auto" class="info">
+      <v-layout row wrap justify-center>
+        <v-btn nuxt to="/">
+          Home
+        </v-btn>
+        <v-btn nuxt to="/about">
+          About Us
+        </v-btn>
+        <v-btn :disabled="true">
+          Team
+        </v-btn>
+        <v-btn :disabled="true">
+          Services
+        </v-btn>
+        <v-btn :disabled="true">
+          Blog
+        </v-btn>
+        <v-btn :disabled="true">
+          Contact Us
+        </v-btn>
+        <v-flex xs12 pb-1 text-xs-center white--text>
+          &copy;2019 —
+          <strong>Vuetify</strong>
+        </v-flex>
+      </v-layout>
+    </v-footer>
   </v-app>
 </template>
 
