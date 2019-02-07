@@ -58,8 +58,11 @@
         <v-alert slot="no-results" :value="true" type="error" icon="warning">
           Your search for "{{ search }}" found no results.
         </v-alert>
-        <v-alert slot="no-data" :value="true" type="error" icon="warning">
+        <v-alert v-if="!loading" slot="no-data" :value="true" type="error">
           No lore data availible. Probably a network issue :)
+        </v-alert>
+        <v-alert v-if="loading" slot="no-data" :value="true" type="info">
+          Loading data...
         </v-alert>
       </v-data-table>
     </v-card>
@@ -193,18 +196,10 @@ export default {
       axios
         .get('https://panyana-api.glitch.me/lore/all')
         .then(res => {
-          console.log(res)
-          res.data.forEach(story => {
-            this.lore.push(story)
-            // this.lore.push({
-            //   title: story[0],
-            //   onWiki: story[1],
-            //   missingWiki: story[2],
-            //   missingPics: story[3],
-            //   addWiki: story[4],
-            //   driveFolder: 'https://drive.google.com/drive/folders/' + story[7]
-            // })
-          })
+          this.lore.push(...res.data)
+          // res.data.forEach(story => {
+          //   this.lore.push(story)
+          // })
           this.loading = false
         })
         .catch(err => {
@@ -277,9 +272,13 @@ export default {
           }
           case 'missingWiki': {
             const lenA =
-              a.missingWiki === 'N/A' ? 0 : a.missingWiki.split(',').length
+              a.missingWiki === 'COMPLETED'
+                ? 0
+                : a.missingWiki.split(',').length
             const lenB =
-              b.missingWiki === 'N/A' ? 0 : b.missingWiki.split(',').length
+              b.missingWiki === 'COMPLETED'
+                ? 0
+                : b.missingWiki.split(',').length
             if (lenA === lenB) return 0
             if (isDescending) return lenA < lenB ? -1 : 0
             else return lenA < lenB ? 1 : -1

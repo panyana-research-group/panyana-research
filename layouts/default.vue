@@ -1,7 +1,29 @@
 <template>
   <v-app>
     <v-navigation-drawer v-model="drawer" class="info darken-1" temporary absolute dark>
-      <v-list v-for="type in Object.keys(navDrawer)" :key="type">
+      <v-list>
+        <v-list-group v-for="type in Object.keys(navDrawer)" :key="type" no-action>
+          <v-list-tile slot="activator">
+            {{ type }}
+          </v-list-tile>
+          <v-list-tile
+            v-for="item in navDrawer[type]"
+            :key="item.name"
+            :to="item.to || ''"
+            active-class="secondary--text"
+            avatar
+            nuxt
+          >
+            <v-list-tile-avatar>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              {{ item.name }}
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list-group>
+      </v-list>
+      <!-- <v-list v-for="type in Object.keys(navDrawer)" :key="type">
         <v-subheader class="nav">
           {{ type }}
         </v-subheader>
@@ -20,7 +42,7 @@
             {{ item.name }}
           </v-list-tile-content>
         </v-list-tile>
-      </v-list>
+      </v-list> -->
     </v-navigation-drawer>
     <v-toolbar color="info" app>
       <v-toolbar-side-icon class="white--text" @click.stop="drawer = !drawer" />
