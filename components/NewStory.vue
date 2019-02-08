@@ -1,7 +1,7 @@
 <template>
   <v-dialog :value="show" max-width="500px">
-    <v-card dark>
-      <v-card-title class="title justify-center">
+    <v-card color="primary" dark>
+      <v-card-title class="title secondary--text justify-center">
         New Story
       </v-card-title>
       <v-card-text>
@@ -12,7 +12,7 @@
             name="loreTitle"
             label="Lore Title"
             box
-            color="info"
+            color="secondary"
             clearable
             persistent-hint
             :rules="rules.titleRules"
@@ -24,7 +24,7 @@
             label="Page Count"
             persistent-hint
             box
-            color="info"
+            color="secondary"
             clearable
             :rules="rules.pageCountRules"
           />
@@ -46,6 +46,8 @@
   </v-dialog>
 </template>
 <script>
+import _ from 'lodash'
+import axios from 'axios'
 export default {
   name: 'NewStory',
   props: {
@@ -73,31 +75,53 @@ export default {
   },
   methods: {
     submit() {
-      const rows = []
-      rows.push([
-        this.loreTitle,
-        'title',
-        true,
-        false,
-        parseInt(this.pageCount)
-      ])
-      for (let i = 1; i <= parseInt(this.pageCount); i++) {
-        rows.push([this.loreTitle, i, false, false])
+      const story = {
+        title: this.loreTitle,
+        onWiki: `0/${this.pageCount}`,
+        missingWiki: _.range(1, parseInt(this.pageCount) + 1).join(','),
+        missingPics: `title,${_.range(1, parseInt(this.pageCount) + 1).join(
+          '1'
+        )}`
       }
       this.loading = true
-      this.$api
-        .newLore(rows)
+      axios
+        .post('https://panyana-api.glitch.me/lore', story)
         .then(res => {
           console.log(res)
           this.$emit('close', 'success')
         })
         .catch(err => {
-          console.log(err.response.data)
+          console.log(err)
           this.$emit('close', 'error')
         })
         .finally(() => {
           this.loading = false
         })
+      // const rows = []
+      // rows.push([
+      //   this.loreTitle,
+      //   'title',
+      //   true,
+      //   false,
+      //   parseInt(this.pageCount)
+      // ])
+      // for (let i = 1; i <= parseInt(this.pageCount); i++) {
+      //   rows.push([this.loreTitle, i, false, false])
+      // }
+      // this.loading = true
+      // this.$api
+      //   .newLore(rows)
+      //   .then(res => {
+      //     console.log(res)
+      //     this.$emit('close', 'success')
+      //   })
+      //   .catch(err => {
+      //     console.log(err.response.data)
+      //     this.$emit('close', 'error')
+      //   })
+      //   .finally(() => {
+      //     this.loading = false
+      //   })
     }
   }
 }

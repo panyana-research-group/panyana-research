@@ -73,7 +73,7 @@ module.exports = {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: ['@/plugins/vuetify', '@/plugins/auth0', '@/plugins/api'],
+  plugins: ['@/plugins/vuetify', '@/plugins/auth0'],
 
   /*
   ** Nuxt.js modules

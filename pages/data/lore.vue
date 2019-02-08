@@ -1,77 +1,95 @@
 <template>
-  <v-flex xs12 class="px-2">
-    <v-card class="primary lighten-2 mb-2 elevation-4">
-      <v-card-title class="primary lighten-2 headline">
-        <v-btn color="info" @click="openNewLore()">
-          New Story
-        </v-btn>
-        <v-btn color="success" class="mr-3" @click="refreshLore()">
-          Refresh Lore
-        </v-btn>
-        <v-text-field
-          v-model="search"
-          append-icon="search"
-          label="Search Lore"
-          persistent-hint
-          box
-          class="ml-3"
-          color="secondary"
-          clearable
-        />
-      </v-card-title>
-      <v-data-table
-        id="lore-table"
-        :items="lore"
-        :headers="headers"
-        :custom-sort="customSort"
-        :search="search"
-        item-key="title"
-        hide-actions
-        :pagination.sync="pagination"
-        :loading="loading"
-        :must-sort="true"
-      >
-        <template slot="items" slot-scope="props">
-          <tr :class="getClasses(props.item)">
-            <td>{{ props.item.title }}</td>
-            <td class="text-xs-center">
-              {{ props.item.onWiki }}
-            </td>
-            <td>{{ props.item.missingWiki }}</td>
-            <td>{{ props.item.missingPics }}</td>
-            <td>{{ props.item.addWiki }}</td>
-            <td class="text-xs-center">
-              <v-tooltip top>
-                <v-btn slot="activator" :href="props.item.driveFolder" color="orange" small target="_blank">
-                  Pictures
-                </v-btn>
-                Images of the story's pages
-              </v-tooltip>
-            </td>
-            <td class="text-xs-center">
-              <v-btn :disabled="props.item.missingWiki==='COMPLETED'" color="error" class="lighten-2" icon @click="editStory(props.item)">
-                <v-icon>edit</v-icon>
+  <v-layout row wrap justify-center>
+    <v-flex xs12 lg11 xl8 class="px-2">
+      <v-card class="secondary mb-2 elevation-4">
+        <v-container grid-list-xs justify-center>
+          <v-layout row wrap>
+            <v-flex shrink>
+              <v-btn color="accent primary--text" @click="openNewLore()">
+                New Story
               </v-btn>
-            </td>
-          </tr>
-        </template>
-        <v-alert slot="no-results" :value="true" color="error" icon="warning">
-          Your search for "{{ search }}" found no results.
-        </v-alert>
-      </v-data-table>
-    </v-card>
-    <edit-story ref="editStory" :show="show.editLore" :current-edit="currentEdit" @close="onClose('editLore', $event)" />
-    <new-story ref="newStory" :show="show.newLore" @close="onClose('newLore', $event)" />
-    <v-snackbar v-model="snack.show" :timeout="5000" :color="snack.color">
-      {{ snack.text }}
-      <v-btn dark flat @click.native="snack.show = false">
-        Close
-      </v-btn>
-    </v-snackbar>
-  </v-flex>
+            </v-flex>
+            <v-flex shrink>
+              <v-btn color="accent primary--text" @click="refreshLore()">
+                Refresh Lore
+              </v-btn>
+            </v-flex>
+            <v-flex grow>
+              <v-text-field
+                v-model="search"
+                append-icon="search"
+                label="Search Lore"
+                persistent-hint
+                hide-details
+                box
+                color="accent"
+                clearable
+              />
+            </v-flex>
+          </v-layout>
+        </v-container>
+        <v-data-table
+          id="lore-table"
+          class="ma-2 secondary"
+          :items="lore"
+          :headers="headers"
+          :custom-sort="customSort"
+          :search="search"
+          item-key="title"
+          hide-actions
+          :pagination.sync="pagination"
+          :loading="loading"
+          :must-sort="true"
+        >
+          <template slot="items" slot-scope="props">
+            <tr :class="getClasses(props.item)">
+              <td>{{ props.item.title }}</td>
+              <td class="text-xs-center">
+                {{ props.item.onWiki }}
+              </td>
+              <td>{{ props.item.missingWiki }}</td>
+              <td>{{ props.item.missingPics }}</td>
+              <td>{{ props.item.addWiki }}</td>
+              <td class="text-xs-center">
+                <v-tooltip top>
+                  <v-btn slot="activator" :href="props.item.driveFolder" color="orange" small target="_blank">
+                    Pictures
+                  </v-btn>
+                  Images of the story's pages
+                </v-tooltip>
+              </td>
+              <td class="text-xs-center">
+                <v-btn :disabled="props.item.missingWiki==='COMPLETED'" color="error" class="lighten-2" icon @click="editStory(props.item)">
+                  <v-icon>edit</v-icon>
+                </v-btn>
+              </td>
+            </tr>
+          </template>
+          <v-alert slot="no-results" :value="true" type="error" icon="warning">
+            Your search for "{{ search }}" found no results.
+          </v-alert>
+          <v-alert v-if="!loading" slot="no-data" :value="true" type="error">
+            No lore data availible. Probably a network issue :)
+          </v-alert>
+          <v-alert v-if="loading" slot="no-data" :value="true" type="info">
+            Loading data...
+          </v-alert>
+        </v-data-table>
+      </v-card>
+      <edit-story ref="editStory" :show="show.editLore" :current-edit="currentEdit" @close="onClose('editLore', $event)" />
+      <new-story ref="newStory" :show="show.newLore" @close="onClose('newLore', $event)" />
+      <v-snackbar v-model="snack.show" :timeout="5000" :color="snack.color">
+        {{ snack.text }}
+        <v-btn dark flat @click.native="snack.show = false">
+          Close
+        </v-btn>
+      </v-snackbar>
+    </v-flex>
+  </v-layout>
 </template>
 <script>
 import _ from 'lodash'
+import axios from 'axios'
 import NewStory from '@/components/NewStory'
 import EditStory from '@/components/EditStory'
 export default {
@@ -113,44 +131,44 @@ export default {
           text: 'Title',
           value: 'title',
           width: '23%',
-          class: 'primary lighten-2'
+          class: 'info'
         },
         {
           text: 'On Wiki',
           value: 'onWiki',
           width: '7%',
-          class: 'primary lighten-2'
+          class: 'info'
         },
         {
           text: 'Missing from wiki',
           value: 'missingWiki',
           width: '18%',
-          class: 'primary lighten-2'
+          class: 'info'
         },
         {
           text: 'Missing images',
           value: 'missingPics',
           width: '17%',
-          class: 'primary lighten-2'
+          class: 'info'
         },
         {
           text: 'Add to wiki',
           value: 'addWiki',
           width: '10%',
-          class: 'primary lighten-2'
+          class: 'info'
         },
         {
           text: 'Drive Folder',
           sortable: false,
           width: '15%',
-          class: 'primary lighten-2',
+          class: 'info',
           align: 'center'
         },
         {
           text: 'Edit',
           sortable: false,
           width: '10%',
-          class: 'primary lighten-2',
+          class: 'info',
           align: 'center'
         }
       ],
@@ -175,6 +193,7 @@ export default {
         case 'success':
           this.snack.color = 'success'
           this.snack.text = 'Successfully updated lore!'
+          this.refreshLore()
           break
         case 'error':
           this.snack.color = 'error'
@@ -186,20 +205,20 @@ export default {
     refreshLore() {
       this.loading = true
       this.lore = []
-      this.$api.getSheet('lore').then((res, err) => {
-        if (err) return console.error(err)
-        res.data.data.values.forEach(story => {
-          this.lore.push({
-            title: story[0],
-            onWiki: story[1],
-            missingWiki: story[2],
-            missingPics: story[3],
-            addWiki: story[4],
-            driveFolder: 'https://drive.google.com/drive/folders/' + story[7]
-          })
+      axios
+        .get('https://panyana-api.glitch.me/lore/all')
+        .then(res => {
+          this.lore.push(...res.data)
+          // res.data.forEach(story => {
+          //   this.lore.push(story)
+          // })
+          this.loading = false
         })
-        this.loading = false
-      })
+        .catch(err => {
+          console.error(err)
+          this.lore = []
+          this.loading = false
+        })
     },
     checkAdmin() {
       if (!this.$store.state.authLoggedIn || !this.$auth.user) {
@@ -265,9 +284,13 @@ export default {
           }
           case 'missingWiki': {
             const lenA =
-              a.missingWiki === 'N/A' ? 0 : a.missingWiki.split(',').length
+              a.missingWiki === 'COMPLETED'
+                ? 0
+                : a.missingWiki.split(',').length
             const lenB =
-              b.missingWiki === 'N/A' ? 0 : b.missingWiki.split(',').length
+              b.missingWiki === 'COMPLETED'
+                ? 0
+                : b.missingWiki.split(',').length
             if (lenA === lenB) return 0
             if (isDescending) return lenA < lenB ? -1 : 0
             else return lenA < lenB ? 1 : -1
@@ -284,6 +307,7 @@ export default {
   table-layout: fixed;
   word-wrap: break-word;
   overflow: hidden;
+  min-width: 1200px;
   tr {
     border-bottom: 1px solid black !important;
     &:hover {
