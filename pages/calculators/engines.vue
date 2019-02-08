@@ -1,27 +1,27 @@
 <template>
   <v-layout justify-center row wrap>
     <v-flex xs12>
-      <v-card color="info darken-2" dark>
+      <v-card color="info">
         <v-form ref="engineForm" v-model="engine.form">
           <v-container grid-list-md fluid>
             <v-layout row wrap justify-center>
               <v-flex grow>
-                <v-text-field v-model="engine.res" :rules="[rules.required, rules.number]" box label="Resilience" color="secondary" />
+                <v-text-field v-model="engine.res" :rules="[rules.required, rules.number]" box label="Resilience" color="primary" />
               </v-flex>
               <v-flex grow>
-                <v-text-field v-model="engine.pwr" :rules="[rules.required, rules.number]" box label="Power" color="secondary" />
+                <v-text-field v-model="engine.pwr" :rules="[rules.required, rules.number]" box label="Power" color="primary" />
               </v-flex>
               <v-flex grow>
-                <v-text-field v-model="engine.oh" :rules="[rules.required, rules.number]" box label="Overheat" color="secondary" />
+                <v-text-field v-model="engine.oh" :rules="[rules.required, rules.number]" box label="Overheat" color="primary" />
               </v-flex>
               <v-flex grow>
-                <v-text-field v-model="engine.su" :rules="[rules.required, rules.number]" box label="Spin Up" color="secondary" />
+                <v-text-field v-model="engine.su" :rules="[rules.required, rules.number]" box label="Spin Up" color="primary" />
               </v-flex>
               <v-flex grow>
-                <v-text-field v-model="engine.fe" :rules="[rules.required, rules.number]" box label="Fuel Eff." color="secondary" />
+                <v-text-field v-model="engine.fe" :rules="[rules.required, rules.number]" box label="Fuel Eff." color="primary" />
               </v-flex>
               <v-flex shrink>
-                <v-btn color="secondary" class="black--text" @click="reset">
+                <v-btn color="warning" class="primary--text" @click="reset">
                   Reset
                 </v-btn>
               </v-flex>
@@ -33,11 +33,11 @@
     <v-flex xs12 md12 lg6>
       <v-card color="info" elevation="5">
         <v-toolbar color="primary" dense card>
-          <v-toolbar-title class="white--text">
+          <v-toolbar-title class="secondary--text">
             Optimal Engine Materials
           </v-toolbar-title>
           <v-spacer />
-          <v-btn :disabled="!engine.form" small color="secondary" class="black--text" @click="optMatsCalc">
+          <v-btn :disabled="!engine.form" small color="accent" class="primary--text" @click="optMatsCalc">
             Calculate
           </v-btn>
         </v-toolbar>
@@ -64,7 +64,7 @@
           </v-layout>
         </v-container>
         <v-card-actions v-if="output.opt" class="justify-center">
-          <v-btn color="warning" @click="output.opt = null">
+          <v-btn color="warning" class="primary--text" @click="output.opt = null">
             Clear
           </v-btn>
         </v-card-actions>
@@ -72,11 +72,11 @@
     </v-flex>
     <v-flex xs12 md12 lg6>
       <v-toolbar color="primary" dense>
-        <v-toolbar-title class="white--text">
+        <v-toolbar-title class="secondary--text">
           Optimal Power/OH Ciphering
         </v-toolbar-title>
         <v-spacer />
-        <v-btn :disabled="!engine.form" small color="secondary" class="black--text">
+        <v-btn :disabled="!engine.form" small color="accent" class="primary--text">
           Calculate
         </v-btn>
       </v-toolbar>
@@ -250,7 +250,7 @@ export default {
         (this.engine.pwr + this.engine.fe) *
         this.materials.find(x => x.name === mMech).weight
       const comb =
-        (this.engine.pwr + this.engine.fe + this.engine.oh) *
+        (this.engine.pwr + this.engine.su) *
         this.materials.find(x => x.name === mComb).weight
       const prop =
         (this.engine.su + this.engine.oh) *

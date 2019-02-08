@@ -1,18 +1,19 @@
 <template>
-  <v-app>
-    <v-navigation-drawer v-model="drawer" temporary absolute dark>
+  <v-app class="secondary--text">
+    <v-navigation-drawer v-model="drawer" temporary absolute class="primary">
       <v-list class="pa-2 ma-3">
-        <v-list-tile class="text-uppercase elevation-2 primary py-3 mb-3" avatar>
-          <v-list-tile-content class="text-xs-center headline">
-            Panyana Resarch Menu
-          </v-list-tile-content>
+        <v-list-tile class="text-uppercase elevation-2 primary lighten-2 secondary--text mb-3" avatar>
+          <div class="text-xs-center headline" style="width: 100%">
+            Menu
+          </div>
+          <!-- <v-list-tile-title class="text-xs-center">Menu</v-list-tile-title> -->
         </v-list-tile>
-        <v-list-group v-for="type in Object.keys(navDrawer)" :key="type" class="info darken-1 elevation-2 my-2">
+        <v-list-group v-for="type in Object.keys(navDrawer)" :key="type" class="secondary primary--text elevation-2 my-2">
           <v-list-tile slot="activator" class="py-2">
             {{ type }}
           </v-list-tile>
           <template v-for="(item, index) in navDrawer[type]">
-            <v-list-tile :key="item.name" :to="item.to || ''" active-class="secondary--text" avatar nuxt>
+            <v-list-tile :key="item.name" :to="item.to || ''" active-class="accent" avatar nuxt>
               <v-list-tile-avatar>
                 <v-icon>{{ item.icon }}</v-icon>
               </v-list-tile-avatar>
@@ -26,9 +27,9 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar color="primary" app>
-      <v-toolbar-side-icon class="white--text accent" @click.stop="drawer = !drawer" />
-      <v-toolbar-title class="white--text">
-        Panyana Research
+      <v-toolbar-side-icon class="secondary--text" @click.stop="drawer = !drawer" />
+      <v-toolbar-title class="secondary--text">
+        Panyana Research Group
       </v-toolbar-title>
       <v-spacer />
       <v-toolbar-items>
@@ -39,24 +40,21 @@
               account_circle
             </v-icon>
           </v-btn>
-          <v-card>
-            <v-card-title class="title">
+          <v-card color="secondary">
+            <v-card-title class="title justify-center">
               Account
             </v-card-title>
-            <v-card-text v-if="!$store.state.authLoggedIn">
+            <v-card-text v-if="!$store.state.authLoggedIn" class="py-0 text-xs-center">
               If you have permissions, logging in allows you to change certain data
             </v-card-text>
-            <v-card-text v-if="$store.state.authLoggedIn">
+            <v-card-text v-if="$store.state.authLoggedIn" class="py-0 text-xs-center">
               Roles: {{ $auth.user.roles ? $auth.user.roles.join(",") : "None" }}
             </v-card-text>
-            <v-card-title class="title">
-              Auth0
-            </v-card-title>
-            <v-card-actions>
+            <v-card-actions class="justify-center">
               <v-btn v-if="!$store.state.authLoggedIn" color="success" @click="$auth.login()">
                 Login
               </v-btn>
-              <v-btn v-if="$store.state.authLoggedIn" color="error" @click="$auth.logout()">
+              <v-btn v-if="$store.state.authLoggedIn" color="warning" @click="$auth.logout()">
                 Logout
               </v-btn>
             </v-card-actions>
@@ -65,31 +63,19 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-content>
-      <v-container grid-list-md class="grey darken-2" fluid style="min-height: 100%">
+      <v-container grid-list-md class="primary lighten-2" fluid style="min-height: 100%">
         <nuxt @openDrawer="drawer = true" />
       </v-container>
     </v-content>
     <v-footer height="auto" class="primary">
       <v-layout row wrap justify-center>
-        <v-btn nuxt to="/">
+        <v-btn active-class="v-btn--active darken-4" color="secondary" nuxt to="/" class="primary--text">
           Home
         </v-btn>
-        <v-btn nuxt to="/about">
+        <v-btn active-class="v-btn--active darken-4" color="secondary" nuxt to="/about" class="primary--text">
           About Us
         </v-btn>
-        <v-btn :disabled="true">
-          Team
-        </v-btn>
-        <v-btn :disabled="true">
-          Services
-        </v-btn>
-        <v-btn :disabled="true">
-          Blog
-        </v-btn>
-        <v-btn :disabled="true">
-          Contact Us
-        </v-btn>
-        <v-flex xs12 pb-1 text-xs-center white--text>
+        <v-flex xs12 pb-1 text-xs-center secondary--text>
           &copy;2019 — <strong>Panyana Research Group</strong>
         </v-flex>
       </v-layout>

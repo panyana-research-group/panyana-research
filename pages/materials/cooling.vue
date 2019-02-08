@@ -3,10 +3,10 @@
     <div class="label">
       Casing
     </div>
-    <table id="cooling-data">
+    <table id="cooling-data" class="primary--text">
       <tr>
         <td />
-        <td class="upper-corner text-xs-center body-2">
+        <td class="upper-corner text-xs-center body-2 secondary--text">
           Quality
           <v-select
             v-model="quality"
@@ -24,7 +24,7 @@
       </tr>
       <tr v-for="(mat, index) in materials" :key="mat.name+'Row'">
         <td v-if="index===0" :rowspan="materials.length+1">
-          <span class="label rotated">
+          <span class="label rotated secondary--text">
             Propeller/Barrel
           </span>
         </td>
