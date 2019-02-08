@@ -1,51 +1,32 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" class="info darken-1" temporary absolute dark>
-      <v-list>
-        <v-list-group v-for="type in Object.keys(navDrawer)" :key="type" no-action>
-          <v-list-tile slot="activator">
-            {{ type }}
-          </v-list-tile>
-          <v-list-tile
-            v-for="item in navDrawer[type]"
-            :key="item.name"
-            :to="item.to || ''"
-            active-class="secondary--text"
-            avatar
-            nuxt
-          >
-            <v-list-tile-avatar>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              {{ item.name }}
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list-group>
-      </v-list>
-      <!-- <v-list v-for="type in Object.keys(navDrawer)" :key="type">
-        <v-subheader class="nav">
-          {{ type }}
-        </v-subheader>
-        <v-list-tile
-          v-for="item in navDrawer[type]"
-          :key="item.name"
-          :to="item.to || ''"
-          active-class="secondary--text"
-          avatar
-          nuxt
-        >
-          <v-list-tile-avatar>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            {{ item.name }}
+    <v-navigation-drawer v-model="drawer" temporary absolute dark>
+      <v-list class="pa-2 ma-3">
+        <v-list-tile class="text-uppercase elevation-2 primary py-3 mb-3" avatar>
+          <v-list-tile-content class="text-xs-center headline">
+            Panyana Resarch Menu
           </v-list-tile-content>
         </v-list-tile>
-      </v-list> -->
+        <v-list-group v-for="type in Object.keys(navDrawer)" :key="type" class="info darken-1 elevation-2 my-2">
+          <v-list-tile slot="activator" class="py-2">
+            {{ type }}
+          </v-list-tile>
+          <template v-for="(item, index) in navDrawer[type]">
+            <v-list-tile :key="item.name" :to="item.to || ''" active-class="secondary--text" avatar nuxt>
+              <v-list-tile-avatar>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                {{ item.name }}
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-divider v-if="index + 1 < navDrawer[type].length" :key="`divider-${index}`" />
+          </template>
+        </v-list-group>
+      </v-list>
     </v-navigation-drawer>
-    <v-toolbar color="info" app>
-      <v-toolbar-side-icon class="white--text" @click.stop="drawer = !drawer" />
+    <v-toolbar color="primary" app>
+      <v-toolbar-side-icon class="white--text accent" @click.stop="drawer = !drawer" />
       <v-toolbar-title class="white--text">
         Panyana Research
       </v-toolbar-title>
@@ -85,10 +66,10 @@
     </v-toolbar>
     <v-content>
       <v-container grid-list-md class="grey darken-2" fluid style="min-height: 100%">
-        <nuxt />
+        <nuxt @openDrawer="drawer = true" />
       </v-container>
     </v-content>
-    <v-footer height="auto" class="info">
+    <v-footer height="auto" class="primary">
       <v-layout row wrap justify-center>
         <v-btn nuxt to="/">
           Home
@@ -109,8 +90,7 @@
           Contact Us
         </v-btn>
         <v-flex xs12 pb-1 text-xs-center white--text>
-          &copy;2019 —
-          <strong>Vuetify</strong>
+          &copy;2019 — <strong>Panyana Research Group</strong>
         </v-flex>
       </v-layout>
     </v-footer>

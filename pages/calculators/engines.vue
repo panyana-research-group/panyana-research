@@ -1,7 +1,7 @@
 <template>
   <v-layout justify-center row wrap>
     <v-flex xs12>
-      <v-card color="secondary darken-2">
+      <v-card color="info darken-2" dark>
         <v-form ref="engineForm" v-model="engine.form">
           <v-container grid-list-md fluid>
             <v-layout row wrap justify-center>
@@ -21,7 +21,7 @@
                 <v-text-field v-model="engine.fe" :rules="[rules.required, rules.number]" box label="Fuel Eff." color="secondary" />
               </v-flex>
               <v-flex shrink>
-                <v-btn color="warning" @click="reset">
+                <v-btn color="secondary" class="black--text" @click="reset">
                   Reset
                 </v-btn>
               </v-flex>
@@ -31,13 +31,13 @@
       </v-card>
     </v-flex>
     <v-flex xs12 md12 lg6>
-      <v-card color="accent" elevation="5">
-        <v-toolbar color="info" dense card>
+      <v-card color="info" elevation="5">
+        <v-toolbar color="primary" dense card>
           <v-toolbar-title class="white--text">
             Optimal Engine Materials
           </v-toolbar-title>
           <v-spacer />
-          <v-btn :disabled="!engine.form" small color="secondary" @click="optMatsCalc">
+          <v-btn :disabled="!engine.form" small color="secondary" class="black--text" @click="optMatsCalc">
             Calculate
           </v-btn>
         </v-toolbar>
@@ -64,19 +64,19 @@
           </v-layout>
         </v-container>
         <v-card-actions v-if="output.opt" class="justify-center">
-          <v-btn color="success" @click="output.opt = null">
+          <v-btn color="warning" @click="output.opt = null">
             Clear
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
     <v-flex xs12 md12 lg6>
-      <v-toolbar color="info" dense>
+      <v-toolbar color="primary" dense>
         <v-toolbar-title class="white--text">
           Optimal Power/OH Ciphering
         </v-toolbar-title>
         <v-spacer />
-        <v-btn :disabled="!engine.form" small color="secondary">
+        <v-btn :disabled="!engine.form" small color="secondary" class="black--text">
           Calculate
         </v-btn>
       </v-toolbar>
@@ -204,14 +204,6 @@ export default {
         for (let comb = 0; comb < this.materials.length; comb++) {
           for (let casing = 0; casing < this.materials.length; casing++) {
             for (let prop = 0; prop < this.materials.length; prop++) {
-              // const pwr =
-              //   this.engine.pwr +
-              //   this.engine.pwr * this.materials[mech].boosts.engine.mech.pwr +
-              //   this.engine.pwr * this.materials[mech].boosts.engine.comb.pwr
-              // const oh =
-              //   this.engine.oh +
-              //   this.engine.oh * this.materials[mech].boosts.engine.mech.oh +
-              //   this.engine.oh * this.materials[mech].boosts.engine.comb.oh
               const pwr =
                 this.engine.pwr +
                 this.engine.pwr * this.materials[mech].boosts.engine.mech.pwr +
@@ -225,8 +217,12 @@ export default {
                 this.materials[prop].name
               )
 
-              // eslint-disable-next-line
-              let weight = this.getWeight(this.materials[casing].name, this.materials[mech].name, this.materials[comb].name, this.materials[prop].name)
+              const weight = this.getWeight(
+                this.materials[casing].name,
+                this.materials[mech].name,
+                this.materials[comb].name,
+                this.materials[prop].name
+              )
 
               let speed = 50 * Math.sqrt((2 * pwr) / weight)
 
