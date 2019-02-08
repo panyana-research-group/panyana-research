@@ -52,7 +52,7 @@
               <td>{{ props.item.addWiki }}</td>
               <td class="text-xs-center">
                 <v-tooltip top>
-                  <v-btn slot="activator" :href="props.item.driveFolder" color="orange" small target="_blank">
+                  <v-btn slot="activator" :href="`https://drive.google.com/drive/folders/${props.item.folderId}`" color="orange" small target="_blank">
                     Pictures
                   </v-btn>
                   Images of the story's pages
