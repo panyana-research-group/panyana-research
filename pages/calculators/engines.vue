@@ -25,7 +25,10 @@
                   Reset
                 </v-btn>
               </v-flex>
-              <v-flex xs12 class="text-xs-center pa-0">
+              <v-flex shrink class="text-xs-center pa-0">
+                <v-checkbox v-model="isLegacy" label="Is this a legacy engine?" color="warning" />
+              </v-flex>
+              <v-flex grow>
                 NOTE: This calculator will only work for engines rolled after the Overheat Update. The weight calculations were changed then so legacy engines will not work!
               </v-flex>
             </v-layout>
@@ -105,6 +108,7 @@ export default {
   },
   data() {
     return {
+      isLegacy: false,
       materials: require('~/assets/data/materials.json'),
       engineMats: false,
       engine: {
@@ -184,9 +188,17 @@ export default {
       const mech =
         (this.engine.pwr + this.engine.fe) *
         this.materials.find(x => x.name === mMech).weight
-      const comb =
-        (this.engine.pwr + this.engine.su) *
-        this.materials.find(x => x.name === mComb).weight
+
+      let comb = 0
+      if (this.isLegacy) {
+        comb =
+          (this.engine.pwr + this.engine.fe + this.engine.oh) *
+          this.materials.find(x => x.name === mComb).weight
+      } else {
+        comb =
+          (this.engine.pwr + this.engine.su) *
+          this.materials.find(x => x.name === mComb).weight
+      }
       const prop =
         (this.engine.su + this.engine.oh) *
         this.materials.find(x => x.name === mProp).weight
