@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap justify-center>
-    <v-flex xs12 lg11 xl8 class="px-2">
-      <v-card class="secondary mb-2 elevation-4">
+    <v-flex xs12 lg11 xl8>
+      <v-card class="secondary elevation-4">
         <v-container grid-list-xs justify-center>
           <v-layout row wrap>
             <v-flex shrink>
@@ -30,7 +30,7 @@
         </v-container>
         <v-data-table
           id="lore-table"
-          class="ma-2 secondary"
+          class="secondary pa-2"
           :items="lore"
           :headers="headers"
           :custom-sort="customSort"
@@ -76,7 +76,14 @@
           </v-alert>
         </v-data-table>
       </v-card>
-      <edit-story ref="editStory" :show="show.editLore" :current-edit="currentEdit" @close="onClose('editLore', $event)" />
+      <edit-story 
+        ref="editStory" 
+        :show="show.editLore"
+        :current-edit="currentEdit"
+        :have-wiki="currentHaveWiki"
+        @close="onClose('editLore', $event)"
+        @update="update($event)"
+      />
       <new-story ref="newStory" :show="show.newLore" @close="onClose('newLore', $event)" />
       <v-snackbar v-model="snack.show" :timeout="5000" :color="snack.color">
         {{ snack.text }}
@@ -179,15 +186,18 @@ export default {
         missingPics: '',
         addWiki: '',
         pages: []
-      }
+      },
+      currentHaveWiki: ''
     }
   },
   created() {
     this.refreshLore()
   },
   methods: {
+    update(event) {
+      this.currentHaveWiki = event.join(',')
+    },
     onClose(type, value) {
-      console.log(value)
       this.show[type] = false
       switch (value) {
         case 'success':
@@ -242,11 +252,15 @@ export default {
     },
     editStory(item) {
       if (!this.checkAdmin()) return
-      this.currentEdit = item
-      this.currentEdit.pages = _.range(
-        1,
-        parseInt(item.onWiki.split('/')[1]) + 1
-      )
+      const pageCount = parseInt(item.onWiki.split('/')[1])
+      this.currentEdit = Object.assign({}, item)
+      this.currentEdit.pages = ['title', ..._.range(1, pageCount + 1)]
+      const haveWiki = ['title']
+      for (let i = 1; i <= pageCount; i++) {
+        if (this.currentEdit.missingWiki.split(',').indexOf(String(i)) < 0)
+          haveWiki.push(String(i))
+      }
+      this.currentHaveWiki = haveWiki.join(',')
       this.show.editLore = true
     },
     getClasses(item) {
@@ -308,8 +322,11 @@ export default {
   word-wrap: break-word;
   overflow: hidden;
   min-width: 1200px;
-  tr {
+  thead tr {
     border-bottom: 1px solid black !important;
+  }
+  tbody tr {
+    border: 1px solid black !important;
     &:hover {
       filter: brightness(80%);
       transition: none;

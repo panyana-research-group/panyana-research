@@ -2,6 +2,7 @@
   <div class="upload-btn"> 
     <input
       :id="id"
+      ref="fileInput"
       type="file"
       :name="name"
       :accept="accept"
@@ -38,6 +39,10 @@ export default {
   props: {
     accept: {
       default: '*',
+      type: String
+    },
+    page: {
+      default: null,
       type: String
     },
     block: {
@@ -104,13 +109,14 @@ export default {
       default: false,
       type: Boolean
     },
-    title: {
-      default: 'Upload',
-      type: String
-    },
     uniqueId: {
       default: false,
       type: Boolean
+    }
+  },
+  data() {
+    return {
+      title: 'Upload'
     }
   },
   computed: {
@@ -150,14 +156,14 @@ export default {
         if (this.fileChangedCallback) {
           if (e.target.files) {
             if (!this.multiple && e.target.files[0]) {
-              this.fileChangedCallback(e.target.files[0])
+              this.fileChangedCallback(e.target.files[0], this.page)
             } else if (this.multiple) {
-              this.fileChangedCallback(e.target.files)
+              this.fileChangedCallback(e.target.files, this.page)
             } else {
-              this.fileChangedCallback(null)
+              this.fileChangedCallback(null, this.page)
             }
           } else {
-            this.fileChangedCallback(null)
+            this.fileChangedCallback(null, this.page)
           }
         }
       }
@@ -166,10 +172,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .upload-btn {
   padding-left: 16px;
   padding-right: 16px;
+  width: 200px;
+
+  .v-icon {
+    margin-right: 5px;
+  }
 }
 
 .upload-btn input[type='file'] {

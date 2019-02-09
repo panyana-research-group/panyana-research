@@ -66,8 +66,6 @@ const auth = new Vue({
       Vue.$store.commit('authLogOut')
     },
     isAuthenticated() {
-      // console.log(this.expiresAt)
-      // console.log(new Date().getTime() < this.expiresAt)
       return new Date().getTime() < this.getExpiration()
     },
     handleAuthentication() {

@@ -1,42 +1,46 @@
 <template>
-  <v-flex xs12>
-    <div class="label">
-      Casing
-    </div>
-    <table id="cooling-data" class="primary--text">
-      <tr>
-        <td />
-        <td class="upper-corner text-xs-center body-2 secondary--text">
-          Quality
-          <v-select
-            v-model="quality"
-            :items="qualities"
-            single-line
-            hide-details
-            class="quality-select pt-0 mt-0 mx-1"
-          />
-        </td>
-        <td v-for="mat in materials" :key="mat.name" class="material top-row" :class="mat.name.toLowerCase()">
-          <div style="width: 65px;">
-            {{ mat.name }}
-          </div>
-        </td>
-      </tr>
-      <tr v-for="(mat, index) in materials" :key="mat.name+'Row'">
-        <td v-if="index===0" :rowspan="materials.length+1">
-          <span class="label rotated secondary--text">
-            Propeller/Barrel
-          </span>
-        </td>
-        <td class="material left-column" :class="mat.name.toLowerCase()">
-          {{ mat.name }}
-        </td>
-        <td v-for="mat2 in materials" :key="mat2.name+'Item'" class="number" :class="cfClass(mat2.cf+mat.cf*(2/3)*(10+quality)/20)">
-          {{ mat2.cf+mat.cf*(2/3)*(10+quality)/20 }}
-        </td>
-      </tr>
-    </table>
-  </v-flex>
+  <v-layout row wrap justify-center>
+    <v-flex xs12 px-2>
+      <div class="label">
+        Casing
+      </div>
+      <div style="width: 100%; overflow-x: auto">
+        <table id="cooling-data" class="primary--text">
+          <tr>
+            <td />
+            <td class="upper-corner text-xs-center body-2 secondary--text">
+              Quality
+              <v-select
+                v-model="quality"
+                :items="qualities"
+                single-line
+                hide-details
+                class="quality-select pt-0 mt-0 mx-1"
+              />
+            </td>
+            <td v-for="mat in materials" :key="mat.name" class="material top-row" :class="mat.name.toLowerCase()">
+              <div style="width: 65px;">
+                {{ mat.name }}
+              </div>
+            </td>
+          </tr>
+          <tr v-for="(mat, index) in materials" :key="mat.name+'Row'">
+            <td v-if="index===0" :rowspan="materials.length+1">
+              <span class="label rotated secondary--text">
+                Propeller/Barrel
+              </span>
+            </td>
+            <td class="material left-column" :class="mat.name.toLowerCase()">
+              {{ mat.name }}
+            </td>
+            <td v-for="mat2 in materials" :key="mat2.name+'Item'" class="number" :class="cfClass(mat2.cf+mat.cf*(2/3)*(10+quality)/20)">
+              {{ mat2.cf+mat.cf*(2/3)*(10+quality)/20 }}
+            </td>
+          </tr>
+        </table>
+      </div>
+    </v-flex>
+  </v-layout>
 </template>
 <script>
 export default {
@@ -99,6 +103,12 @@ export default {
   border-collapse: collapse;
   position: relative;
   left: -30px;
+  overflow: hidden;
+}
+@media screen and (max-width: 1147px) {
+  #cooling-data {
+    margin-left: 23px;
+  }
 }
 .upper-corner {
   width: 65px;

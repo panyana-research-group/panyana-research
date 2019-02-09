@@ -80,14 +80,13 @@ export default {
         onWiki: `0/${this.pageCount}`,
         missingWiki: _.range(1, parseInt(this.pageCount) + 1).join(','),
         missingPics: `title,${_.range(1, parseInt(this.pageCount) + 1).join(
-          '1'
+          ','
         )}`
       }
       this.loading = true
       axios
         .post('https://panyana-api.glitch.me/lore', story)
         .then(res => {
-          console.log(res)
           this.$emit('close', 'success')
         })
         .catch(err => {
@@ -97,31 +96,6 @@ export default {
         .finally(() => {
           this.loading = false
         })
-      // const rows = []
-      // rows.push([
-      //   this.loreTitle,
-      //   'title',
-      //   true,
-      //   false,
-      //   parseInt(this.pageCount)
-      // ])
-      // for (let i = 1; i <= parseInt(this.pageCount); i++) {
-      //   rows.push([this.loreTitle, i, false, false])
-      // }
-      // this.loading = true
-      // this.$api
-      //   .newLore(rows)
-      //   .then(res => {
-      //     console.log(res)
-      //     this.$emit('close', 'success')
-      //   })
-      //   .catch(err => {
-      //     console.log(err.response.data)
-      //     this.$emit('close', 'error')
-      //   })
-      //   .finally(() => {
-      //     this.loading = false
-      //   })
     }
   }
 }

@@ -25,6 +25,9 @@
                   Reset
                 </v-btn>
               </v-flex>
+              <v-flex xs12 class="text-xs-center pa-0">
+                NOTE: This calculator will only work for engines rolled after the Overheat Update. The weight calculations were changed then so legacy engines will not work!
+              </v-flex>
             </v-layout>
           </v-container>
         </v-form>
@@ -118,75 +121,7 @@ export default {
       rules: {
         required: v => !!v || 'Required!',
         number: v => !isNaN(v) || 'Must be a number!'
-      },
-      mechPwr: [
-        25.17,
-        19.21,
-        11.26,
-        11.26,
-        13.25,
-        9.27,
-        19.21,
-        23.18,
-        15.23,
-        9.27,
-        3.31,
-        9.27,
-        3.31,
-        31.13,
-        3.31
-      ].map(x => x / 100),
-      mechOH: [
-        4.6,
-        16.6,
-        13.51,
-        19.31,
-        13.51,
-        31.66,
-        4.63,
-        13.51,
-        28.19,
-        37.07,
-        4.63,
-        10.42,
-        4.63,
-        46.33,
-        4.63
-      ].map(x => x / 100),
-      combPwr: [
-        16.23,
-        28.15,
-        22.19,
-        19.21,
-        19.21,
-        30.79,
-        19.21,
-        7.28,
-        13.25,
-        31.13,
-        4.3,
-        7.28,
-        4.3,
-        46.03,
-        4.3
-      ].map(x => x / 100),
-      combOH: [
-        3.47,
-        11.58,
-        9.65,
-        13.51,
-        9.65,
-        21.24,
-        3.47,
-        9.65,
-        19.31,
-        25.48,
-        3.4,
-        7.34,
-        3.47,
-        31.27,
-        3.47
-      ].map(x => x / 100)
+      }
     }
   },
   methods: {
@@ -255,7 +190,7 @@ export default {
       const prop =
         (this.engine.su + this.engine.oh) *
         this.materials.find(x => x.name === mProp).weight
-      return 0.7 * 2 * (casing + mech + comb + prop)
+      return 0.708320995 * 2 * (casing + mech + comb + prop)
     },
     getCF(casing, other, quality = 10) {
       return (

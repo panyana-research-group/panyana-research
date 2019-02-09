@@ -13,6 +13,7 @@
     "precommit": "yarn run lint"
   },
   "dependencies": {
+    "@mdi/font": "^3.4.93",
     "@nuxtjs/axios": "^5.3.6",
     "auth0-js": "^9.10.0",
     "cross-env": "^5.2.0",
