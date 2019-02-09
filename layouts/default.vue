@@ -69,7 +69,7 @@
         <nuxt @openDrawer="drawer = true" />
       </v-container>
     </v-content>
-    <v-footer height="auto" class="primary" app>
+    <v-footer height="auto" class="primary" app absolute>
       <v-layout row wrap justify-center>
         <v-btn active-class="v-btn--active darken-4" color="secondary" nuxt to="/" class="primary--text">
           Home
