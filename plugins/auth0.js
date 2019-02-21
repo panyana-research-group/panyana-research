@@ -63,7 +63,6 @@ const auth = new Vue({
       localStorage.removeItem('id_token')
       localStorage.removeItem('expires_at')
       localStorage.removeItem('user')
-      Vue.$store.commit('authLogOut')
     },
     isAuthenticated() {
       return new Date().getTime() < this.getExpiration()

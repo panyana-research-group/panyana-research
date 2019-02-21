@@ -76,8 +76,8 @@
           </v-alert>
         </v-data-table>
       </v-card>
-      <edit-story 
-        ref="editStory" 
+      <edit-story
+        ref="editStory"
         :show="show.editLore"
         :current-edit="currentEdit"
         :have-wiki="currentHaveWiki"
@@ -219,9 +219,6 @@ export default {
         .get('https://panyana-api.glitch.me/lore/all')
         .then(res => {
           this.lore.push(...res.data)
-          // res.data.forEach(story => {
-          //   this.lore.push(story)
-          // })
           this.loading = false
         })
         .catch(err => {
@@ -230,28 +227,28 @@ export default {
           this.loading = false
         })
     },
-    checkAdmin() {
+    checkRole(roles) {
       if (!this.$store.state.authLoggedIn || !this.$auth.user) {
         this.snack.text = 'Not logged in!'
         this.snack.show = true
         return false
       } else if (
         !this.$auth.user.roles ||
-        !this.$auth.user.roles.includes('Admin')
+        _.intersection(this.$auth.user.roles, roles).length === 0
       ) {
-        this.snack.text = 'Insufficient permission!'
+        this.snack.text = 'Insufficient permissions!'
         this.snack.show = true
         return false
       }
       return true
     },
     openNewLore() {
-      if (!this.checkAdmin()) return
+      if (!this.checkRole(['Admin'])) return
       this.$refs.newStory.$refs.newLore.reset()
       this.show.newLore = true
     },
     editStory(item) {
-      if (!this.checkAdmin()) return
+      if (!this.checkRole(['Admin', 'Collector'])) return
       const pageCount = parseInt(item.onWiki.split('/')[1])
       this.currentEdit = Object.assign({}, item)
       this.currentEdit.pages = ['title', ..._.range(1, pageCount + 1)]

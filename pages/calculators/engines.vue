@@ -182,8 +182,8 @@ export default {
         (this.engine.pwr + this.engine.fe) *
         this.materials.find(x => x.name === mMech).weight
       const comb =
-          (this.engine.pwr + this.engine.fe + this.engine.oh) *
-          this.materials.find(x => x.name === mComb).weight
+        (this.engine.pwr + this.engine.fe + this.engine.oh) *
+        this.materials.find(x => x.name === mComb).weight
       const prop =
         (this.engine.su + this.engine.oh) *
         this.materials.find(x => x.name === mProp).weight
