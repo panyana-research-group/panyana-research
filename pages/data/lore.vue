@@ -195,7 +195,7 @@ export default {
   },
   methods: {
     update(event) {
-      this.currentHaveWiki = event.join(',')
+      this.currentHaveWiki = event.join(', ')
     },
     onClose(type, value) {
       this.show[type] = false
@@ -254,17 +254,18 @@ export default {
       this.currentEdit.pages = ['title', ..._.range(1, pageCount + 1)]
       const haveWiki = ['title']
       for (let i = 1; i <= pageCount; i++) {
-        if (this.currentEdit.missingWiki.split(',').indexOf(String(i)) < 0)
+        if (this.currentEdit.missingWiki.split(', ').indexOf(String(i)) < 0)
           haveWiki.push(String(i))
       }
-      this.currentHaveWiki = haveWiki.join(',')
+      this.currentHaveWiki = haveWiki.join(', ')
       this.show.editLore = true
     },
     getClasses(item) {
       if (item.missingWiki === 'COMPLETED') return 'green lighten-2'
       else if (item.addWiki !== '') return 'cyan lighten-2'
-      else if (item.missingPics.split(',').length > 10) return 'red lighten-2'
-      else if (item.missingPics.split(',').length > 5) return 'orange lighten-3'
+      else if (item.missingPics.split(', ').length > 10) return 'red lighten-2'
+      else if (item.missingPics.split(', ').length > 5)
+        return 'orange lighten-3'
       else return 'yellow lighten-4'
     },
     customSort(items, attr, isDescending) {
@@ -274,8 +275,8 @@ export default {
             if (isDescending) return a.title < b.title ? -1 : 1
             else return a.title < b.title ? 1 : -1
           case 'addWiki': {
-            const lenA = a.addWiki === '' ? 0 : a.addWiki.split(',').length
-            const lenB = b.addWiki === '' ? 0 : b.addWiki.split(',').length
+            const lenA = a.addWiki === '' ? 0 : a.addWiki.split(', ').length
+            const lenB = b.addWiki === '' ? 0 : b.addWiki.split(', ').length
             if (lenA === lenB) return 0
             if (isDescending) return lenA < lenB ? -1 : 1
             else return lenA < lenB ? 1 : -1
@@ -284,11 +285,11 @@ export default {
             const lenA =
               a.missingPics === 'COMPLETED'
                 ? 0
-                : a.missingPics.split(',').length
+                : a.missingPics.split(', ').length
             const lenB =
               b.missingPics === 'COMPLETED'
                 ? 0
-                : b.missingPics.split(',').length
+                : b.missingPics.split(', ').length
             if (lenA === lenB) return 0
             if (isDescending) return lenA < lenB ? -1 : 1
             else return lenA < lenB ? 1 : -1
@@ -297,11 +298,11 @@ export default {
             const lenA =
               a.missingWiki === 'COMPLETED'
                 ? 0
-                : a.missingWiki.split(',').length
+                : a.missingWiki.split(', ').length
             const lenB =
               b.missingWiki === 'COMPLETED'
                 ? 0
-                : b.missingWiki.split(',').length
+                : b.missingWiki.split(', ').length
             if (lenA === lenB) return 0
             if (isDescending) return lenA < lenB ? -1 : 0
             else return lenA < lenB ? 1 : -1

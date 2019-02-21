@@ -22,8 +22,8 @@
                   <v-checkbox
                     v-model="have"
                     :value="String(props.item)"
-                    :disabled="checkDisabled(String(props.item))" 
-                    style="max-width: 24px;" 
+                    :disabled="checkDisabled(String(props.item))"
+                    style="max-width: 24px;"
                     hide-details
                   />
                 </v-layout>
@@ -33,12 +33,12 @@
                   :ref="`ref-${props.item}`"
                   :unique-id="true"
                   :page="String(props.item)"
-                  :disabled="currentEdit.missingPics && !currentEdit.missingPics.split(',').includes(String(props.item))"
+                  :disabled="currentEdit.missingPics && !currentEdit.missingPics.split(', ').includes(String(props.item))"
                   :file-changed-callback="upload"
                 >
                   <template slot="icon-left">
-                    <v-icon :class="currentEdit.missingPics && !currentEdit.missingPics.split(',').includes(String(props.item)) ? 'green--text' : 'blue--text'">
-                      {{ currentEdit.missingPics && !currentEdit.missingPics.split(',').includes(String(props.item)) ? 'check_circle' : 'attach_file' }}
+                    <v-icon :class="currentEdit.missingPics && !currentEdit.missingPics.split(', ').includes(String(props.item)) ? 'green--text' : 'blue--text'">
+                      {{ currentEdit.missingPics && !currentEdit.missingPics.split(', ').includes(String(props.item)) ? 'check_circle' : 'attach_file' }}
                     </v-icon>
                   </template>
                 </upload-btn>
@@ -108,7 +108,7 @@ export default {
         if (this.haveWiki === '') {
           return []
         }
-        return this.haveWiki.split(',')
+        return this.haveWiki.split(', ')
       },
       set(value) {
         this.$emit('update', value)
@@ -120,13 +120,13 @@ export default {
       if (this.isOnWiki(page)) return true
       if (
         this.currentEdit.addWiki &&
-        !this.currentEdit.addWiki.split(',').includes(String(page))
+        !this.currentEdit.addWiki.split(', ').includes(String(page))
       )
         return true
     },
     isOnWiki(page) {
       if (this.currentEdit.missingWiki === 'COMPLETED') return true
-      return this.currentEdit.missingWiki.split(',').indexOf(page) < 0
+      return this.currentEdit.missingWiki.split(', ').indexOf(page) < 0
     },
     upload(file, page) {
       if (file) {
@@ -153,24 +153,24 @@ export default {
 
       // Missing Pictures
       this.currentEdit.missingPics = this.currentEdit.missingPics
-        .split(',')
+        .split(', ')
         .filter(p => this.uploaded.indexOf(p) < 0)
-        .join(',')
+        .join(', ')
       if (this.currentEdit.missingPics === '')
         this.currentEdit.missingPics = 'COMPLETED'
       formData.append(
         'missingPics',
         this.currentEdit.missingPics
-          .split(',')
+          .split(', ')
           .filter(p => this.uploaded.indexOf(p) < 0)
-          .join(',')
+          .join(', ')
       )
 
       // Missing from Wiki
       this.currentEdit.missingWiki = this.currentEdit.missingWiki
-        .split(',')
+        .split(', ')
         .filter(p => this.have.indexOf(p) < 0)
-        .join(',')
+        .join(', ')
       if (this.currentEdit.missingWiki === '')
         this.currentEdit.missingWiki = 'COMPLETED'
       formData.append('missingWiki', this.currentEdit.missingWiki)
@@ -178,13 +178,16 @@ export default {
       // Add to Wiki
       if (!this.currentEdit.addWiki || this.currentEdit.addWiki === '')
         this.currentEdit.addWiki = []
-      else this.currentEdit.addWiki = this.currentEdit.addWiki.split(',')
+      else this.currentEdit.addWiki = this.currentEdit.addWiki.split(', ')
       this.currentEdit.addWiki = this.currentEdit.addWiki
         .concat(this.uploaded)
         .filter(p => p !== 'title')
-        .filter(p => this.currentEdit.missingWiki.split(',').indexOf(p) > -1)
-        .sort()
-        .join(',')
+        .filter(p => this.currentEdit.missingWiki.split(', ').indexOf(p) > -1)
+        .sort((a, b) => {
+          if (parseInt(a) < parseInt(b)) return -1
+          else return 1
+        })
+        .join(', ')
       formData.append('addWiki', this.currentEdit.addWiki)
 
       // Folder ID

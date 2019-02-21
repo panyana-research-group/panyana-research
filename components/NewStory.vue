@@ -78,9 +78,9 @@ export default {
       const story = {
         title: this.loreTitle,
         onWiki: `0/${this.pageCount}`,
-        missingWiki: _.range(1, parseInt(this.pageCount) + 1).join(','),
-        missingPics: `title,${_.range(1, parseInt(this.pageCount) + 1).join(
-          ','
+        missingWiki: _.range(1, parseInt(this.pageCount) + 1).join(', '),
+        missingPics: `title, ${_.range(1, parseInt(this.pageCount) + 1).join(
+          ', '
         )}`
       }
       this.loading = true
