@@ -14,7 +14,6 @@ export default {
   },
   mounted() {
     this.$auth.handleAuthentication().then(() => {
-      this.$store.commit('authLogIn')
       this.$router.push({ path: localStorage.getItem('prev_path') })
       localStorage.removeItem('prev_path')
     })

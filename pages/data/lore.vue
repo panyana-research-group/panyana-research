@@ -227,13 +227,13 @@ export default {
         })
     },
     checkRole(roles) {
-      if (!this.$store.state.authLoggedIn || !this.$auth.user) {
+      if (!this.$store.state.loggedIn || !this.$auth.userProfile) {
         this.snack.text = 'Not logged in!'
         this.snack.show = true
         return false
       } else if (
-        !this.$auth.user.roles ||
-        _.intersection(this.$auth.user.roles, roles).length === 0
+        !this.$auth.userProfile.roles ||
+        _.intersection(this.$auth.userProfile.roles, roles).length === 0
       ) {
         this.snack.text = 'Insufficient permissions!'
         this.snack.show = true
@@ -243,7 +243,7 @@ export default {
     },
     openNewLore() {
       if (!this.checkRole(['Admin'])) return
-      this.$refs.newStory.$refs.newLore.reset()
+      // this.$refs.newStory.$refs.newLore.reset()
       this.show.newLore = true
     },
     editStory(item) {

@@ -1,12 +1,9 @@
 export const state = () => ({
-  authLoggedIn: false
+  loggedIn: false
 })
 
 export const mutations = {
-  authLogIn(state) {
-    state.authLoggedIn = true
-  },
-  authLogOut(state) {
-    state.authLoggedIn = false
+  changeAuth(state, authState) {
+    state.loggedIn = authState
   }
 }

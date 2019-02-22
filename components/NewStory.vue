@@ -34,7 +34,7 @@
         <v-btn color="error" dark @click="$emit('close')">
           Cancel
         </v-btn>
-        <v-btn color="success" :disabled="!addComplete" @click="submit()">
+        <v-btn color="success" :disabled="!addComplete" @click="submit">
           Add
         </v-btn>
       </v-card-actions>
@@ -47,7 +47,6 @@
 </template>
 <script>
 import _ from 'lodash'
-import axios from 'axios'
 export default {
   name: 'NewStory',
   props: {
@@ -84,8 +83,8 @@ export default {
         )}`
       }
       this.loading = true
-      axios
-        .post('https://panyana-api.glitch.me/lore', story)
+      this.$api
+        .post('/lore', story)
         .then(res => {
           this.$emit('close', 'success')
         })

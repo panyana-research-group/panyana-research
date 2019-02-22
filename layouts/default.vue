@@ -36,9 +36,9 @@
         <v-menu :close-on-content-click="false" offset-y>
           <v-btn slot="activator" color="secondary" flat class="title" dark>
             <span class="hidden-xs-only">
-              {{ $store.state.authLoggedIn ? $auth.user.name : "Guest" }}
+              {{ $store.state.loggedIn ? $auth.userProfile.name : "Guest" }}
             </span>
-            <v-icon :color="$store.state.authLoggedIn ? 'green' : 'red'" class="pl-1" large>
+            <v-icon :color="$store.state.loggedIn ? 'green' : 'red'" class="pl-1" large>
               account_circle
             </v-icon>
           </v-btn>
@@ -46,17 +46,17 @@
             <v-card-title class="title justify-center">
               Account
             </v-card-title>
-            <v-card-text v-if="!$store.state.authLoggedIn" class="py-0 text-xs-center">
+            <v-card-text v-if="!$store.state.loggedIn" class="py-0 text-xs-center">
               If you have permissions, logging in with Auth0 allows you to change certain data
             </v-card-text>
-            <v-card-text v-if="$store.state.authLoggedIn" class="py-0 text-xs-center">
-              Roles: {{ $auth.user.roles ? $auth.user.roles.join(",") : "None" }}
+            <v-card-text v-if="$store.state.loggedIn" class="py-0 text-xs-center">
+              Roles: {{ $auth.userProfile.roles ? $auth.userProfile.roles.join(",") : "None" }}
             </v-card-text>
             <v-card-actions class="justify-center">
-              <v-btn v-if="!$store.state.authLoggedIn" color="success" @click="$auth.login()">
+              <v-btn v-if="!$store.state.loggedIn" color="success" @click="$auth.login()">
                 Login
               </v-btn>
-              <v-btn v-if="$store.state.authLoggedIn" color="warning" @click="$auth.logout(); $store.commit('authLogOut')">
+              <v-btn v-if="$store.state.loggedIn" color="warning" @click="$auth.logout(); $store.commit('authLogOut')">
                 Logout
               </v-btn>
             </v-card-actions>
@@ -134,9 +134,13 @@ export default {
       ]
     }
   },
-  mounted() {
-    if (process.browser) {
-      if (this.$auth.isAuthenticated()) this.$store.commit('authLogIn')
+  created() {
+    this.$auth.authNotifier.on('authChange', authState => {
+      this.$store.commit('changeAuth', authState.authenticated)
+    })
+
+    if (process.browser && this.$auth.getAuthenticatedFlag() === 'true') {
+      this.$auth.renewSession()
     }
   }
 }
