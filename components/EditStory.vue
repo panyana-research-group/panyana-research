@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="show" max-width="500px" persistent>
+  <v-dialog :value="show" max-width="550px" persistent>
     <v-card dark>
       <v-card-title class="title justify-center pb-0">
         {{ currentEdit.title }}
@@ -9,6 +9,8 @@
       </v-card-title>
       <v-card-text>
         <v-data-table
+          id="edit-story"
+          ref="editStory"
           :headers="editHeaders"
           :items="currentEdit.pages"
           hide-actions
@@ -16,13 +18,13 @@
         >
           <template slot="items" slot-scope="props">
             <tr>
-              <td>{{ props.item }}</td>
+              <td>{{ props.item.page }}</td>
               <td>
                 <v-layout justify-center>
                   <v-checkbox
                     v-model="have"
-                    :value="String(props.item)"
-                    :disabled="checkDisabled(String(props.item))"
+                    :value="String(props.item.page)"
+                    :disabled="checkDisabled(String(props.item.page))"
                     style="max-width: 24px;"
                     hide-details
                   />
@@ -30,19 +32,51 @@
               </td>
               <td class="text-xs-left" style="padding-left: 0px">
                 <upload-btn
-                  :ref="`ref-${props.item}`"
+                  :ref="`ref-${props.item.page}`"
                   :unique-id="true"
-                  :page="String(props.item)"
-                  :disabled="currentEdit.missingPics && !currentEdit.missingPics.split(', ').includes(String(props.item))"
+                  :page="String(props.item.page)"
+                  :disabled="currentEdit.missingPics && !currentEdit.missingPics.split(', ').includes(String(props.item.page))"
                   :file-changed-callback="upload"
                 >
                   <template slot="icon-left">
-                    <v-icon :class="currentEdit.missingPics && !currentEdit.missingPics.split(', ').includes(String(props.item)) ? 'green--text' : 'blue--text'">
-                      {{ currentEdit.missingPics && !currentEdit.missingPics.split(', ').includes(String(props.item)) ? 'check_circle' : 'attach_file' }}
+                    <v-icon :class="currentEdit.missingPics && !currentEdit.missingPics.split(', ').includes(String(props.item.page)) ? 'green--text' : 'blue--text'">
+                      {{ currentEdit.missingPics && !currentEdit.missingPics.split(', ').includes(String(props.item.page)) ? 'check_circle' : 'attach_file' }}
                     </v-icon>
                   </template>
                 </upload-btn>
               </td>
+              <td>
+                <v-layout justify-center>
+                  <v-checkbox
+                    v-model="twoPages"
+                    :disabled="currentEdit.missingPics && !currentEdit.missingPics.split(', ').includes(String(props.item.page))"
+                    :indeterminate="currentEdit.missingPics && !currentEdit.missingPics.split(', ').includes(String(props.item.page))"
+                    :value="props.item.page"
+                    hide-details
+                    style="max-width: 24px;"
+                    @change="openTwoPage(props.item.page)"
+                  />
+                </v-layout>
+              </td>
+            </tr>
+            <tr :ref="'twoPage-' + props.item.page" style="display: none;">
+              <td>{{ props.item.page }}<br>Page 2</td>
+              <td />
+              <td class="text-xs-left" style="padding-left: 0px;">
+                <upload-btn
+                  :ref="`twoPageFile-${props.item.page}`"
+                  :unique-id="true"
+                  :page="`page2-${props.item.page}`"
+                  :file-changed-callback="upload"
+                >
+                  <template slot="icon-left">
+                    <v-icon class="blue--text">
+                      attach_file
+                    </v-icon>
+                  </template>
+                </upload-btn>
+              </td>
+              <td />
             </tr>
           </template>
         </v-data-table>
@@ -64,7 +98,6 @@
 </template>
 <script>
 import UploadButton from '@/components/UploadButton'
-import axios from 'axios'
 export default {
   name: 'EditStory',
   components: {
@@ -95,11 +128,19 @@ export default {
     return {
       loading: false,
       editHeaders: [
-        { text: 'Page', sortable: false },
-        { text: 'On wiki', align: 'center', sortable: false },
-        { text: 'Upload image', align: 'left', sortable: false }
+        { text: 'Page', sortable: false, width: '100px' },
+        { text: 'On wiki', align: 'center', sortable: false, width: '100px' },
+        {
+          text: 'Upload image',
+          align: 'center',
+          sortable: false,
+          width: '200px'
+        },
+        { text: '2 pages?', align: 'center', sortable: false, width: '100px' }
       ],
-      uploaded: []
+      uploaded: [],
+      uploadedTwo: [],
+      twoPages: []
     }
   },
   computed: {
@@ -116,6 +157,11 @@ export default {
     }
   },
   methods: {
+    openTwoPage(page) {
+      !this.twoPages.includes(page)
+        ? (this.$refs['twoPage-' + page].style.display = 'none')
+        : (this.$refs['twoPage-' + page].style.display = 'table-row')
+    },
     checkDisabled(page) {
       if (this.isOnWiki(page)) return true
       if (
@@ -130,10 +176,24 @@ export default {
     },
     upload(file, page) {
       if (file) {
-        if (file.name.length > 20)
-          this.$refs['ref-' + page].title = file.name.slice(0, 20)
-        else this.$refs['ref-' + page].title = file.name
-        if (this.uploaded.indexOf(page) < 0) this.uploaded.push(page)
+        if (page.search(/page/) > -1) {
+          if (file.name.length > 14)
+            this.$refs['twoPageFile-' + page.split('-')[1]].title =
+              file.name.slice(0, 14) + '...'
+          else this.$refs['twoPageFile-' + page.split('-')[1]].title = file.name
+          if (this.uploadedTwo.indexOf(page.split('-')[1]) < 0)
+            this.uploadedTwo.push(page.split('-')[1])
+        } else {
+          if (file.name.length > 14)
+            this.$refs['ref-' + page].title = file.name.slice(0, 14) + '...'
+          else this.$refs['ref-' + page].title = file.name
+          if (this.uploaded.indexOf(page) < 0) this.uploaded.push(page)
+        }
+      } else if (page.search(/page/) > -1) {
+        this.$refs['twoPageFile-' + page.split('-')[1]].title = 'Upload'
+        this.uploadedTwo = this.uploadedTwo.filter(
+          p => p !== page.split('-')[1]
+        )
       } else {
         this.$refs['ref-' + page].title = 'Upload'
         this.uploaded = this.uploaded.filter(p => p !== page)
@@ -196,17 +256,20 @@ export default {
       // Pictures
       for (let i = 0; i < this.uploaded.length; i++) {
         const input = this.$refs['ref-' + this.uploaded[i]].$refs.fileInput
-        for (let j = 0; j < input.files.length; j++) {
-          formData.append('page-' + this.uploaded[i] + '-' + j, input.files[j])
-        }
+        formData.append('page-' + this.uploaded[i] + '-0', input.files[0])
       }
+
+      for (let i = 0; i < this.uploadedTwo.length; i++) {
+        const input = this.$refs['twoPageFile-' + this.uploadedTwo[i]].$refs
+          .fileInput
+        formData.append('page-' + this.uploadedTwo[i] + '-1', input.files[0])
+      }
+
       this.loading = true
-      axios
-        .put(
-          'https://panyana-api.glitch.me/lore/' + this.currentEdit._id,
-          formData,
-          { headers: { 'Content-Type': 'multipart/form-data' } }
-        )
+      this.$api
+        .put('/lore/' + this.currentEdit._id, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        })
         .then(res => {
           this.$emit('close', 'success')
         })
@@ -215,22 +278,29 @@ export default {
           this.$emit('close', 'error')
         })
         .finally(() => {
-          this.loading = false
-          for (let i = 0; i < this.uploaded.length; i++) {
-            const btn = this.$refs['ref-' + this.uploaded[i]]
-            btn.title = 'Upload'
-            btn.$refs.fileInput.value = null
-          }
-          this.uploaded = []
+          this.reset()
         })
     },
-    cancel() {
+    reset() {
+      this.loading = false
       for (let i = 0; i < this.uploaded.length; i++) {
         const btn = this.$refs['ref-' + this.uploaded[i]]
         btn.title = 'Upload'
         btn.$refs.fileInput.value = null
       }
       this.uploaded = []
+      for (let i = 0; i < this.uploadedTwo.length; i++) {
+        const btn = this.$refs['twoPageFile-' + this.uploadedTwo[i]]
+        btn.title = 'Upload'
+        btn.$refs.fileInput.value = null
+      }
+      this.uploadedTwo = []
+      for (let i = 0; i < this.twoPages.length; i++)
+        this.$refs['twoPage-' + this.twoPages[i]].style.display = 'none'
+      this.twoPages = []
+    },
+    cancel() {
+      this.reset()
       this.$emit('close')
     }
   }

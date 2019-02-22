@@ -96,7 +96,6 @@
 </template>
 <script>
 import _ from 'lodash'
-import axios from 'axios'
 import NewStory from '@/components/NewStory'
 import EditStory from '@/components/EditStory'
 export default {
@@ -215,8 +214,8 @@ export default {
     refreshLore() {
       this.loading = true
       this.lore = []
-      axios
-        .get('https://panyana-api.glitch.me/lore/all')
+      this.$api
+        .get('/lore/all')
         .then(res => {
           this.lore.push(...res.data)
           this.loading = false
@@ -251,7 +250,10 @@ export default {
       if (!this.checkRole(['Admin', 'Collector'])) return
       const pageCount = parseInt(item.onWiki.split('/')[1])
       this.currentEdit = Object.assign({}, item)
-      this.currentEdit.pages = ['title', ..._.range(1, pageCount + 1)]
+      this.currentEdit.pages = [{ page: 'title' }]
+      _.range(1, pageCount + 1).forEach(p => {
+        this.currentEdit.pages.push({ page: p })
+      })
       const haveWiki = ['title']
       for (let i = 1; i <= pageCount; i++) {
         if (this.currentEdit.missingWiki.split(', ').indexOf(String(i)) < 0)

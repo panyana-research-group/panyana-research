@@ -1,5 +1,5 @@
 <template>
-  <div class="upload-btn"> 
+  <div class="upload-btn">
     <input
       :id="id"
       ref="fileInput"
@@ -176,7 +176,7 @@ export default {
 .upload-btn {
   padding-left: 16px;
   padding-right: 16px;
-  width: 200px;
+  width: 150px;
 
   .v-icon {
     margin-right: 5px;
