@@ -47,7 +47,7 @@
               Account
             </v-card-title>
             <v-card-text v-if="!$store.state.authLoggedIn" class="py-0 text-xs-center">
-              If you have permissions, logging in allows you to change certain data
+              If you have permissions, logging in with Auth0 allows you to change certain data
             </v-card-text>
             <v-card-text v-if="$store.state.authLoggedIn" class="py-0 text-xs-center">
               Roles: {{ $auth.user.roles ? $auth.user.roles.join(",") : "None" }}
@@ -69,7 +69,7 @@
         <nuxt @openDrawer="drawer = true" />
       </v-container>
     </v-content>
-    <v-footer height="auto" class="primary" app absolute>
+    <v-footer height="auto" color="primary" app>
       <v-layout row wrap justify-center>
         <v-btn active-class="v-btn--active darken-4" color="secondary" nuxt to="/" class="primary--text">
           Home
