@@ -5,12 +5,12 @@
         <v-container grid-list-xs justify-center>
           <v-layout row wrap>
             <v-flex shrink>
-              <v-btn color="accent primary--text" @click="openNewLore()">
+              <v-btn color="accent primary--text" @click="openNewLore">
                 New Story
               </v-btn>
             </v-flex>
             <v-flex shrink>
-              <v-btn color="accent primary--text" @click="refreshLore()">
+              <v-btn color="accent primary--text" @click="refreshLore">
                 Refresh Lore
               </v-btn>
             </v-flex>
@@ -243,7 +243,7 @@ export default {
     },
     openNewLore() {
       if (!this.checkRole(['Admin'])) return
-      // this.$refs.newStory.$refs.newLore.reset()
+      this.$refs.newStory.$refs.newLore.reset()
       this.show.newLore = true
     },
     editStory(item) {

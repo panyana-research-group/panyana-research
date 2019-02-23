@@ -31,7 +31,7 @@
         </v-form>
       </v-card-text>
       <v-card-actions class="justify-center">
-        <v-btn color="error" dark @click="$emit('close')">
+        <v-btn color="error" dark @click="close">
           Cancel
         </v-btn>
         <v-btn color="success" :disabled="!addComplete" @click="submit">
@@ -73,6 +73,9 @@ export default {
     }
   },
   methods: {
+    close() {
+      this.$emit('close')
+    },
     submit() {
       const story = {
         title: this.loreTitle,

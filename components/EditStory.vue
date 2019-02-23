@@ -164,10 +164,8 @@ export default {
     },
     checkDisabled(page) {
       if (this.isOnWiki(page)) return true
-      if (
-        this.currentEdit.addWiki &&
-        !this.currentEdit.addWiki.split(', ').includes(String(page))
-      )
+      else if (!this.currentEdit.addWiki) return true
+      if (!this.currentEdit.addWiki.split(', ').includes(String(page)))
         return true
     },
     isOnWiki(page) {
@@ -200,86 +198,86 @@ export default {
       }
     },
     edit() {
-      const formData = new FormData()
+      this.$api.get('/lore/' + this.currentEdit._id).then(data => {
+        const pageCount = parseInt(this.currentEdit.onWiki.split('/')[1])
+        const haveWiki = ['title']
+        for (let i = 1; i <= pageCount; i++) {
+          if (this.currentEdit.missingWiki.split(', ').indexOf(String(i)) < 0)
+            haveWiki.push(String(i))
+        }
+        this.have = [...new Set([...haveWiki, ...this.have])]
+        this.currentEdit.missingPics = data.data.missingPics
+        this.currentEdit.missingWiki = data.data.missingWiki
+        this.currentEdit.onWiki = data.data.onWiki
+        this.currentEdit.addWiki = data.data.addWiki
 
-      // Title
-      formData.append('title', this.currentEdit.title)
-
-      // On Wiki x/x
-      formData.append(
-        'onWiki',
-        `${this.have.length - 1}/${this.currentEdit.onWiki.split('/')[1]}`
-      )
-
-      // Missing Pictures
-      this.currentEdit.missingPics = this.currentEdit.missingPics
-        .split(', ')
-        .filter(p => this.uploaded.indexOf(p) < 0)
-        .join(', ')
-      if (this.currentEdit.missingPics === '')
-        this.currentEdit.missingPics = 'COMPLETED'
-      formData.append(
-        'missingPics',
-        this.currentEdit.missingPics
-          .split(', ')
-          .filter(p => this.uploaded.indexOf(p) < 0)
+        const update = {
+          title: this.currentEdit.title,
+          onWiki: `${this.have.length - 1}/${pageCount}`,
+          folderId: this.currentEdit.folderId,
+          missingPics: this.currentEdit.missingPics
+            .split(', ')
+            .filter(p => this.uploaded.indexOf(p) < 0)
+            .join(', '),
+          missingWiki: this.currentEdit.missingWiki
+            .split(', ')
+            .filter(p => this.have.indexOf(p) < 0)
+            .join(', ')
+        }
+        if (!this.currentEdit.addWiki || this.currentEdit.addWiki === '')
+          update.addWiki = []
+        else update.addWiki = this.currentEdit.addWiki.split(', ')
+        update.addWiki = update.addWiki
+          .concat(this.uploaded)
+          .filter(p => p !== 'title')
+          .filter(p => update.missingWiki.split(', ').indexOf(p) > -1)
+          .sort((a, b) => {
+            if (parseInt(a) < parseInt(b)) return -1
+            else return 1
+          })
           .join(', ')
-      )
+        if (this.currentEdit.missingPics === '')
+          this.currentEdit.missingPics = 'COMPLETED'
+        if (this.currentEdit.missingWiki === '')
+          this.currentEdit.missingWiki = 'COMPLETED'
+        const formData = new FormData()
 
-      // Missing from Wiki
-      this.currentEdit.missingWiki = this.currentEdit.missingWiki
-        .split(', ')
-        .filter(p => this.have.indexOf(p) < 0)
-        .join(', ')
-      if (this.currentEdit.missingWiki === '')
-        this.currentEdit.missingWiki = 'COMPLETED'
-      formData.append('missingWiki', this.currentEdit.missingWiki)
+        for (const prop in update) {
+          if (update.hasOwnProperty(prop)) formData.append(prop, update[prop])
+        }
 
-      // Add to Wiki
-      if (!this.currentEdit.addWiki || this.currentEdit.addWiki === '')
-        this.currentEdit.addWiki = []
-      else this.currentEdit.addWiki = this.currentEdit.addWiki.split(', ')
-      this.currentEdit.addWiki = this.currentEdit.addWiki
-        .concat(this.uploaded)
-        .filter(p => p !== 'title')
-        .filter(p => this.currentEdit.missingWiki.split(', ').indexOf(p) > -1)
-        .sort((a, b) => {
-          if (parseInt(a) < parseInt(b)) return -1
-          else return 1
-        })
-        .join(', ')
-      formData.append('addWiki', this.currentEdit.addWiki)
+        // Pictures
+        for (let i = 0; i < this.uploaded.length; i++) {
+          const input = this.$refs['ref-' + this.uploaded[i]].$refs.fileInput
+          formData.append('page-' + this.uploaded[i] + '-0', input.files[0])
+        }
 
-      // Folder ID
-      formData.append('folderId', this.currentEdit.folderId)
+        for (let i = 0; i < this.uploadedTwo.length; i++) {
+          const input = this.$refs['twoPageFile-' + this.uploadedTwo[i]].$refs
+            .fileInput
+          formData.append('page-' + this.uploadedTwo[i] + '-1', input.files[0])
+        }
 
-      // Pictures
-      for (let i = 0; i < this.uploaded.length; i++) {
-        const input = this.$refs['ref-' + this.uploaded[i]].$refs.fileInput
-        formData.append('page-' + this.uploaded[i] + '-0', input.files[0])
-      }
+        this.loading = true
+        this.$api
+          .put('/lore/' + this.currentEdit._id, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          })
+          .then(res => {
+            this.$emit('close', 'success')
+          })
+          .catch(err => {
+            console.log(err)
+            this.$emit('close', 'error')
+          })
+          .finally(() => {
+            this.reset()
+          })
+      })
+      /* eslint-disable */
+      return
 
-      for (let i = 0; i < this.uploadedTwo.length; i++) {
-        const input = this.$refs['twoPageFile-' + this.uploadedTwo[i]].$refs
-          .fileInput
-        formData.append('page-' + this.uploadedTwo[i] + '-1', input.files[0])
-      }
 
-      this.loading = true
-      this.$api
-        .put('/lore/' + this.currentEdit._id, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        })
-        .then(res => {
-          this.$emit('close', 'success')
-        })
-        .catch(err => {
-          console.log(err)
-          this.$emit('close', 'error')
-        })
-        .finally(() => {
-          this.reset()
-        })
     },
     reset() {
       this.loading = false
