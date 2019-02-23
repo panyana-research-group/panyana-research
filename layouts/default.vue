@@ -1,6 +1,6 @@
 <template>
   <v-app class="secondary--text">
-    <v-navigation-drawer v-model="drawer" temporary absolute class="primary">
+    <v-navigation-drawer v-model="drawer" temporary fixed class="primary">
       <v-list class="pa-2 ma-3">
         <v-list-tile class="text-uppercase elevation-2 primary lighten-2 secondary--text mb-3" avatar>
           <div class="text-xs-center headline" style="width: 100%">
@@ -69,7 +69,7 @@
         <nuxt @openDrawer="drawer = true" />
       </v-container>
     </v-content>
-    <v-footer height="auto" color="primary" app>
+    <v-footer height="auto" color="primary" app fixed>
       <v-layout row wrap justify-center>
         <v-btn active-class="v-btn--active darken-4" color="secondary" nuxt to="/" class="primary--text">
           Home
