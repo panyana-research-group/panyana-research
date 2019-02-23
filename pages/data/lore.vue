@@ -319,7 +319,6 @@ export default {
 <style lang="scss">
 #lore-table table {
   table-layout: fixed;
-  word-wrap: break-word;
   overflow: hidden;
   min-width: 1200px;
   thead tr {
@@ -327,10 +326,6 @@ export default {
   }
   tbody tr {
     border: 1px solid black !important;
-    &:hover {
-      filter: brightness(80%);
-      transition: none;
-    }
   }
 }
 .upload-btn.v-btn--disabled {

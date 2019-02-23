@@ -1,6 +1,12 @@
 <template>
-  <v-layout row wrap justify-center>
-    <v-flex xs12 px-2>
+  <v-layout fill-height row wrap align-center justify-center>
+    <v-flex v-if="!materials" xs12 class="text-xs-center info--text">
+      <v-progress-circular indeterminate color="secondary" size="60" width="8" />
+      <span class="pl-1 headline">
+        Loading
+      </span>
+    </v-flex>
+    <v-flex v-if="materials" xs12 px-2>
       <div class="label">
         Casing
       </div>
@@ -60,10 +66,20 @@ export default {
   },
   data() {
     return {
-      materials: require('~/assets/data/materials.json'),
+      materials: null,
       quality: 10,
       qualities: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
     }
+  },
+  created() {
+    this.$api
+      .get('/materials')
+      .then(res => {
+        this.materials = res.data
+      })
+      .catch(err => {
+        console.log(err)
+      })
   },
   methods: {
     cfClass(value) {

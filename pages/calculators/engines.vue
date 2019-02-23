@@ -43,23 +43,62 @@
         </v-toolbar>
         <v-container v-if="output.opt" grid-list-md fluid>
           <v-layout row wrap>
-            <v-flex>
-              <v-text-field v-model="output.opt.casing" :disabled="true" outline hide-details label="Casing" />
+            <v-flex v-if="output.opt === 'none'" xs12 class="text-xs-center warning--text headline">
+              No valid material configuration found for that engine!
             </v-flex>
-            <v-flex>
-              <v-text-field v-model="output.opt.mech" :disabled="true" outline hide-details label="Mech. Internals" />
+            <v-flex v-if="output.opt !== 'none'">
+              <v-text-field
+                v-model="output.opt.casing"
+                :disabled="true"
+                outline
+                hide-details
+                label="Casing"
+              />
             </v-flex>
-            <v-flex>
-              <v-text-field v-model="output.opt.comb" :disabled="true" outline hide-details label="Comb. Internals" />
+            <v-flex v-if="output.opt !== 'none'">
+              <v-text-field
+                v-model="output.opt.mech"
+                :disabled="true"
+                outline
+                hide-details
+                label="Mech. Internals"
+              />
             </v-flex>
-            <v-flex>
-              <v-text-field v-model="output.opt.prop" :disabled="true" outline hide-details label="Propeller" />
+            <v-flex v-if="output.opt !== 'none'">
+              <v-text-field
+                v-model="output.opt.comb"
+                :disabled="true"
+                outline
+                hide-details
+                label="Comb. Internals"
+              />v-if="output.opt !== 'none'" v-model="output.opt.prop"
             </v-flex>
-            <v-flex>
-              <v-text-field v-model="output.opt.speed" :disabled="true" outline hide-details label="Speed" />
+            <v-flex v-if="output.opt !== 'none'">
+              <v-text-field
+                v-model="output.opt.speed"
+                :disabled="true"
+                outline
+                hide-details
+                label="Propeller"
+              />
             </v-flex>
-            <v-flex>
-              <v-text-field v-model="output.opt.weight" :disabled="true" outline hide-details label="Weight" />
+            <v-flex v-if="output.opt !== 'none'">
+              <v-text-field
+                v-model="output.opt.speed"
+                :disabled="true"
+                outline
+                hide-details
+                label="Speed"
+              />
+            </v-flex>
+            <v-flex v-if="output.opt !== 'none'">
+              <v-text-field
+                v-model="output.opt.weight"
+                :disabled="true"
+                outline
+                hide-details
+                label="Weight"
+              />
             </v-flex>
           </v-layout>
         </v-container>
@@ -102,7 +141,6 @@ export default {
   },
   data() {
     return {
-      materials: require('~/assets/data/materials.json'),
       engineMats: false,
       engine: {
         res: '',
@@ -135,6 +173,11 @@ export default {
         switch (res.data.res) {
           case 'success': {
             this.output.opt = res.data.data
+            break
+          }
+          case 'none found': {
+            this.output.opt = 'none'
+            break
           }
         }
       })
