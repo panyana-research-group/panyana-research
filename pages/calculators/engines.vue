@@ -76,7 +76,7 @@
           Optimal Power/OH Ciphering
         </v-toolbar-title>
         <v-spacer />
-        <v-btn :disabled="!engine.form" small color="accent" class="primary--text">
+        <v-btn :disabled="!engine.form || true" small color="accent" class="primary--text">
           Calculate
         </v-btn>
       </v-toolbar>
@@ -127,99 +127,17 @@ export default {
       this.output.opt = null
     },
     optMatsCalc() {
-      this.output.opt = { speed: 0 }
-      Object.keys(this.engine).map((key, index) => {
-        this.engine[key] =
-          key === 'form' ? this.engine[key] : parseInt(this.engine[key])
+      const engine = {}
+      Object.keys(this.engine).forEach(key => {
+        engine[key] = parseInt(this.engine[key])
       })
-      for (let mech = 0; mech < this.materials.length; mech++) {
-        for (let comb = 0; comb < this.materials.length; comb++) {
-          for (let casing = 0; casing < this.materials.length; casing++) {
-            for (let prop = 0; prop < this.materials.length; prop++) {
-              const pwr =
-                this.engine.pwr +
-                this.engine.pwr * this.materials[mech].boosts.engine.mech.pwr +
-                this.engine.pwr * this.materials[comb].boosts.engine.comb.pwr
-              const oh =
-                this.engine.oh +
-                this.engine.oh * this.materials[mech].boosts.engine.mech.oh +
-                this.engine.oh * this.materials[comb].boosts.engine.comb.oh
-              const cf = this.getCF(
-                this.materials[casing].name,
-                this.materials[prop].name
-              )
-
-              const weight = this.getWeight(
-                this.materials[casing].name,
-                this.materials[mech].name,
-                this.materials[comb].name,
-                this.materials[prop].name
-              )
-
-              let speed = 50 * Math.sqrt((2 * pwr) / weight)
-
-              if (!isNaN(this.ohTime(pwr, oh, cf))) speed = 0
-              if (speed > this.output.opt.speed) {
-                this.output.opt = {
-                  casing: this.materials[casing].name,
-                  mech: this.materials[mech].name,
-                  comb: this.materials[comb].name,
-                  prop: this.materials[prop].name,
-                  speed: this.round(speed, 2),
-                  weight: this.round(weight, 2)
-                }
-              }
-            }
+      this.$api.post('/calcs/engine/mats', { engine }).then(res => {
+        switch (res.data.res) {
+          case 'success': {
+            this.output.opt = res.data.data
           }
         }
-      }
-    },
-    getWeight(mCasing, mMech, mComb, mProp) {
-      const casing =
-        (this.engine.res + this.engine.pwr + this.engine.su) *
-        this.materials.find(x => x.name === mCasing).weight
-      const mech =
-        (this.engine.pwr + this.engine.fe) *
-        this.materials.find(x => x.name === mMech).weight
-      const comb =
-        (this.engine.pwr + this.engine.fe + this.engine.oh) *
-        this.materials.find(x => x.name === mComb).weight
-      const prop =
-        (this.engine.su + this.engine.oh) *
-        this.materials.find(x => x.name === mProp).weight
-      return 0.708320995 * 2 * (casing + mech + comb + prop)
-    },
-    getCF(casing, other, quality = 10) {
-      return (
-        this.materials.find(x => x.name === casing).cf +
-        this.materials.find(x => x.name === other).cf *
-          (2 / 3) *
-          ((10 + quality) / 20)
-      )
-    },
-    ohTime(pwr, oh, cf) {
-      return Math.round(
-        Math.log(
-          (0.712430929124863 *
-            Math.pow(parseInt(pwr), 1.479) *
-            Math.pow(parseInt(oh), -1.131)) /
-            (0.712430929124863 *
-              Math.pow(parseInt(pwr), 1.479) *
-              Math.pow(parseInt(oh), -1.131) -
-              500 *
-                (0.0016915 *
-                  Math.pow(parseInt(cf), 0.5) *
-                  Math.pow(parseInt(oh), 0.245) *
-                  Math.pow(parseInt(pwr), -0.33)))
-        ) /
-          (0.0016915 *
-            Math.pow(parseInt(cf), 0.5) *
-            Math.pow(parseInt(oh), 0.245) *
-            Math.pow(parseInt(pwr), -0.33))
-      )
-    },
-    round(value, decimals) {
-      return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals)
+      })
     }
   }
 }
