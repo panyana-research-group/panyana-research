@@ -41,12 +41,15 @@
             Calculate
           </v-btn>
         </v-toolbar>
-        <v-container v-if="output.opt" grid-list-md fluid>
+        <v-container grid-list-md fluid>
           <v-layout row wrap>
-            <v-flex v-if="output.opt === 'none'" xs12 class="text-xs-center warning--text headline">
+            <v-flex xs12 pa-0>
+              Calculates the optimal materials to use to craft this engine so it will never overheat and go the fastest.
+            </v-flex>
+            <v-flex v-if="output.opt && output.opt === 'none'" xs12 class="text-xs-center warning--text headline">
               No valid material configuration found for that engine!
             </v-flex>
-            <v-flex v-if="output.opt !== 'none'">
+            <v-flex v-if="output.opt && output.opt !== 'none'">
               <v-text-field
                 v-model="output.opt.casing"
                 :disabled="true"
@@ -55,7 +58,7 @@
                 label="Casing"
               />
             </v-flex>
-            <v-flex v-if="output.opt !== 'none'">
+            <v-flex v-if="output.opt && output.opt !== 'none'">
               <v-text-field
                 v-model="output.opt.mech"
                 :disabled="true"
@@ -64,16 +67,16 @@
                 label="Mech. Internals"
               />
             </v-flex>
-            <v-flex v-if="output.opt !== 'none'">
+            <v-flex v-if="output.opt && output.opt !== 'none'">
               <v-text-field
                 v-model="output.opt.comb"
                 :disabled="true"
                 outline
                 hide-details
                 label="Comb. Internals"
-              />v-if="output.opt !== 'none'" v-model="output.opt.prop"
+              />
             </v-flex>
-            <v-flex v-if="output.opt !== 'none'">
+            <v-flex v-if="output.opt && output.opt !== 'none'">
               <v-text-field
                 v-model="output.opt.speed"
                 :disabled="true"
@@ -82,7 +85,7 @@
                 label="Propeller"
               />
             </v-flex>
-            <v-flex v-if="output.opt !== 'none'">
+            <v-flex v-if="output.opt && output.opt !== 'none'">
               <v-text-field
                 v-model="output.opt.speed"
                 :disabled="true"
@@ -91,7 +94,7 @@
                 label="Speed"
               />
             </v-flex>
-            <v-flex v-if="output.opt !== 'none'">
+            <v-flex v-if="output.opt && output.opt !== 'none'">
               <v-text-field
                 v-model="output.opt.weight"
                 :disabled="true"
@@ -110,16 +113,24 @@
       </v-card>
     </v-flex>
     <v-flex xs12 md12 lg6>
-      <v-toolbar color="primary" dense>
-        <v-toolbar-title class="secondary--text">
-          Optimal Power/OH Ciphering
-        </v-toolbar-title>
-        <v-spacer />
-        <v-btn :disabled="!engine.form || true" small color="accent" class="primary--text">
-          Calculate
-        </v-btn>
-      </v-toolbar>
-      <v-card color="accent" />
+      <v-card color="info" elevation="5">
+        <v-toolbar color="primary" dense>
+          <v-toolbar-title class="secondary--text">
+            Optimal Power/OH Ciphering
+          </v-toolbar-title>
+          <v-spacer />
+          <v-btn :disabled="!engine.form" small color="accent" class="primary--text" @click="optCipherCalc">
+            Calculate
+          </v-btn>
+        </v-toolbar>
+        <v-container grid-list-md fluid>
+          <v-layout row wrap>
+            <v-flex xs12 pa-0>
+              This calculator only takes into account the Resilience, Spin Up, and Fuel Efficiency of the engine and calculates the optimal stat levels for Power and Overheat Limit to be ciphered to.
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-card>
     </v-flex>
   </v-layout>
 </template>
@@ -164,23 +175,35 @@ export default {
       this.$refs.engineForm.reset()
       this.output.opt = null
     },
+    convert(obj) {
+      const newObj = {}
+      Object.keys(obj).forEach(key => {
+        newObj[key] = parseInt(obj[key])
+      })
+      return newObj
+    },
     optMatsCalc() {
-      const engine = {}
-      Object.keys(this.engine).forEach(key => {
-        engine[key] = parseInt(this.engine[key])
-      })
-      this.$api.post('/calcs/engine/mats', { engine }).then(res => {
-        switch (res.data.res) {
-          case 'success': {
-            this.output.opt = res.data.data
-            break
+      this.$api
+        .post('/calcs/engine/mats', { engine: this.convert(this.engine) })
+        .then(res => {
+          switch (res.data.res) {
+            case 'success': {
+              this.output.opt = res.data.data
+              break
+            }
+            case 'none found': {
+              this.output.opt = 'none'
+              break
+            }
           }
-          case 'none found': {
-            this.output.opt = 'none'
-            break
-          }
-        }
-      })
+        })
+    },
+    optCipherCalc() {
+      this.$api
+        .post('/calcs/engine/cipher', { engine: this.convert(this.engine) })
+        .then(res => {
+          console.log(res.data)
+        })
     }
   }
 }
