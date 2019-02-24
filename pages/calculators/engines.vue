@@ -78,7 +78,7 @@
             </v-flex>
             <v-flex v-if="output.opt && output.opt !== 'none'">
               <v-text-field
-                v-model="output.opt.speed"
+                v-model="output.opt.prop"
                 :disabled="true"
                 outline
                 hide-details
@@ -128,6 +128,15 @@
             <v-flex xs12 pa-0>
               This calculator only takes into account the Resilience, Spin Up, and Fuel Efficiency of the engine and calculates the optimal stat levels for Power and Overheat Limit to be ciphered to.
             </v-flex>
+            <v-flex v-if="outputCipher.opt && outputCipher.opt === 'none'" xs12 class="text-xs-center warning--text headline">
+              No valid Power and Overheat Limit stats produced an engine that did not overheat!
+            </v-flex>
+            <v-flex v-if="outputCipher.opt && outputCipher.opt !== 'none'">
+              <v-text-field v-model="outputCipher.opt.points.pwr" :disabled="true" outline hide-details label="Power" />
+            </v-flex>
+            <v-flex v-if="outputCipher.opt && outputCipher.opt !== 'none'">
+              <v-text-field v-model="outputCipher.opt.points.oh" :disabled="true" outline hide-details label="Overheat Limit" />
+            </v-flex>
           </v-layout>
         </v-container>
       </v-card>
@@ -162,6 +171,9 @@ export default {
         form: false
       },
       output: {
+        opt: null
+      },
+      outputCipher: {
         opt: null
       },
       rules: {
@@ -202,7 +214,16 @@ export default {
       this.$api
         .post('/calcs/engine/cipher', { engine: this.convert(this.engine) })
         .then(res => {
-          console.log(res.data)
+          switch (res.data.res) {
+            case 'success': {
+              this.outputCipher.opt = res.data.data
+              break
+            }
+            case 'none found': {
+              this.outputCipher.opt = 'none'
+              break
+            }
+          }
         })
     }
   }
