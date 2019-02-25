@@ -88,6 +88,10 @@ export default {
     engine: {
       type: Object,
       default: () => null
+    },
+    filter: {
+      type: Object,
+      default: () => null
     }
   },
   data() {
@@ -99,7 +103,10 @@ export default {
   methods: {
     calc() {
       this.$api
-        .post('/calcs/engine/mats', { engine: this.convert(this.engine) })
+        .post('/calcs/engine/mats', {
+          engine: this.convert(this.engine),
+          filter: this.filter
+        })
         .then(res => {
           switch (res.data.res) {
             case 'success': {

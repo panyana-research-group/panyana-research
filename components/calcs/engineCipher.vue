@@ -40,6 +40,10 @@ export default {
     engine: {
       type: Object,
       default: () => null
+    },
+    filter: {
+      type: Object,
+      default: () => null
     }
   },
   data() {
@@ -59,7 +63,10 @@ export default {
     calc() {
       this.loading = true
       this.$api
-        .post('/calcs/engine/cipher', { engine: this.convert(this.engine) })
+        .post('/calcs/engine/cipher', {
+          engine: this.convert(this.engine),
+          filter: this.filter
+        })
         .then(res => {
           this.loading = false
           switch (res.data.res) {

@@ -57,6 +57,15 @@ module.exports = {
         href:
           'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons'
       }
+    ],
+    script: [
+      {
+        src: 'https://www.googletagmanager.com/gtag/js?id=UA-135117645-1',
+        async: true
+      },
+      {
+        src: '/js/google-analytics.js'
+      }
     ]
   },
 
