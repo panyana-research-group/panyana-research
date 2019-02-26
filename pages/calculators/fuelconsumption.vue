@@ -1,20 +1,35 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs6 offset-xs3>
-      <v-card color="primary">
+    <v-flex>
+      <v-card color="primary" style="max-width: 700px" class="mx-auto">
         <v-card-text class="headline secondary--text text-xs-center">
+          <div style="position: absolute; top: 0; right: 0;">
+            <v-btn :disabled="Object.keys(engines).length < 1" color="warning" class="mr-0" @click="engines = {}; update()">
+              Clear List
+            </v-btn>
+            <v-btn color="success" class="ml-0" @click="addEngine = true">
+              Add Engine
+            </v-btn>
+          </div>
           Engines
         </v-card-text>
         <v-data-table
           :headers="headers"
-          :items="engines"
+          :items="Object.keys(engines)"
           hide-actions
           class="pa-2"
           dark
         >
           <template slot="items" slot-scope="props">
-            <td>{{ props.item.name }}</td>
-            <td />
+            <td>{{ engines[props.item].name }}</td>
+            <td>
+              <v-text-field
+                v-model="engines[props.item].quantity"
+                type="number"
+                @change="update"
+              />
+            </td>
+            <td>{{ engines[props.item].fe }}</td>
           </template>
           <template slot="no-data">
             <v-alert type="info" :value="true" class="primary--text">
@@ -39,6 +54,31 @@
             Calculate
           </v-btn>
         </v-toolbar>
+        <v-container v-if="usage" grid-list-md fluid>
+          <v-layout row wrap>
+            <v-flex shrink class="mx-auto">
+              <v-text-field
+                v-model="usage.sec"
+                :disabled="true"
+                label="Fuel Usage per Second"
+                outline
+              />
+            </v-flex>
+            <v-flex shrink class="mx-auto">
+              <v-text-field
+                v-model="usage.min"
+                :disabled="true"
+                label="Fuel Usage per Minute"
+                outline
+              />
+            </v-flex>
+            <v-flex xs12 text-xs-center>
+              <v-btn color="warning" @click="usage = null">
+                Clear
+              </v-btn>
+            </v-flex>
+          </v-layout>
+        </v-container>
       </v-card>
     </v-flex>
     <v-dialog v-model="addEngine" max-width="500px">
@@ -74,8 +114,11 @@
             </v-flex>
           </v-layout>
         </v-form>
+        <v-card-text v-show="isInList()">
+          This engine configuration is already in your list!
+        </v-card-text>
         <v-card-actions class="justify-center">
-          <v-btn :disabled="!form" color="success" @click="add">
+          <v-btn :disabled="!form || isInList()" color="success" @click="add">
             Add
           </v-btn>
           <v-btn color="warning" @click="addEngine = false">
@@ -91,17 +134,18 @@ export default {
   name: 'FuelConsumptionCalc',
   data() {
     return {
+      usage: null,
       form: {
         name: null,
         fe: null,
         value: false
       },
       headers: [
-        { text: 'Name', value: name },
-        { text: 'Quantity', sortable: false },
+        { text: 'Name', value: 'name' },
+        { text: 'Quantity', sortable: false, width: '40px' },
         { text: 'Fuel Efficiency', sortable: false }
       ],
-      engines: [],
+      engines: {},
       addEngine: false,
       loading: false,
       rules: {
@@ -110,16 +154,42 @@ export default {
       }
     }
   },
+  mounted() {
+    this.engines = JSON.parse(localStorage.getItem('engines')) || {}
+  },
   methods: {
     calc() {
       this.loading = true
-      this.loading = false
+      this.$api
+        .post('/calcs/engine/fueleff', { engines: this.engines })
+        .then(res => {
+          this.usage = {
+            sec: this.round(res.data.fuelEff, 3),
+            min: this.round(res.data.fuelEff * 60, 3)
+          }
+          this.loading = false
+        })
+    },
+    isInList() {
+      return Object.keys(this.engines).includes(
+        this.form.name + '_' + this.form.fe
+      )
+    },
+    round(value, decs) {
+      return Number(Math.round(value + 'e' + decs) + 'e-' + decs)
+    },
+    update() {
+      localStorage.setItem('engines', JSON.stringify(this.engines))
     },
     add() {
-      this.engines.push({
+      this.engines[this.form.name + '_' + this.form.fe] = {
         name: this.form.name,
-        fe: this.form.fe
-      })
+        fe: this.form.fe,
+        quantity: 1
+      }
+      this.update()
+      this.addEngine = false
+      this.$refs.addEngineForm.reset()
     }
   }
 }
