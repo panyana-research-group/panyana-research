@@ -13,7 +13,14 @@
             {{ type.name }}
           </v-list-tile>
           <template v-for="(item, index) in type.rows">
-            <v-list-tile :key="item.name" :to="item.to || ''" active-class="accent" avatar nuxt>
+            <v-list-tile
+              :key="item.name"
+              :to="item.to || ''"
+              active-class="accent"
+              :class="{ 'red lighten-3': !item.to }"
+              avatar
+              nuxt
+            >
               <v-list-tile-avatar>
                 <v-icon>{{ item.icon }}</v-icon>
               </v-list-tile-avatar>

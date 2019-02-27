@@ -50,7 +50,7 @@
           </v-toolbar-title>
           <v-spacer />
           <v-progress-circular v-if="loading" indeterminate color="info" />
-          <v-btn small color="accent" class="primary--text" @click="calc">
+          <v-btn :disabled="Object.keys(engines).length < 1" small color="accent" class="primary--text" @click="calc">
             Calculate
           </v-btn>
         </v-toolbar>
@@ -132,6 +132,19 @@
 <script>
 export default {
   name: 'FuelConsumptionCalc',
+  head() {
+    return {
+      title: 'Fuel Efficiency',
+      meta: [
+        { hid: 'og:title', name: 'og:title', content: 'Fuel Efficiency' },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Calculate your engines fuel usage'
+        }
+      ]
+    }
+  },
   data() {
     return {
       usage: null,
