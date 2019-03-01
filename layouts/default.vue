@@ -125,7 +125,7 @@ export default {
               icon: 'mdi-radiator-off',
               to: '/materials/cooling'
             },
-            { name: 'Engines', icon: 'mdi-engine' },
+            { name: 'Engines', icon: 'mdi-engine', to: '/materials/engines' },
             { name: 'Wings', icon: 'mdi-airplane-takeoff' },
             { name: 'Cannons/Swivels', icon: 'mdi-pistol' },
             { name: 'Resilience', icon: 'mdi-hard-hat' }

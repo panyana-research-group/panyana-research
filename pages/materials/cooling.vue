@@ -183,7 +183,7 @@ export default {
     background-color: #d0e0e3;
   }
   &.tungsten {
-    background-color: #999999;
+    background-color: #777777;
   }
   &.gold {
     background-color: #ffe694;
