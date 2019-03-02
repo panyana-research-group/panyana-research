@@ -126,7 +126,11 @@ export default {
               to: '/materials/cooling'
             },
             { name: 'Engines', icon: 'mdi-engine', to: '/materials/engines' },
-            { name: 'Wings', icon: 'mdi-airplane-takeoff' },
+            {
+              name: 'Wings',
+              icon: 'mdi-airplane-takeoff',
+              to: '/materials/wings'
+            },
             { name: 'Cannons/Swivels', icon: 'mdi-pistol' },
             { name: 'Resilience', icon: 'mdi-hard-hat' }
           ]
