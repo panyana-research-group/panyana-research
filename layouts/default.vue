@@ -8,7 +8,7 @@
           </div>
           <!-- <v-list-tile-title class="text-xs-center">Menu</v-list-tile-title> -->
         </v-list-tile>
-        <v-list-group v-for="type in navDrawer" :key="type.name" :prepend-icon="type.icon" class="secondary primary--text elevation-2 my-2">
+        <v-list-group v-for="type in buttonInfo" :key="type.name" :prepend-icon="type.icon" class="secondary primary--text elevation-2 my-2">
           <v-list-tile slot="activator" class="py-2">
             {{ type.name }}
           </v-list-tile>
@@ -100,62 +100,25 @@
     </v-footer>
   </v-app>
 </template>
-
 <script>
+import { calculators } from '@/components/mixins/calculators'
+import { materials } from '@/components/mixins/materials'
+import { data } from '@/components/mixins/data'
 export default {
   name: 'App',
+  mixins: [calculators, materials, data],
   data() {
     return {
       drawer: null,
-      accountMenu: false,
-      navDrawer: [
-        {
-          name: 'Calculators',
-          icon: 'mdi-calculator',
-          rows: [
-            { name: 'Engine', icon: 'mdi-engine', to: '/calculators/engines' },
-            {
-              name: 'Fuel Consumption',
-              icon: 'local_gas_station',
-              to: '/calculators/fuelconsumption'
-            },
-            { name: 'Skycore Capacity', icon: 'mdi-arrow-up-bold-circle' }
-          ]
-        },
-        {
-          name: 'Material Info',
-          icon: 'mdi-information',
-          rows: [
-            {
-              name: 'Cooling',
-              icon: 'mdi-radiator-off',
-              to: '/materials/cooling'
-            },
-            { name: 'Engines', icon: 'mdi-engine', to: '/materials/engines' },
-            {
-              name: 'Wings',
-              icon: 'mdi-airplane-takeoff',
-              to: '/materials/wings'
-            },
-            { name: 'Cannons/Swivels', icon: 'mdi-pistol' },
-            {
-              name: 'Resilience',
-              icon: 'mdi-hard-hat',
-              to: '/materials/resilience'
-            }
-          ]
-        },
-        {
-          name: 'Data',
-          icon: 'mdi-database',
-          rows: [
-            { name: 'Clothing', icon: 'mdi-tshirt-crew' },
-            { name: 'Salvage', icon: 'attachment' },
-            { name: 'Procedurals', icon: 'memory' },
-            { name: 'Lore', icon: 'mdi-book-open-variant', to: '/data/lore' },
-            { name: 'Schematics', icon: 'settings' }
-          ]
-        }
+      accountMenu: false
+    }
+  },
+  computed: {
+    buttonInfo() {
+      return [
+        this.calculatorsButtonInfo,
+        this.materialsButtonInfo,
+        this.dataButtonInfo
       ]
     }
   },
