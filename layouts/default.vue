@@ -34,7 +34,13 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar color="primary" app>
-      <v-toolbar-side-icon :class="{ 'accent primary--text': drawer, 'accent--text': !drawer }" @click.stop="drawer = !drawer" />
+      <v-btn color="accent" class="primary--text" @click="drawer = !drawer">
+        <v-icon left>
+          {{ drawer ? 'arrow_back' : 'menu' }}
+        </v-icon>
+        Menu
+      </v-btn>
+      <!-- <v-toolbar-side-icon :class="{ 'accent primary--text': drawer, 'accent--text': !drawer }" @click.stop="drawer = !drawer" /> -->
       <v-toolbar-title class="secondary--text">
         Panyana Research Group
       </v-toolbar-title>
@@ -132,7 +138,11 @@ export default {
               to: '/materials/wings'
             },
             { name: 'Cannons/Swivels', icon: 'mdi-pistol' },
-            { name: 'Resilience', icon: 'mdi-hard-hat' }
+            {
+              name: 'Resilience',
+              icon: 'mdi-hard-hat',
+              to: '/materials/resilience'
+            }
           ]
         },
         {
