@@ -1,6 +1,6 @@
 <template>
   <v-app class="secondary--text">
-    <v-navigation-drawer v-model="drawer" temporary fixed class="primary">
+    <v-navigation-drawer v-model="drawer" app fixed class="primary">
       <v-list class="pa-2 ma-3">
         <v-list-tile class="text-uppercase elevation-2 primary lighten-2 secondary--text mb-3" avatar>
           <div class="text-xs-center headline" style="width: 100%">
@@ -34,7 +34,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar color="primary" app>
-      <v-toolbar-side-icon class="secondary--text" @click.stop="drawer = !drawer" />
+      <v-toolbar-side-icon :class="{ 'accent primary--text': drawer, 'accent--text': !drawer }" @click.stop="drawer = !drawer" />
       <v-toolbar-title class="secondary--text">
         Panyana Research Group
       </v-toolbar-title>
@@ -100,7 +100,7 @@ export default {
   name: 'App',
   data() {
     return {
-      drawer: false,
+      drawer: null,
       accountMenu: false,
       navDrawer: [
         {
