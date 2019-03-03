@@ -59,8 +59,15 @@
                 </v-tooltip>
               </td>
               <td class="text-xs-center">
-                <v-tooltip top>
-                  <v-btn :disabled="props.item.missingWiki==='COMPLETED'" color="error" class="lighten-2" icon @click="editStory(props.item)">
+                <v-tooltip :disabled="props.item.missingWiki==='COMPLETED'" top>
+                  <v-btn
+                    slot="activator"
+                    :disabled="props.item.missingWiki==='COMPLETED'"
+                    color="error"
+                    class="lighten-2"
+                    icon
+                    @click="editStory(props.item)"
+                  >
                     <v-icon>edit</v-icon>
                   </v-btn>
                   Edit the story

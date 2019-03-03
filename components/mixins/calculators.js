@@ -11,7 +11,11 @@ export const calculators = {
             icon: 'local_gas_station',
             to: '/calculators/fuelconsumption'
           },
-          { name: 'Skycore Capacity', icon: 'mdi-arrow-up-bold-circle' }
+          {
+            name: 'Atlas Sky Core Capacity',
+            icon: 'mdi-arrow-up-bold-circle',
+            to: '/calculators/skycore'
+          }
         ]
       }
     }
