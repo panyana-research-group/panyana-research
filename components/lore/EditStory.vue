@@ -256,10 +256,8 @@ export default {
             else return 1
           })
           .join(', ')
-        if (this.currentEdit.missingPics === '')
-          this.currentEdit.missingPics = 'COMPLETED'
-        if (this.currentEdit.missingWiki === '')
-          this.currentEdit.missingWiki = 'COMPLETED'
+        if (update.missingPics === '') update.missingPics = 'COMPLETED'
+        if (update.missingWiki === '') update.missingWiki = 'COMPLETED'
         const formData = new FormData()
 
         for (const prop in update) {

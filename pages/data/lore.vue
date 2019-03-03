@@ -41,7 +41,7 @@
           :loading="loading"
           :must-sort="true"
         >
-          <template slot="items" slot-scope="props">
+          <template v-slot:items="props">
             <tr :class="getClasses(props.item)">
               <td>{{ props.item.title }}</td>
               <td class="text-xs-center">
