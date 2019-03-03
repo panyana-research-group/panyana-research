@@ -104,8 +104,8 @@
 import _ from 'lodash'
 
 import EngineOverheatCalc from '@/components/calcs/EngineOverheat'
-import EngineMatsCalc from '@/components/calcs/EngineMats'
-import EngineCipherCalc from '@/components/calcs/EngineCipher'
+import EngineMatsCalc from '@/components/calcs/EngineMaterials'
+import EngineCipherCalc from '@/components/calcs/EngineCiphers'
 export default {
   name: 'EngineCalculators',
   components: {
