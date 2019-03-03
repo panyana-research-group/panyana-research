@@ -42,7 +42,7 @@ jobs:
             git push --force --quiet $CIRCLE_REPOSITORY_URL master:gh-pages
 workflows:
   version: 2
-  buildy:
+  build:
     jobs:
       - build:
           filters:
