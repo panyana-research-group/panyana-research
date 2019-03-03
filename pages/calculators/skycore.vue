@@ -123,6 +123,19 @@ export default {
   components: {
     'base-calc': BaseCalc
   },
+  head() {
+    return {
+      title: 'Sky Core Calculator',
+      meta: [
+        { hid: 'og:title', name: 'og:title', content: 'Sky Core Calculator' },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Calculator for determining sky core capacity'
+        }
+      ]
+    }
+  },
   data() {
     return {
       loading: false,
