@@ -34,14 +34,10 @@
         <v-btn color="error" dark @click="close">
           Cancel
         </v-btn>
-        <v-btn color="success" :disabled="!addComplete" @click="submit">
+        <v-btn color="success" :loading="loading" :disabled="!addComplete" @click="submit">
           Add
         </v-btn>
       </v-card-actions>
-      <div v-if="loading" class="text-xs-center" style="height: 40px">
-        <v-progress-circular v-show="loading" indeterminate color="secondary" class="ml-2 dark" />
-        Updating...
-      </div>
     </v-card>
   </v-dialog>
 </template>

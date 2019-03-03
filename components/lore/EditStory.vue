@@ -1,5 +1,9 @@
 <template>
-  <v-dialog :value="show" max-width="550px" persistent>
+  <v-dialog
+    :value="show"
+    max-width="550px"
+    persistent
+  >
     <v-card dark>
       <v-card-title class="title justify-center pb-0">
         {{ currentEdit.title }}
@@ -16,7 +20,10 @@
           hide-actions
           class="elevation-1"
         >
-          <template slot="items" slot-scope="props">
+          <template
+            slot="items"
+            slot-scope="props"
+          >
             <tr>
               <td>{{ props.item.page }}</td>
               <td>
@@ -30,7 +37,10 @@
                   />
                 </v-layout>
               </td>
-              <td class="text-xs-left" style="padding-left: 0px">
+              <td
+                class="text-xs-left"
+                style="padding-left: 0px"
+              >
                 <upload-btn
                   :ref="`ref-${props.item.page}`"
                   :unique-id="true"
@@ -59,10 +69,16 @@
                 </v-layout>
               </td>
             </tr>
-            <tr :ref="'twoPage-' + props.item.page" style="display: none;">
+            <tr
+              :ref="'twoPage-' + props.item.page"
+              style="display: none;"
+            >
               <td>{{ props.item.page }}<br>Page 2</td>
               <td />
-              <td class="text-xs-left" style="padding-left: 0px;">
+              <td
+                class="text-xs-left"
+                style="padding-left: 0px;"
+              >
                 <upload-btn
                   :ref="`twoPageFile-${props.item.page}`"
                   :unique-id="true"
@@ -82,17 +98,21 @@
         </v-data-table>
       </v-card-text>
       <v-card-actions class="justify-center">
-        <v-btn color="error" dark @click="cancel">
+        <v-btn
+          color="error"
+          dark
+          @click="cancel"
+        >
           Cancel
         </v-btn>
-        <v-btn color="success" @click="edit">
+        <v-btn
+          color="success"
+          :loading="loading"
+          @click="edit"
+        >
           Edit
         </v-btn>
       </v-card-actions>
-      <div v-if="loading" class="text-xs-center" style="height: 40px">
-        <v-progress-circular v-show="loading" indeterminate color="secondary" class="ml-2 dark" />
-        Updating...
-      </div>
     </v-card>
   </v-dialog>
 </template>

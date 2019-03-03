@@ -40,7 +40,6 @@
         </v-icon>
         Menu
       </v-btn>
-      <!-- <v-toolbar-side-icon :class="{ 'accent primary--text': drawer, 'accent--text': !drawer }" @click.stop="drawer = !drawer" /> -->
       <v-toolbar-title class="secondary--text">
         Panyana Research Group
       </v-toolbar-title>
@@ -109,7 +108,6 @@ export default {
   mixins: [calculators, materials, data],
   data() {
     return {
-      drawer: null,
       accountMenu: false
     }
   },
@@ -120,6 +118,14 @@ export default {
         this.materialsButtonInfo,
         this.dataButtonInfo
       ]
+    },
+    drawer: {
+      get() {
+        return this.$store.state.navDrawer
+      },
+      set(value) {
+        this.$store.commit('drawerState', value)
+      }
     }
   },
   created() {

@@ -49,8 +49,14 @@
             Fuel Consumption
           </v-toolbar-title>
           <v-spacer />
-          <v-progress-circular v-if="loading" indeterminate color="info" />
-          <v-btn :disabled="Object.keys(engines).length < 1" small color="accent" class="primary--text" @click="calc">
+          <v-btn
+            :disabled="Object.keys(engines).length < 1"
+            :loading="loading"
+            small
+            color="accent"
+            class="primary--text"
+            @click="calc"
+          >
             Calculate
           </v-btn>
         </v-toolbar>

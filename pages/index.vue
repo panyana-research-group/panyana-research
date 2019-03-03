@@ -10,14 +10,51 @@
         </v-card-text>
       </v-card>
     </v-flex>
+    <v-flex xs12 lg8 text-xs-center mx-auto>
+      <v-btn
+        v-for="cat in categories"
+        :key="cat.name"
+        :to="`/${cat.name.toLowerCase()}`"
+        class="primary--text"
+        color="accent"
+        nuxt
+      >
+        <v-icon left>
+          {{ cat.icon }}
+        </v-icon>
+        {{ cat.name }}
+      </v-btn>
+    </v-flex>
   </v-layout>
 </template>
-
 <script>
+import { calculators } from '@/components/mixins/calculators'
+import { materials } from '@/components/mixins/materials'
+import { data } from '@/components/mixins/data'
 export default {
+  name: 'Home',
+  mixins: [calculators, materials, data],
   head() {
     return {
       title: 'Home'
+    }
+  },
+  computed: {
+    categories() {
+      return [
+        {
+          name: this.calculatorsButtonInfo.name,
+          icon: this.calculatorsButtonInfo.icon
+        },
+        {
+          name: this.materialsButtonInfo.name,
+          icon: this.materialsButtonInfo.icon
+        },
+        {
+          name: this.dataButtonInfo.name,
+          icon: this.dataButtonInfo.icon
+        }
+      ]
     }
   }
 }

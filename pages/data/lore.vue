@@ -59,9 +59,12 @@
                 </v-tooltip>
               </td>
               <td class="text-xs-center">
-                <v-btn :disabled="props.item.missingWiki==='COMPLETED'" color="error" class="lighten-2" icon @click="editStory(props.item)">
-                  <v-icon>edit</v-icon>
-                </v-btn>
+                <v-tooltip top>
+                  <v-btn :disabled="props.item.missingWiki==='COMPLETED'" color="error" class="lighten-2" icon @click="editStory(props.item)">
+                    <v-icon>edit</v-icon>
+                  </v-btn>
+                  Edit the story
+                </v-tooltip>
               </td>
             </tr>
           </template>
@@ -96,8 +99,8 @@
 </template>
 <script>
 import _ from 'lodash'
-import NewStory from '@/components/NewStory'
-import EditStory from '@/components/EditStory'
+import NewStory from '@/components/lore/NewStory'
+import EditStory from '@/components/lore/EditStory'
 export default {
   name: 'Lore',
   head() {

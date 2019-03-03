@@ -44,6 +44,9 @@
     <v-flex xs12 md12 lg6>
       <engine-cipher-calc :engine="engine" :filter="filteredMats" />
     </v-flex>
+    <v-flex xs12 md12 lg6>
+      <engine-overheat-calc :engine="engine" />
+    </v-flex>
     <v-dialog
       v-if="filteredMats"
       v-model="filter"
@@ -100,13 +103,15 @@
 <script>
 import _ from 'lodash'
 
-import EngineMatsCalc from '../../components/calcs/engineMats'
-import EngineCipherCalc from '../../components/calcs/engineCipher'
+import EngineOverheatCalc from '@/components/calcs/EngineOverheat'
+import EngineMatsCalc from '@/components/calcs/EngineMats'
+import EngineCipherCalc from '@/components/calcs/EngineCipher'
 export default {
   name: 'EngineCalculators',
   components: {
     'engine-mats-calc': EngineMatsCalc,
-    'engine-cipher-calc': EngineCipherCalc
+    'engine-cipher-calc': EngineCipherCalc,
+    'engine-overheat-calc': EngineOverheatCalc
   },
   head() {
     return {
