@@ -10,7 +10,7 @@
         :disabled="form === null ? false : !form"
         :loading="loading"
         small
-        color="accent"
+        color="success"
         class="primary--text"
         @click="emit"
       >

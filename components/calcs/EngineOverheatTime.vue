@@ -1,21 +1,10 @@
 <template>
-  <v-card color="info" elevation="5">
-    <v-toolbar color="primary" dense card>
-      <v-toolbar-title class="secondary--text">
-        Engine Overheat Time
-      </v-toolbar-title>
-      <v-spacer />
-      <v-btn
-        :disabled="!form"
-        :loading="loading"
-        small
-        color="accent"
-        class="primary--text"
-        @click="calc"
-      >
-        Calculate
+  <base-calc name="Engine Overheat Time" :form="form" :loading="loading" author="Ziwix" @calc="calc">
+    <template v-slot:buttons>
+      <v-btn :disabled="!form" color="warning" class="secondary--text" small @click="reset">
+        Reset
       </v-btn>
-    </v-toolbar>
+    </template>
     <v-form ref="ohForm" v-model="form">
       <v-container grid-list-md fluid>
         <v-layout row wrap justify-center>
@@ -45,16 +34,20 @@
         </v-layout>
       </v-container>
       <v-card-actions v-if="output.sec" class="justify-center">
-        <v-btn color="warning" class="primary--text" @click="reset">
+        <v-btn color="warning" class="primary--text" @click="output = {}">
           Clear
         </v-btn>
       </v-card-actions>
     </v-form>
-  </v-card>
+  </base-calc>
 </template>
 <script>
+import BaseCalc from '@/components/calcs/BaseCalc'
 export default {
-  name: 'EngineOverheatCalc',
+  name: 'EngineOverheatTimeCalc',
+  components: {
+    'base-calc': BaseCalc
+  },
   data() {
     return {
       loading: false,
@@ -95,6 +88,7 @@ export default {
     },
     reset() {
       this.output = {}
+      this.form = false
       this.$refs.ohForm.reset()
     },
     round(value, decs) {
