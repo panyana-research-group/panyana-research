@@ -5,7 +5,11 @@ export const calculators = {
         name: 'Calculators',
         icon: 'mdi-calculator',
         rows: [
-          { name: 'Engine', icon: 'mdi-engine', to: '/calculators/engines' },
+          {
+            name: 'Engine Materials',
+            icon: 'mdi-engine',
+            to: '/calculators/engines'
+          },
           {
             name: 'Fuel Consumption',
             icon: 'local_gas_station',
