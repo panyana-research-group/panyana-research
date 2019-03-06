@@ -5,7 +5,11 @@ export const calculators = {
         name: 'Calculators',
         icon: 'mdi-calculator',
         rows: [
-          { name: 'Engine', icon: 'mdi-engine', to: '/calculators/engines' },
+          {
+            name: 'Engine Materials',
+            icon: 'mdi-engine',
+            to: '/calculators/engines'
+          },
           {
             name: 'Overheat',
             icon: 'mdi-radiator',

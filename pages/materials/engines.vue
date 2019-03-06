@@ -8,6 +8,23 @@ export default {
   components: {
     'materials-chart': MaterialsChart
   },
+  head() {
+    return {
+      title: 'Engine Boosts',
+      meta: [
+        {
+          hid: 'og:title',
+          name: 'og:title',
+          content: 'Engine Boosts'
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Shows various materials effects on crafting engines'
+        }
+      ]
+    }
+  },
   data() {
     return {
       options: [
