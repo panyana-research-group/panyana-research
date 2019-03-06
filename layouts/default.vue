@@ -77,7 +77,7 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-content>
-      <v-container grid-list-md class="primary lighten-2" fluid style="min-height: 100%">
+      <v-container grid-list-md class="primary lighten-2" fluid style="min-height: 100%; min-width: 600px">
         <nuxt @openDrawer="drawer = true" />
       </v-container>
     </v-content>

@@ -79,7 +79,7 @@
               />
             </v-flex>
             <v-flex xs12 text-xs-center>
-              <v-btn color="warning" @click="usage = null">
+              <v-btn color="warning" class="primary--text" @click="usage = null">
                 Clear
               </v-btn>
             </v-flex>
@@ -136,8 +136,10 @@
   </v-layout>
 </template>
 <script>
+import { rules } from '@/components/mixins/rules'
 export default {
   name: 'FuelConsumptionCalc',
+  mixins: [rules],
   head() {
     return {
       title: 'Fuel Efficiency',
@@ -166,11 +168,7 @@ export default {
       ],
       engines: {},
       addEngine: false,
-      loading: false,
-      rules: {
-        required: v => !!v || 'Required!',
-        number: v => !isNaN(v) || 'Must be a number!'
-      }
+      loading: false
     }
   },
   mounted() {
