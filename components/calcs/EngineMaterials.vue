@@ -1,7 +1,10 @@
 <template>
   <base-calc name="Optimal Engine Materials" author="Ziwix" :loading="loading" :form="engine.form" @calc="calc">
     <template v-slot:buttons>
-      <v-btn color="accent" class="primary--text" small @click="filterDialog = true">
+      <v-btn color="accent" class="primary--text" small @click="$refs.filter.model = true">
+        <v-icon left :color="$refs.filter && $refs.filter.applied ? 'green' : 'red'">
+          check_circle
+        </v-icon>
         Filters
       </v-btn>
       <v-btn :disabled="!engine.form" color="warning" class="primary--text" small @click="reset">
@@ -41,7 +44,7 @@
         </template>
         <template v-if="output !== 'none'">
           <v-flex xs12>
-            <v-card id="resultsHeader" color="primary">
+            <v-card id="matsResultsHeader" color="primary">
               <v-card-text class="headline secondary--text text-xs-center">
                 Results
               </v-card-text>
@@ -109,76 +112,27 @@
         Clear
       </v-btn>
     </v-card-actions>
-    <v-dialog
-      v-model="filterDialog"
-      max-width="500px"
-    >
-      <v-card color="primary" dark>
-        <v-card-text class="text-xs-center headline">
-          Filter Materials
-        </v-card-text>
-        <v-data-table
-          :headers="headers"
-          :items="materials"
-          class="pa-2"
-          hide-actions
-        >
-          <template slot="items" slot-scope="props">
-            <tr v-if="filters[props.item.name]">
-              <td>{{ props.item.name }}</td>
-              <td>{{ props.item.rarity.slice(0, 1).toUpperCase() + props.item.rarity.slice(1) }}</td>
-              <td>
-                <v-layout justify-center>
-                  <v-checkbox v-model="filters[props.item.name].enabled" style="max-width: 24px" />
-                </v-layout>
-              </td>
-              <td>
-                <v-select
-                  v-model="filters[props.item.name].maxQ"
-                  :items="qualities"
-                />
-              </td>
-            </tr>
-          </template>
-          <template slot="no-data">
-            <v-alert type="warning" :value="true">
-              No data availible. Probably a network issue!
-            </v-alert>
-          </template>
-        </v-data-table>
-        <v-card-actions class="justify-center">
-          <v-btn color="success" @click="applyFilters">
-            Apply
-          </v-btn>
-          <v-btn color="info" @click="resetFilters">
-            Reset
-          </v-btn>
-          <v-btn color="warning" @click="filterDialog = false">
-            Cancel
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <mats-filter ref="filter" @update="filter = $event" />
   </base-calc>
 </template>
 <script>
-import _ from 'lodash'
-
+import { rules } from '@/components/mixins/rules'
+import { convert } from '@/components/mixins/convert'
 import BaseCalc from '@/components/calcs/BaseCalc'
+import MatsFilter from '@/components/calcs/MatsFilter'
 export default {
   name: 'EngineOptMatsCalc',
   components: {
-    'base-calc': BaseCalc
+    'base-calc': BaseCalc,
+    'mats-filter': MatsFilter
   },
+  mixins: [rules, convert],
   data() {
     return {
       loading: false,
-      filterDialog: false,
-      filterApplied: false,
-      filters: {},
+      filter: null,
       output: null,
       materials: [],
-      qualities: _.range(1, 11),
       engine: {
         res: '',
         pwr: '',
@@ -186,31 +140,15 @@ export default {
         su: '',
         fe: '',
         form: false
-      },
-      rules: {
-        required: v => !!v || 'Required!',
-        number: v => !isNaN(v) || 'Must be a number!'
-      },
-      headers: [
-        { text: 'Material', value: 'name' },
-        { text: 'Rarity', value: 'rarity' },
-        { text: 'Enabled?', sortable: false, align: 'center' },
-        { text: 'Max Quality', sortable: false }
-      ]
+      }
     }
-  },
-  created() {
-    this.$api.get('/materials').then(res => {
-      this.materials = res.data
-      this.resetFilters()
-    })
   },
   methods: {
     calc() {
       this.$api
         .post('/calcs/engine/mats', {
           engine: this.convert(this.engine),
-          filter: this.filters
+          filter: this.filter
         })
         .then(res => {
           switch (res.data.res) {
@@ -223,31 +161,11 @@ export default {
               break
             }
           }
+          this.$nextTick(() => this.$vuetify.goTo('#matsResultsHeader'))
         })
     },
-    convert(obj) {
-      const newObj = {}
-      Object.keys(obj).forEach(key => {
-        newObj[key] = parseInt(obj[key])
-      })
-      return newObj
-    },
-    applyFilters() {
-      this.filterDialog = false
-      this.filterApplied = true
-    },
-    resetFilters() {
-      this.materials.forEach(mat => {
-        this.filters[mat.name] = {
-          enabled: true,
-          maxQ: 10
-        }
-      })
-      this.filterApplied = false
-      this.fitlerDialog = false
-    },
     reset() {
-      this.resetFilters()
+      this.$refs.filter.resetFilter()
       this.$refs.engineForm.reset()
       this.output = null
     }

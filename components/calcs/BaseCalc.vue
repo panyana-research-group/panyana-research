@@ -11,7 +11,6 @@
         :loading="loading"
         small
         color="success"
-        class="primary--text"
         @click="emit"
       >
         Calculate

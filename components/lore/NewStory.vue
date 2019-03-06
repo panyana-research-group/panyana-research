@@ -15,7 +15,7 @@
             color="secondary"
             clearable
             persistent-hint
-            :rules="rules.titleRules"
+            :rules="[rules.required, noQuotesRule]"
           />
           <v-text-field
             id="pageCount"
@@ -26,7 +26,7 @@
             box
             color="secondary"
             clearable
-            :rules="rules.pageCountRules"
+            :rules="[rules.required, rules.number]"
           />
         </v-form>
       </v-card-text>
@@ -43,8 +43,11 @@
 </template>
 <script>
 import _ from 'lodash'
+
+import { rules } from '@/components/mixins/rules'
 export default {
   name: 'NewStory',
+  mixins: [rules],
   props: {
     show: Boolean
   },
@@ -54,18 +57,9 @@ export default {
       addComplete: false,
       pageCount: '',
       loreTitle: '',
-      rules: {
-        titleRules: [
-          v => !!v || 'Name is required',
-          v =>
-            (!!v && v.indexOf('"') < 0) ||
-            `You cannot use " in the name! Use ' instead`
-        ],
-        pageCountRules: [
-          v => !!v || 'Page count is required',
-          v => !isNaN(v) || 'Must be a number'
-        ]
-      }
+      noQuotesRule: v =>
+        (!!v && v.indexOf('"') < 0) ||
+        `You cannot use " in the name! Use ' instead`
     }
   },
   methods: {

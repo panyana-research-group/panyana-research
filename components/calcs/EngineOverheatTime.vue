@@ -42,12 +42,15 @@
   </base-calc>
 </template>
 <script>
+import { rules } from '@/components/mixins/rules'
+import { convert } from '@/components/mixins/convert'
 import BaseCalc from '@/components/calcs/BaseCalc'
 export default {
   name: 'EngineOverheatTimeCalc',
   components: {
     'base-calc': BaseCalc
   },
+  mixins: [rules, convert],
   data() {
     return {
       loading: false,
@@ -57,11 +60,7 @@ export default {
         oh: null,
         cf: null
       },
-      output: {},
-      rules: {
-        required: v => !!v || 'Required!',
-        number: v => !isNaN(v) || 'Must be a number!'
-      }
+      output: {}
     }
   },
   methods: {
@@ -78,13 +77,6 @@ export default {
               Math.floor(res.data.time / 60) * 60} seconds`
           }
         })
-    },
-    convert(obj) {
-      const newObj = {}
-      Object.keys(obj).forEach(key => {
-        newObj[key] = parseInt(obj[key])
-      })
-      return newObj
     },
     reset() {
       this.output = {}
