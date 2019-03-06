@@ -7,6 +7,11 @@ export const calculators = {
         rows: [
           { name: 'Engine', icon: 'mdi-engine', to: '/calculators/engines' },
           {
+            name: 'Overheat',
+            icon: 'mdi-radiator',
+            to: '/calculators/overheat'
+          },
+          {
             name: 'Fuel Consumption',
             icon: 'local_gas_station',
             to: '/calculators/fuelconsumption'

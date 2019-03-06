@@ -2,11 +2,12 @@
   <v-card color="info" elevation="5">
     <v-toolbar color="primary" dense card>
       <v-toolbar-title class="secondary--text">
-        {{ name }}
+        {{ name || '' }}
       </v-toolbar-title>
       <v-spacer />
+      <slot name="buttons" />
       <v-btn
-        :disabled="!form"
+        :disabled="form === null ? false : !form"
         :loading="loading"
         small
         color="accent"
@@ -25,11 +26,15 @@ export default {
   props: {
     name: {
       type: String,
-      default: ''
+      default: null
+    },
+    author: {
+      type: String,
+      default: null
     },
     form: {
       type: Boolean,
-      default: false
+      default: null
     },
     loading: {
       type: Boolean,
