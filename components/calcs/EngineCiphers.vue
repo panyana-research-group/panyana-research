@@ -58,7 +58,7 @@
         </v-btn>
       </v-card-actions>
     </v-form>
-    <mats-filter ref="filter" @update="filter = $event" />
+    <mats-filter ref="filter" name="EngineCiphers" @update="filter = $event" />
   </base-calc>
 </template>
 <script>

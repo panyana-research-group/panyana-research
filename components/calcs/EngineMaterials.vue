@@ -112,7 +112,7 @@
         Clear
       </v-btn>
     </v-card-actions>
-    <mats-filter ref="filter" @update="filter = $event" />
+    <mats-filter ref="filter" name="EngineMats" @update="filter = $event" />
   </base-calc>
 </template>
 <script>

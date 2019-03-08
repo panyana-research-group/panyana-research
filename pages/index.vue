@@ -14,7 +14,7 @@
       <v-btn
         v-for="cat in categories"
         :key="cat.name"
-        :to="`/${cat.name.toLowerCase()}`"
+        :to="`/${cat.link || cat.name.toLowerCase()}`"
         class="primary--text"
         color="accent"
         nuxt
@@ -48,7 +48,8 @@ export default {
         },
         {
           name: this.materialsButtonInfo.name,
-          icon: this.materialsButtonInfo.icon
+          icon: this.materialsButtonInfo.icon,
+          link: 'materials'
         },
         {
           name: this.dataButtonInfo.name,
