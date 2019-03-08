@@ -1,7 +1,14 @@
 <template>
   <v-layout justify-center row wrap>
     <v-flex xs12 md12 lg6>
-      <base-calc id="inputHeader" name="Atlas Sky Core Capacity" :form="true" :loading="loading" @calc="calc">
+      <base-calc
+        id="inputHeader"
+        name="Atlas Sky Core Capacity"
+        author="Machine_Maker"
+        :form="true"
+        :loading="loading"
+        @calc="calc"
+      >
         <v-container grid-list-md fluid>
           <v-layout row wrap justify-center>
             <v-flex xs12 pa-0>

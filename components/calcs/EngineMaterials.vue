@@ -145,12 +145,14 @@ export default {
   },
   methods: {
     calc() {
+      this.loading = true
       this.$api
         .post('/calcs/engine/mats', {
           engine: this.convert(this.engine),
           filter: this.filter
         })
         .then(res => {
+          this.loading = false
           switch (res.data.res) {
             case 'success': {
               this.output = res.data.data

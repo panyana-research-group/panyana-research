@@ -1,5 +1,5 @@
 <template>
-  <base-calc name="Optimal Power/OH Ciphering" :loading="loading" :form="engine.form" @calc="calc">
+  <base-calc name="Optimal Power/OH Ciphering" author="Ziwix" :loading="loading" :form="engine.form" @calc="calc">
     <template v-slot:buttons>
       <v-btn color="accent" class="primary--text" small @click="$refs.filter.model = true">
         <v-icon left :color="$refs.filter && $refs.filter.applied ? 'green' : 'red'">

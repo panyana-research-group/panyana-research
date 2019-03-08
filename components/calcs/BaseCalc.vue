@@ -3,6 +3,9 @@
     <v-toolbar color="primary" dense card>
       <v-toolbar-title class="secondary--text">
         {{ name || '' }}
+        <span v-if="author" class="body-2 font-weight-regular">
+          by: {{ author }}
+        </span>
       </v-toolbar-title>
       <v-spacer />
       <slot name="buttons" />
