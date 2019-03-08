@@ -143,8 +143,13 @@ export default {
       }
     }
   },
+  mounted() {
+    if (localStorage.getItem('engineMatsCalc'))
+      this.engine = JSON.parse(localStorage.getItem('engineMatsCalc'))
+  },
   methods: {
     calc() {
+      localStorage.setItem('engineMatsCalc', JSON.stringify(this.engine))
       this.loading = true
       this.$api
         .post('/calcs/engine/mats', {
@@ -169,6 +174,7 @@ export default {
     reset() {
       this.$refs.filter.resetFilter()
       this.$refs.engineForm.reset()
+      localStorage.removeItem('engineMatsCalc')
       this.output = null
     }
   }

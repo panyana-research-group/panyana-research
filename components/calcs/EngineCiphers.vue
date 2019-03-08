@@ -86,8 +86,13 @@ export default {
       filter: null
     }
   },
+  mounted() {
+    if (localStorage.getItem('engineCipherCalc'))
+      this.engine = JSON.parse(localStorage.getItem('engineCipherCalc'))
+  },
   methods: {
     calc() {
+      localStorage.setItem('engineCipherCalc', JSON.stringify(this.engine))
       this.loading = true
       this.$api
         .post('/calcs/engine/cipher', {
@@ -112,6 +117,7 @@ export default {
     reset() {
       this.$refs.filter.resetFilter()
       this.$refs.engineForm.reset()
+      localStorage.removeItem('engineCipherCalc')
       this.output = null
     }
   }
