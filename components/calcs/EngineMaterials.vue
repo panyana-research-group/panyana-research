@@ -1,11 +1,18 @@
 <template>
   <base-calc name="Optimal Engine Materials" author="Ziwix" :loading="loading" :form="engine.form" @calc="calc">
     <template v-slot:buttons>
-      <v-btn color="accent" class="primary--text" small @click="$refs.filter.model = true">
-        <v-icon left :color="$refs.filter && $refs.filter.applied ? 'green' : 'red'">
-          check_circle
+      <span v-if="$refs.options" class="body-1 text-xs-right secondary--text">
+        Filter
+        <v-icon small :color="$refs.options.applied.filter ? 'success' : 'error'">
+          {{ $refs.options.applied.filter ? 'mdi-checkbox-marked' : 'mdi-close-box' }}
+        </v-icon><br>
+        Forced Mats
+        <v-icon small :color="$refs.options.applied.parts ? 'success' : 'error'">
+          {{ $refs.options.applied.parts ? 'mdi-checkbox-marked' : 'mdi-close-box' }}
         </v-icon>
-        Filters
+      </span>
+      <v-btn color="accent" class="primary--text" small @click="$refs.options.model = true">
+        Options
       </v-btn>
       <v-btn :disabled="!engine.form" color="warning" class="primary--text" small @click="reset">
         Reset
@@ -112,7 +119,7 @@
         Clear
       </v-btn>
     </v-card-actions>
-    <mats-filter ref="filter" name="EngineMats" @update="filter = $event" />
+    <mats-filter ref="options" name="EngineMats" />
   </base-calc>
 </template>
 <script>
@@ -130,7 +137,6 @@ export default {
   data() {
     return {
       loading: false,
-      filter: null,
       output: null,
       materials: [],
       engine: {
@@ -154,13 +160,19 @@ export default {
       this.$api
         .post('/calcs/engine/mats', {
           engine: this.convert(this.engine),
-          filter: this.filter
+          filter: this.$refs.options.applied.filter
+            ? this.$refs.options.filter
+            : null,
+          parts: this.$refs.options.applied.parts
+            ? this.$refs.options.parts
+            : null
         })
         .then(res => {
           this.loading = false
           switch (res.data.res) {
             case 'success': {
               this.output = res.data.data
+              this.$nextTick(() => this.$vuetify.goTo('#matsResultsHeader'))
               break
             }
             case 'none found': {
@@ -168,11 +180,11 @@ export default {
               break
             }
           }
-          this.$nextTick(() => this.$vuetify.goTo('#matsResultsHeader'))
         })
     },
     reset() {
-      this.$refs.filter.resetFilter()
+      this.$refs.options.resetFilter()
+      this.$refs.options.resetParts()
       this.$refs.engineForm.reset()
       localStorage.removeItem('engineMatsCalc')
       this.output = null
