@@ -14,7 +14,7 @@
     <v-form ref="engineForm" v-model="engine.form">
       <v-container grid-list-md fluid>
         <v-layout row wrap>
-          <v-flex xs12 pa-0>
+          <v-flex xs12 py-0>
             This calculator only takes into account the Resilience, Spin Up, and Fuel Efficiency of the engine and calculates the optimal stat levels for Power and Overheat Limit to be ciphered to. Made by Ziwix
           </v-flex>
           <v-flex grow>
