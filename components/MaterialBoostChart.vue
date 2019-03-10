@@ -74,7 +74,7 @@ export default {
         {
           hid: 'og:title',
           name: 'og:title',
-          content: `${this.type.toLowerCase()} Materials`
+          content: `${this.type} Material Boosts`
         },
         {
           hid: 'og:description',

@@ -8,23 +8,6 @@ export default {
   components: {
     'materials-chart': MaterialsChart
   },
-  head() {
-    return {
-      title: 'Wing Boosts',
-      meta: [
-        {
-          hid: 'og:title',
-          name: 'og:title',
-          content: 'Wing Boosts'
-        },
-        {
-          hid: 'og:description',
-          name: 'og:description',
-          content: 'Shows various materials effects on crafting wings'
-        }
-      ]
-    }
-  },
   data() {
     return {
       options: [

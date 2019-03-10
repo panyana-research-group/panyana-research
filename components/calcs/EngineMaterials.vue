@@ -14,7 +14,7 @@
     <v-form ref="engineForm" v-model="engine.form">
       <v-container grid-list-md fluid>
         <v-layout row wrap>
-          <v-flex xs12 pa-0>
+          <v-flex xs12 py-0>
             Calculates the optimal materials to use to craft this engine so it will never overheat and go the fastest. Made by Ziwix
           </v-flex>
           <v-flex grow>
@@ -112,7 +112,7 @@
         Clear
       </v-btn>
     </v-card-actions>
-    <mats-filter ref="filter" @update="filter = $event" />
+    <mats-filter ref="filter" name="EngineMats" @update="filter = $event" />
   </base-calc>
 </template>
 <script>
