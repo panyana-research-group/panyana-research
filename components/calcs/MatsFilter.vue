@@ -242,6 +242,7 @@ export default {
   },
   methods: {
     resetFilter() {
+      this.filter = {}
       this.materials.forEach(mat => {
         this.filter[mat.name] = {
           enabled: true,
