@@ -234,10 +234,16 @@ export default {
         this.selectMats.push(mat.name)
       })
       this.filter = JSON.parse(localStorage.getItem(this.name + 'filter'))
-      if (!this.filter) this.resetFilter()
+      if (!this.filter) {
+        this.resetFilter()
+        this.applyFilterChanges()
+      }
       if (localStorage.getItem(this.name + 'parts'))
         this.parts = JSON.parse(localStorage.getItem(this.name + 'parts'))
-      else this.resetParts()
+      else {
+        this.resetParts()
+        this.applyPartChanges()
+      }
     })
   },
   methods: {

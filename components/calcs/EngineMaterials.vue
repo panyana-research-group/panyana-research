@@ -1,7 +1,7 @@
 <template>
   <base-calc name="Optimal Engine Materials" author="Ziwix" :loading="loading" :form="engine.form" @calc="calc">
     <template v-slot:buttons>
-      <span v-if="$refs.options" class="body-1 text-xs-right secondary--text">
+      <span v-if="$refs.options" class="body-1 text-xs-right secondary--text text-no-wrap">
         Filter
         <v-icon small :color="$refs.options.applied.filter ? 'success' : 'error'">
           {{ $refs.options.applied.filter ? 'mdi-checkbox-marked' : 'mdi-close-box' }}
