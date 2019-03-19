@@ -16,12 +16,14 @@
     "@mdi/font": "^3.4.93",
     "@nuxtjs/axios": "^5.3.6",
     "auth0-js": "^9.10.0",
+    "chartjs": "^0.3.24",
     "chroma-js": "^2.0.3",
     "cross-env": "^5.2.0",
     "eventemitter3": "^3.1.0",
     "jquery": "^3.3.1",
     "lodash": "^4.17.11",
     "nuxt": "^2.3.4",
+    "vue-chartjs": "^3.4.0",
     "vuetify": "^1.5.5"
   },
   "devDependencies": {
