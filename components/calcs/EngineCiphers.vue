@@ -1,11 +1,18 @@
 <template>
   <base-calc name="Optimal Power/OH Ciphering" author="Ziwix" :loading="loading" :form="engine.form" @calc="calc">
     <template v-slot:buttons>
-      <v-btn color="accent" class="primary--text" small @click="$refs.filter.model = true">
-        <v-icon left :color="$refs.filter && $refs.filter.applied ? 'green' : 'red'">
-          check_circle
+      <span v-if="$refs.options" class="body-1 text-xs-right secondary--text text-no-wrap">
+        Filter
+        <v-icon small :color="$refs.options.applied.filter ? 'success' : 'error'">
+          {{ $refs.options.applied.filter ? 'mdi-checkbox-marked' : 'mdi-close-box' }}
+        </v-icon><br>
+        Forced Mats
+        <v-icon small :color="$refs.options.applied.parts ? 'success' : 'error'">
+          {{ $refs.options.applied.parts ? 'mdi-checkbox-marked' : 'mdi-close-box' }}
         </v-icon>
-        Filters
+      </span>
+      <v-btn color="accent" class="primary--text" small @click="$refs.options.model = true">
+        Options
       </v-btn>
       <v-btn :disabled="!engine.form" color="warning" class="primary--text" small @click="reset">
         Reset
@@ -58,7 +65,7 @@
         </v-btn>
       </v-card-actions>
     </v-form>
-    <mats-filter ref="filter" name="EngineCiphers" @update="filter = $event" />
+    <mats-filter ref="options" name="EngineCiphers" />
   </base-calc>
 </template>
 <script>
@@ -82,8 +89,7 @@ export default {
         su: '',
         fe: '',
         form: false
-      },
-      filter: null
+      }
     }
   },
   mounted() {
@@ -97,13 +103,19 @@ export default {
       this.$api
         .post('/calcs/engine/cipher', {
           engine: this.convert(this.engine),
-          filter: this.filter
+          filter: this.$refs.options.applied.filter
+            ? this.$refs.options.filter
+            : null,
+          parts: this.$refs.options.applied.parts
+            ? this.$refs.options.parts
+            : null
         })
         .then(res => {
           this.loading = false
           switch (res.data.res) {
             case 'success': {
               this.output = res.data.data
+              this.$nextTick(() => this.$vuetify.goTo('#cipherResultsHeader'))
               break
             }
             case 'none found': {
@@ -111,11 +123,11 @@ export default {
               break
             }
           }
-          this.$nextTick(() => this.$vuetify.goTo('#cipherResultsHeader'))
         })
     },
     reset() {
-      this.$refs.filter.resetFilter()
+      this.$refs.options.resetFilter()
+      this.$refs.options.resetParts()
       this.$refs.engineForm.reset()
       localStorage.removeItem('engineCipherCalc')
       this.output = null
