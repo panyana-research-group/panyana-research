@@ -4,7 +4,7 @@
       <base-calc
         id="inputHeader"
         name="Atlas Sky Core Capacity"
-        author="Machine_Maker"
+        author="Machine Maker"
         :form="true"
         :loading="loading"
         @calc="calc"

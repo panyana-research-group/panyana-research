@@ -26,6 +26,12 @@ export const boosts = {
     getStyle(value, type) {
       switch (type) {
         case 'statValue': {
+          if (value === 0) {
+            return {
+              backgroundColor: '#949494',
+              color: '#000000'
+            }
+          }
           const color = this.scale
             .domain([0, this.max[this.slot]])(value)
             .hex()
