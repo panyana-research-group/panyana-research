@@ -16,7 +16,11 @@ export const materials = {
             icon: 'mdi-airplane-takeoff',
             to: '/materials/wings'
           },
-          { name: 'Cannons/Swivels', icon: 'mdi-pistol' },
+          {
+            name: 'Cannons/Swivels',
+            icon: 'mdi-pistol',
+            to: '/materials/cannonswivels'
+          },
           {
             name: 'Resilience',
             icon: 'mdi-hard-hat',

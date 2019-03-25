@@ -72,7 +72,6 @@ export default {
           if (!this.max.res) this.max.res = mat.boosts.res
           else this.max.res = Math.max(this.max.res, mat.boosts.res)
         })
-        console.log(this.max)
       })
       .catch(err => {
         console.error(err)

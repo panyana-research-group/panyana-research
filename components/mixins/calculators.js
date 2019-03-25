@@ -24,6 +24,11 @@ export const calculators = {
             name: 'Atlas Sky Core Capacity',
             icon: 'mdi-arrow-up-bold-circle',
             to: '/calculators/skycore'
+          },
+          {
+            name: 'Repair Cost',
+            icon: 'mdi-wrench',
+            to: '/calculators/repaircost'
           }
         ]
       }

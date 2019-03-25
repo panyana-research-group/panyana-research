@@ -4,7 +4,7 @@
       <base-calc
         id="inputHeader"
         name="Atlas Sky Core Capacity"
-        author="Machine_Maker"
+        author="Machine Maker"
         :form="true"
         :loading="loading"
         @calc="calc"
@@ -70,6 +70,14 @@
                     />
                   </td>
                 </template>
+                <template v-slot:no-data>
+                  <v-alert v-if="!data.loading && data.error" type="error" class="primary--text" :value="true">
+                    Error loading material data. Probably a network issue.
+                  </v-alert>
+                  <v-alert v-if="data.loading && !data.error" type="info" class="primary--text" :value="true">
+                    Loading material data...
+                  </v-alert>
+                </template>
               </v-data-table>
             </v-flex>
             <template v-if="haveResult">
@@ -128,7 +136,7 @@ import BaseCalc from '@/components/calcs/BaseCalc'
 export default {
   name: 'SkycoreCalc',
   components: {
-    'base-calc': BaseCalc
+    BaseCalc
   },
   head() {
     return {
@@ -153,6 +161,10 @@ export default {
       qualities: _.range(1, 11),
       result: {},
       haveResult: false,
+      data: {
+        loading: false,
+        error: false
+      },
       headers: {
         input: [
           { text: 'Part Name', value: 'name', sortable: false },
@@ -191,6 +203,7 @@ export default {
     }
   },
   mounted() {
+    this.data.loading = true
     this.$api
       .get('/materials')
       .then(res => {
@@ -200,6 +213,7 @@ export default {
             value: mat
           })
         })
+        this.data.loading = false
         this.casing = this.materials[0].value
         this.$api
           .get('/skycore')
@@ -215,7 +229,11 @@ export default {
             console.error(err)
           })
       })
-      .catch(err => console.error(err))
+      .catch(err => {
+        this.data.loading = false
+        this.data.error = true
+        console.error(err)
+      })
   },
   methods: {
     clear() {
