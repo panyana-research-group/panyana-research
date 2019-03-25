@@ -34,53 +34,51 @@
               </v-tooltip>
             </v-flex>
             <v-flex xs12 mt-3>
-              <data-chart :loading="data.loading" :error="data.error">
-                <v-data-table
-                  v-model="selected"
-                  :headers="headers.input"
-                  :items="parts"
-                  item-key="name"
-                  select-all="accent"
-                  disable-initial-sort
-                  hide-actions
-                  dark
-                >
-                  <template v-slot:items="props">
-                    <td>
-                      <v-checkbox v-model="props.selected" primary hide-details />
-                    </td>
-                    <td>{{ props.item.name }}</td>
-                    <td>{{ props.item.base }} kgs</td>
-                    <td>
-                      <v-select
-                        v-model="parts[props.index].material"
-                        :items="materials"
-                        :disabled="!props.selected"
-                        color="accent"
-                        label="Material"
-                        dense
-                      />
-                    </td>
-                    <td>
-                      <v-select
-                        v-model="props.item.quality"
-                        :items="qualities"
-                        :disabled="!props.selected"
-                        color="accent"
-                        dense
-                      />
-                    </td>
-                  </template>
-                  <template v-slot:no-data>
-                    <v-alert v-if="!data.loading && data.error" type="error" class="primary--text" :value="true">
-                      Error loading material data. Probably a network issue.
-                    </v-alert>
-                    <v-alert v-if="data.loading && !data.error" type="info" class="primary--text" :value="true">
-                      Loading material data...
-                    </v-alert>
-                  </template>
-                </v-data-table>
-              </data-chart>
+              <v-data-table
+                v-model="selected"
+                :headers="headers.input"
+                :items="parts"
+                item-key="name"
+                select-all="accent"
+                disable-initial-sort
+                hide-actions
+                dark
+              >
+                <template v-slot:items="props">
+                  <td>
+                    <v-checkbox v-model="props.selected" primary hide-details />
+                  </td>
+                  <td>{{ props.item.name }}</td>
+                  <td>{{ props.item.base }} kgs</td>
+                  <td>
+                    <v-select
+                      v-model="parts[props.index].material"
+                      :items="materials"
+                      :disabled="!props.selected"
+                      color="accent"
+                      label="Material"
+                      dense
+                    />
+                  </td>
+                  <td>
+                    <v-select
+                      v-model="props.item.quality"
+                      :items="qualities"
+                      :disabled="!props.selected"
+                      color="accent"
+                      dense
+                    />
+                  </td>
+                </template>
+                <template v-slot:no-data>
+                  <v-alert v-if="!data.loading && data.error" type="error" class="primary--text" :value="true">
+                    Error loading material data. Probably a network issue.
+                  </v-alert>
+                  <v-alert v-if="data.loading && !data.error" type="info" class="primary--text" :value="true">
+                    Loading material data...
+                  </v-alert>
+                </template>
+              </v-data-table>
             </v-flex>
             <template v-if="haveResult">
               <v-flex xs12 mt-4>
@@ -209,13 +207,13 @@ export default {
     this.$api
       .get('/materials')
       .then(res => {
-        this.data.loading = false
         res.data.forEach(mat => {
           this.materials.push({
             text: mat.name,
             value: mat
           })
         })
+        this.data.loading = false
         this.casing = this.materials[0].value
         this.$api
           .get('/skycore')

@@ -82,9 +82,12 @@
                 </td>
               </tr>
             </template>
-            <template slot="no-data">
-              <v-alert type="warning" :value="true">
-                No data availible. Probably a network issue!
+            <template v-slot:no-data>
+              <v-alert v-if="!data.loading && data.error" type="error" class="primary--text" :value="true">
+                Error loading material data. Probably a network issue.
+              </v-alert>
+              <v-alert v-if="data.loading && !data.error" type="info" class="primary--text" :value="true">
+                Loading material data...
               </v-alert>
             </template>
           </v-data-table>
@@ -185,6 +188,10 @@ export default {
     return {
       model: false,
       tab: null,
+      data: {
+        loading: false,
+        error: false
+      },
       materials: [],
       selectMats: [],
       qualities: _.range(1, 11),
@@ -228,23 +235,32 @@ export default {
     }
   },
   mounted() {
-    this.$api.get('/materials').then(res => {
-      this.materials = res.data
-      this.materials.forEach(mat => {
-        this.selectMats.push(mat.name)
+    this.data.loading = true
+    this.$api
+      .get('/materials')
+      .then(res => {
+        this.materials = res.data
+        this.materials.forEach(mat => {
+          this.selectMats.push(mat.name)
+        })
+        this.data.loading = true
+        this.filter = JSON.parse(localStorage.getItem(this.name + 'filter'))
+        if (!this.filter) {
+          this.resetFilter()
+          this.applyFilterChanges()
+        }
+        if (localStorage.getItem(this.name + 'parts'))
+          this.parts = JSON.parse(localStorage.getItem(this.name + 'parts'))
+        else {
+          this.resetParts()
+          this.applyPartChanges()
+        }
       })
-      this.filter = JSON.parse(localStorage.getItem(this.name + 'filter'))
-      if (!this.filter) {
-        this.resetFilter()
-        this.applyFilterChanges()
-      }
-      if (localStorage.getItem(this.name + 'parts'))
-        this.parts = JSON.parse(localStorage.getItem(this.name + 'parts'))
-      else {
-        this.resetParts()
-        this.applyPartChanges()
-      }
-    })
+      .catch(err => {
+        console.error(err)
+        this.data.loading = false
+        this.data.error = true
+      })
   },
   methods: {
     resetFilter() {
