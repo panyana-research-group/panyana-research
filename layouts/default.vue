@@ -6,7 +6,6 @@
           <div class="text-xs-center headline" style="width: 100%">
             Menu
           </div>
-          <!-- <v-list-tile-title class="text-xs-center">Menu</v-list-tile-title> -->
         </v-list-tile>
         <v-list-group v-for="type in buttonInfo" :key="type.name" :prepend-icon="type.icon" class="secondary primary--text elevation-2 my-2">
           <v-list-tile slot="activator" class="py-2">
@@ -100,17 +99,10 @@
   </v-app>
 </template>
 <script>
-import { calculators } from '@/components/mixins/calculators'
-import { materials } from '@/components/mixins/materials'
-import { data } from '@/components/mixins/data'
+import { calculators, materials, data } from '@/components/mixins/pages'
 export default {
   name: 'App',
   mixins: [calculators, materials, data],
-  data() {
-    return {
-      accountMenu: false
-    }
-  },
   computed: {
     buttonInfo() {
       return [

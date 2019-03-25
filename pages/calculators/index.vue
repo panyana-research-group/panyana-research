@@ -22,7 +22,7 @@
   </v-layout>
 </template>
 <script>
-import { calculators } from '@/components/mixins/calculators'
+import { calculators } from '@/components/mixins/pages'
 export default {
   name: 'Calculators',
   mixins: [calculators],
