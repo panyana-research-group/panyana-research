@@ -22,7 +22,7 @@
   </v-layout>
 </template>
 <script>
-import { materials } from '@/components/mixins/materials'
+import { materials } from '@/components/mixins/pages'
 export default {
   name: 'Materials',
   mixins: [materials],

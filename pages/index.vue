@@ -28,9 +28,7 @@
   </v-layout>
 </template>
 <script>
-import { calculators } from '@/components/mixins/calculators'
-import { materials } from '@/components/mixins/materials'
-import { data } from '@/components/mixins/data'
+import { calculators, materials, data } from '@/components/mixins/pages'
 export default {
   name: 'Home',
   mixins: [calculators, materials, data],

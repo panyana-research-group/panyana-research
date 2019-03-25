@@ -22,7 +22,7 @@
   </v-layout>
 </template>
 <script>
-import { data } from '@/components/mixins/data'
+import { data } from '@/components/mixins/pages'
 export default {
   name: 'Data',
   mixins: [data],
