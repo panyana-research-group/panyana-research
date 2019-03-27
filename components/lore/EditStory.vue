@@ -218,6 +218,7 @@ export default {
       }
     },
     edit() {
+      this.loading = true
       this.$api.get('/lore/' + this.currentEdit._id).then(data => {
         const pageCount = parseInt(this.currentEdit.onWiki.split('/')[1])
         const haveWiki = ['title']
@@ -276,7 +277,6 @@ export default {
           formData.append('page-' + this.uploadedTwo[i] + '-1', input.files[0])
         }
 
-        this.loading = true
         this.$api
           .put('/lore/' + this.currentEdit._id, formData, {
             headers: { 'Content-Type': 'multipart/form-data' }

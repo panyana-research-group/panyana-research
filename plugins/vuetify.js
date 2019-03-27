@@ -4,6 +4,7 @@ import Vuetify from 'vuetify/lib'
 Vue.config.productionTip = false
 
 Vue.use(Vuetify, {
+  customProperties: true,
   theme: {
     primary: '#292f36',
     secondary: '#fffedc',

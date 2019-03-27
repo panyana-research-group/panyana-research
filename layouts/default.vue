@@ -67,7 +67,7 @@
               <v-btn v-if="!$store.state.loggedIn" color="success" @click="$auth.login()">
                 Login
               </v-btn>
-              <v-btn v-if="$store.state.loggedIn" color="warning" @click="$auth.logout(); $store.commit('authLogOut')">
+              <v-btn v-if="$store.state.loggedIn" color="warning" @click="$auth.logout(); $store.commit('changeAuth', false)">
                 Logout
               </v-btn>
             </v-card-actions>

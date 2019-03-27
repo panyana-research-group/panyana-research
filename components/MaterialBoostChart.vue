@@ -15,7 +15,6 @@
             style="max-width: 200px"
             hide-details
             dark
-            must-sort
           />
         </v-card-actions>
         <v-data-table
@@ -26,6 +25,7 @@
           class="pa-3"
           hide-actions
           dark
+          must-sort
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-right" :style="{ color: props.item.color }">

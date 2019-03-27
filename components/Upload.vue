@@ -1,8 +1,9 @@
 <template>
-  <div class="upload-btn">
+  <div
+    class="upload-btn"
+  >
     <input
-      :id="id"
-      ref="fileInput"
+      :id="`${_uid}uploadFile`"
       type="file"
       :name="name"
       :accept="accept"
@@ -10,39 +11,28 @@
       @change="fileChanged"
     >
     <label
-      v-if="ripple"
-      :id="`label${id}`"
-      v-ripple
-      :for="id"
-      :class="`v-btn ${classes}${color} upload-btn ${textColor}`"
+      :id="`label${_uid + 'uploadFile'}`"
+      v-ripple="ripple"
+      :for="`${_uid}uploadFile`"
+      :class="`v-btn ${classes}${color} ${labelClass} upload-btn`"
+      :style="{ maxWidth, width: fixedWidth || 'auto' }"
     >
-      <slot name="icon-left" />
-      {{ icon ? '' : title }}
-      <slot name="icon" />
-    </label>
-    <label
-      v-else
-      :id="`label${id}`"
-      :for="id"
-      :class="`v-btn ${classes}${color} upload-btn ${textColor}`"
-    >
-      <slot name="icon-left" />
-      {{ icon ? '' : title }}
-      <slot name="icon" />
+      <div class="v-btn__content" style="max-width: 100%">
+        <slot name="icon-left" />
+        <span>
+          {{ icon ? '' : noTitleUpdate ? title : uTitle }}
+        </span>
+        <slot name="icon" />
+      </div>
     </label>
   </div>
 </template>
-
 <script>
 export default {
-  name: 'UploadButton',
+  name: 'UploadBtn',
   props: {
     accept: {
       default: '*',
-      type: String
-    },
-    page: {
-      default: null,
       type: String
     },
     block: {
@@ -53,10 +43,6 @@ export default {
       default: false,
       type: Boolean
     },
-    fileChangedCallback: {
-      default: () => true,
-      type: Function
-    },
     color: {
       default: 'primary',
       type: String
@@ -64,6 +50,10 @@ export default {
     disabled: {
       default: false,
       type: Boolean
+    },
+    fixedWidth: {
+      default: null,
+      type: String
     },
     flat: {
       default: false,
@@ -77,6 +67,10 @@ export default {
       default: false,
       type: Boolean
     },
+    labelClass: {
+      default: '',
+      type: String
+    },
     large: {
       default: false,
       type: Boolean
@@ -84,6 +78,10 @@ export default {
     loading: {
       default: false,
       type: Boolean
+    },
+    maxWidth: {
+      default: '100%',
+      type: String
     },
     multiple: {
       default: false,
@@ -109,28 +107,21 @@ export default {
       default: false,
       type: Boolean
     },
-    uniqueId: {
-      default: false,
-      type: Boolean
-    },
-    textColor: {
-      default: 'white--text',
+    title: {
+      default: 'Upload',
       type: String
     },
-    event: {
+    noTitleUpdate: {
       default: false,
       type: Boolean
     }
   },
   data() {
     return {
-      title: 'Upload'
+      uTitle: 'Upload'
     }
   },
   computed: {
-    id() {
-      return this.uniqueId ? `${this._uid}uploadFile` : 'uploadFile'
-    },
     classes() {
       const classes = {
         'v-btn--block': this.block,
@@ -161,38 +152,39 @@ export default {
   methods: {
     fileChanged(e) {
       if (e) {
-        if (this.fileChangedCallback || this.event) {
-          if (e.target.files) {
-            if (!this.multiple && e.target.files[0]) {
-              this.fileChangedCallback(e.target.files[0], this.page)
-              this.$emit('change', e.target.files[0])
-            } else if (this.multiple) {
-              this.fileChangedCallback(e.target.files, this.page)
-              this.$emit('change', e.target.files)
-            } else {
-              this.fileChangedCallback(null, this.page)
-              this.$emit('change', null)
-            }
+        if (e.target.files.length > 0) {
+          if (!this.multiple) {
+            this.uTitle = e.target.files[0].name
+            this.$emit('file-update', e.target.files[0])
+            this.$emit('testH', 'blah')
           } else {
-            this.fileChangedCallback(null, this.page)
-            this.$emit('change', this.page)
+            let title = ''
+            for (let i = 0; i < e.target.files.length; i++) {
+              title += e.target.files[i].name + ', '
+            }
+            title = title.slice(0, title.length - 2)
+            this.uTitle = title
+            this.$emit('file-update', e.target.files)
           }
+        } else {
+          this.uTitle = 'Upload'
+          this.$emit('file-update')
         }
       }
+    },
+    clear() {
+      document.getElementById(`${this._uid}uploadFile`).value = ''
+      this.$emit('file-update')
+      this.uTitle = 'Upload'
     }
   }
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .upload-btn {
   padding-left: 16px;
   padding-right: 16px;
-  width: 180px;
-
-  .v-icon {
-    margin-right: 5px;
-  }
 }
 
 .upload-btn input[type='file'] {
@@ -202,6 +194,12 @@ export default {
   overflow: hidden;
   opacity: 0;
   z-index: -1;
+}
+
+.upload-btn > .v-btn__content > span {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .upload-btn-hover {

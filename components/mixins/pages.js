@@ -77,7 +77,7 @@ export const data = {
         name: 'Data',
         icon: 'mdi-database',
         rows: [
-          { name: 'Clothing', icon: 'mdi-tshirt-crew' },
+          { name: 'Clothing', icon: 'mdi-tshirt-crew', to: '/data/clothing' },
           { name: 'Salvage', icon: 'attachment' },
           { name: 'Procedurals', icon: 'memory' },
           { name: 'Lore', icon: 'mdi-book-open-variant', to: '/data/lore' },
