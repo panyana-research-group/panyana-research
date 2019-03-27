@@ -104,6 +104,19 @@ import EditClothing from '@/components/data/clothing/EditClothing'
 import _ from 'lodash'
 export default {
   name: 'Clothing',
+  head() {
+    return {
+      title: 'Clothing',
+      meta: [
+        { hid: 'og:title', name: 'og:title', content: 'Clothing' },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'A ongoing collection of all the clothing'
+        }
+      ]
+    }
+  },
   components: {
     DataTable,
     NewClothing,
