@@ -7,6 +7,7 @@
             v-model="formData.cultures"
             :rules="[rules.required]"
             :items="['Saborian', 'Kioki', 'Marauder', 'Other']"
+            :disabled="item.rarity === 'Stash'"
             label="Culture(s)"
             color="accent"
             multiple
@@ -19,6 +20,7 @@
             v-model="formData.tiers"
             :rules="[rules.required]"
             :items="tiers"
+            :disabled="item.rarity === 'Stash'"
             label="Found in tier(s)"
             color="accent"
             multiple
@@ -71,6 +73,16 @@
             </template>
           </upload-button>
         </v-flex>
+        <v-flex xs12 mt-1>
+          <v-textarea
+            v-model="formData.notes"
+            color="accent"
+            label="Notes"
+            auto-grow
+            outline
+            clearable
+          />
+        </v-flex>
       </v-layout>
     </v-form>
     <template v-slot:actions>
@@ -110,7 +122,8 @@ export default {
         cultures: [],
         tiers: [],
         flavor: null,
-        base: null
+        base: null,
+        notes: null
       },
       tiers: [
         { text: 'Tier 1', value: 1 },
@@ -127,11 +140,13 @@ export default {
           cultures: [],
           tiers: [],
           flavor: null,
-          base: null
+          base: null,
+          notes: null
         }
       } else {
         this.formData.cultures = newVal.cultures
         this.formData.tiers = newVal.tiers
+        this.formData.notes = newVal.notes
       }
     }
   },
@@ -145,7 +160,8 @@ export default {
           cultures: [
             ...new Set([...res.data.cultures, ...this.formData.cultures])
           ],
-          tiers: [...new Set([...res.data.tiers, ...this.formData.tiers])]
+          tiers: [...new Set([...res.data.tiers, ...this.formData.tiers])],
+          notes: this.formData.notes
         }
 
         const formData = new FormData()

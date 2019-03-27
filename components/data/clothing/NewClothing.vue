@@ -26,7 +26,7 @@
         <v-flex xs12 md6 px-1>
           <v-select
             v-model="formData.rarity"
-            :items="['Common', 'Uncommon', 'Rare', 'Exotic']"
+            :items="['Common', 'Uncommon', 'Rare', 'Exotic', 'Stash', 'unknown']"
             :rules="[rules.required]"
             label="Item Rarity"
             color="accent"
@@ -37,7 +37,7 @@
       </v-layout>
     </v-form>
     <template v-slot:actions>
-      <v-btn color="error" class="secondary--text" @click="$emit('close')">
+      <v-btn color="error" class="secondary--text" @click="$emit('close'); reset()">
         Cancel
       </v-btn>
       <v-btn color="info" class="primary--text" @click="$refs.form.reset()">

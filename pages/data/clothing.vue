@@ -10,7 +10,7 @@
         <template v-slot:extension>
           <v-select
             v-model="typeSelected"
-            :items="['Head', 'Torso', 'Legs']"
+            :items="['Head', 'Torso', 'Legs', { text: '(all)', value: 'all' }]"
             label="Select a type"
             color="accent"
             class="ml-2"
@@ -21,8 +21,8 @@
         </template>
 
         <v-data-table
-          :headers="headers"
-          :items="clothing[typeSelected.toLowerCase()]"
+          :headers="typeSelected === 'all' ? [{ text: 'Type', value: 'type' }, ...headers] : headers"
+          :items="compClothing"
           :loading="data.loading"
           :search="search"
           class="pa-2"
@@ -31,6 +31,9 @@
           hide-actions
         >
           <template v-slot:items="props">
+            <td v-if="typeSelected === 'all'">
+              {{ props.item.type.slice(0, 1).toUpperCase() + props.item.type.slice(1) }}
+            </td>
             <td v-if="props.item.base" class="px-2">
               <v-img :src="`https://drive.google.com/uc?id=${props.item.base}`" max-height="100px" />
             </td>
@@ -70,6 +73,9 @@
                 </v-btn>
                 Edit the story
               </v-tooltip>
+            </td>
+            <td class="caption">
+              {{ props.item.notes }}
             </td>
           </template>
           <template v-slot:no-data>
@@ -152,8 +158,25 @@ export default {
         { text: 'Tier(s)', sortable: false },
         { text: 'Culture(s)', sortable: false },
         { text: 'Flavor Image', sortable: false, align: 'center' },
-        { text: 'Edit', sortable: false, align: 'center' }
+        { text: 'Edit', sortable: false, align: 'center' },
+        { text: 'Notes', sortable: false }
       ]
+    }
+  },
+  computed: {
+    compClothing() {
+      switch (this.typeSelected) {
+        case 'all': {
+          return [
+            ...this.clothing.head,
+            ...this.clothing.torso,
+            ...this.clothing.legs
+          ]
+        }
+        default: {
+          return this.clothing[this.typeSelected.toLowerCase()]
+        }
+      }
     }
   },
   mounted() {
