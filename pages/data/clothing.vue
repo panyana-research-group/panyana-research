@@ -13,16 +13,29 @@
             :items="['Head', 'Torso', 'Legs', { text: '(all)', value: 'all' }]"
             label="Select a type"
             color="accent"
-            class="ml-2"
+            class="ml-2 shrink"
             style="max-width: 200px"
             hide-details
             dark
+          />
+          <v-select
+            v-model="rarityFilter"
+            :items="['Common', 'Uncommon', 'Rare', 'Exotic', 'Stash']"
+            label="Rarities"
+            color="accent"
+            class="ml-2 shrink"
+            style="width: 355px"
+            hide-details
+            clearable
+            multiple
+            dark
+            @change="rarityFilter.sort()"
           />
         </template>
 
         <v-data-table
           :headers="typeSelected === 'all' ? [{ text: 'Type', value: 'type' }, ...headers] : headers"
-          :items="compClothing"
+          :items="compClothing.filter(c => rarityFilter.indexOf(c.rarity) > -1)"
           :loading="data.loading"
           :search="search"
           class="pa-2"
@@ -34,8 +47,8 @@
             <td v-if="typeSelected === 'all'">
               {{ props.item.type.slice(0, 1).toUpperCase() + props.item.type.slice(1) }}
             </td>
-            <td v-if="props.item.base" class="px-2">
-              <v-img :src="`https://drive.google.com/uc?id=${props.item.base}`" max-height="100px" />
+            <td v-if="props.item.base" class="px-2 text-xs-center">
+              <img :src="`https://drive.google.com/uc?id=${props.item.base}`" :width="width(props.item.type)">
             </td>
             <td v-else>
               Missing
@@ -48,7 +61,7 @@
               <v-dialog :value="props.item.dialog" max-width="200px">
                 <template v-slot:activator="{ on }">
                   <span>
-                    <v-btn color="info" class="primary--text" v-on="on">
+                    <v-btn color="info" class="primary--text" small v-on="on">
                       Image
                     </v-btn>
                   </span>
@@ -149,17 +162,18 @@ export default {
         show: false
       },
       typeSelected: 'Head',
+      rarityFilter: ['Common', 'Uncommon', 'Rare', 'Exotic', 'Stash'],
       currentEdit: null,
       search: null,
       headers: [
-        { text: 'Image', sortable: false, width: '100px' },
+        { text: 'Image', sortable: false },
         { text: 'Name', value: 'name' },
         { text: 'Rarity', value: 'rarity' },
         { text: 'Tier(s)', sortable: false },
         { text: 'Culture(s)', sortable: false },
         { text: 'Flavor Image', sortable: false, align: 'center' },
         { text: 'Edit', sortable: false, align: 'center' },
-        { text: 'Notes', sortable: false }
+        { text: 'Notes', sortable: false, width: '200px' }
       ]
     }
   },
@@ -245,6 +259,16 @@ export default {
         return false
       }
       return true
+    },
+    width(type) {
+      switch (type) {
+        case 'head':
+          return '100px'
+        case 'torso':
+          return '80px'
+        case 'legs':
+          return '50px'
+      }
     }
   }
 }

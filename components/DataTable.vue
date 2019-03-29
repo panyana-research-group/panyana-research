@@ -15,6 +15,7 @@
           append-icon="search"
           label="Search Clothing"
           color="accent"
+          class="grow"
           persistent-hint
           box
           hide-details
