@@ -111,6 +111,35 @@
               label="Weight"
             />
           </v-flex>
+          <v-layout row wrap mx-2>
+            <v-flex xs4>
+              <v-text-field
+                v-model="output.crafted.cf"
+                :disabled="true"
+                outline
+                hide-details
+                label="CF"
+              />
+            </v-flex>
+            <v-flex xs4>
+              <v-text-field
+                v-model="output.crafted.oh"
+                :disabled="true"
+                outline
+                hide-details
+                label="Overheat"
+              />
+            </v-flex>
+            <v-flex xs4>
+              <v-text-field
+                v-model="output.crafted.pwr"
+                :disabled="true"
+                outline
+                hide-details
+                label="Power"
+              />
+            </v-flex>
+          </v-layout>
         </template>
       </v-layout>
     </v-container>
