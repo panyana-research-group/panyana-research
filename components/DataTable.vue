@@ -13,7 +13,7 @@
         <v-text-field
           v-model="searchModel"
           append-icon="search"
-          label="Search Clothing"
+          :label="`Search ${name}`"
           color="accent"
           class="grow"
           persistent-hint
@@ -26,6 +26,12 @@
       </template>
     </v-toolbar>
     <slot />
+    <v-snackbar v-model="snack.show" :timeout="5000" :color="snack.color">
+      {{ snack.text }}
+      <v-btn dark flat @click.native="snack.show = false">
+        Close
+      </v-btn>
+    </v-snackbar>
   </v-card>
 </template>
 <script>
@@ -41,6 +47,15 @@ export default {
     search: {
       type: String,
       default: null
+    }
+  },
+  data() {
+    return {
+      snack: {
+        text: 'none',
+        color: 'error',
+        show: false
+      }
     }
   },
   computed: {

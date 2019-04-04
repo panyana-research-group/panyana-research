@@ -1,48 +1,28 @@
 <template>
   <v-layout row wrap justify-center>
     <v-flex xs12 lg11 xl8>
-      <v-card class="secondary elevation-4">
-        <v-container grid-list-xs justify-center>
-          <v-layout row wrap>
-            <v-flex shrink>
-              <v-btn color="accent primary--text" @click="openNewLore">
-                New Story
-              </v-btn>
-            </v-flex>
-            <v-flex shrink>
-              <v-btn color="accent primary--text" @click="refreshLore">
-                Refresh Lore
-              </v-btn>
-            </v-flex>
-            <v-flex grow>
-              <v-text-field
-                v-model="search"
-                append-icon="search"
-                label="Search Lore"
-                persistent-hint
-                hide-details
-                box
-                color="accent"
-                clearable
-              />
-            </v-flex>
-          </v-layout>
-        </v-container>
+      <data-table name="Lore" :search.sync="search" add use-search @add="openNew">
+        <template v-slot:buttons>
+          <v-btn :loading="data.loading" color="accent" class="primary--text" small @click="refresh">
+            Refresh
+          </v-btn>
+        </template>
         <v-data-table
           id="lore-table"
-          class="secondary pa-2"
-          :items="lore"
           :headers="headers"
-          :custom-sort="customSort"
+          :items="lore"
+          :loading="data.loading"
           :search="search"
-          item-key="title"
-          hide-actions
+          :custom-sort="customSort"
           :pagination.sync="pagination"
-          :loading="loading"
-          :must-sort="true"
+          item-key="title"
+          class="ma-2"
+          dark
+          must-sort
+          hide-actions
         >
           <template v-slot:items="props">
-            <tr :class="getClasses(props.item)">
+            <tr :class="getClasses(props.item) + ' black--text'">
               <td>{{ props.item.title }}</td>
               <td class="text-xs-center">
                 {{ props.item.onWiki }}
@@ -63,51 +43,54 @@
                   <v-btn
                     slot="activator"
                     :disabled="props.item.missingWiki==='COMPLETED'"
-                    color="error"
+                    color="primary"
                     class="lighten-2"
                     icon
                     @click="editStory(props.item)"
                   >
-                    <v-icon>edit</v-icon>
+                    <v-icon color="info">
+                      edit
+                    </v-icon>
                   </v-btn>
                   Edit the story
                 </v-tooltip>
               </td>
             </tr>
           </template>
-          <v-alert slot="no-results" :value="true" type="error" icon="warning">
+          <v-alert slot="no-results" :value="true" type="warning" icon="warning">
             Your search for "{{ search }}" found no results.
           </v-alert>
-          <v-alert v-if="!loading" slot="no-data" :value="true" type="error">
-            No lore data availible. Probably a network issue :)
-          </v-alert>
-          <v-alert v-if="loading" slot="no-data" :value="true" type="info">
-            Loading data...
-          </v-alert>
+          <template v-slot:no-data>
+            <v-alert v-if="!data.loading && data.error" type="error" class="primary--text" :value="true">
+              Error loading lore data. Probably a network issue.
+            </v-alert>
+            <v-alert v-else-if="data.loading && !data.error" type="info" class="primary--text" :value="true">
+              Loading lore data...
+            </v-alert>
+            <v-alert v-else-if="!data.loading && !data.error" type="info" class="primary--text" :value="true">
+              No lore data!
+            </v-alert>
+          </template>
         </v-data-table>
-      </v-card>
-      <edit-story
+      </data-table>
+      <edit-lore
         ref="editStory"
-        :show="show.editLore"
-        :current-edit="currentEdit"
+        :show="dialogs.edit"
+        :item="currentEdit"
         :have-wiki="currentHaveWiki"
-        @close="onClose('editLore', $event)"
+        @close="close('edit', $event)"
         @update="update($event)"
       />
-      <new-story ref="newStory" :show="show.newLore" @close="onClose('newLore', $event)" />
-      <v-snackbar v-model="snack.show" :timeout="5000" :color="snack.color">
-        {{ snack.text }}
-        <v-btn dark flat @click.native="snack.show = false">
-          Close
-        </v-btn>
-      </v-snackbar>
+      <new-lore :show="dialogs.new" @close="close('new', $event)" />
     </v-flex>
   </v-layout>
 </template>
 <script>
 import _ from 'lodash'
-import NewStory from '@/components/lore/NewStory'
-import EditStory from '@/components/lore/EditStory'
+
+import DataTable from '@/components/DataTable'
+import NewLore from '@/components/data/lore/NewLore'
+import EditLore from '@/components/data/lore/EditLore'
 export default {
   name: 'Lore',
   head() {
@@ -124,69 +107,36 @@ export default {
     }
   },
   components: {
-    'new-story': NewStory,
-    'edit-story': EditStory
+    DataTable,
+    NewLore,
+    EditLore
   },
   data() {
     return {
-      pagination: { sortBy: 'title', descending: true, rowsPerPage: -1 },
-      snack: {
-        text: 'none',
-        color: 'error',
-        show: false
+      data: {
+        loading: true,
+        error: false
       },
+      pagination: { sortBy: 'title', descending: true, rowsPerPage: -1 },
       search: '',
       lore: [],
-      loading: true,
-      show: {
-        newLore: false,
-        editLore: false
+      dialogs: {
+        new: false,
+        edit: false
       },
       headers: [
+        { text: 'Title', value: 'title', width: '23%' },
+        { text: 'On Wiki', value: 'onWiki', width: '7%' },
+        { text: 'Missing from wiki', value: 'missingWiki', width: '18%' },
+        { text: 'Missing images', value: 'missingPics', width: '17%' },
+        { text: 'Add to wiki', value: 'addWiki', width: '10%' },
         {
-          text: 'Title',
-          value: 'title',
-          width: '23%',
-          class: 'info'
-        },
-        {
-          text: 'On Wiki',
-          value: 'onWiki',
-          width: '7%',
-          class: 'info'
-        },
-        {
-          text: 'Missing from wiki',
-          value: 'missingWiki',
-          width: '18%',
-          class: 'info'
-        },
-        {
-          text: 'Missing images',
-          value: 'missingPics',
-          width: '17%',
-          class: 'info'
-        },
-        {
-          text: 'Add to wiki',
-          value: 'addWiki',
-          width: '10%',
-          class: 'info'
-        },
-        {
-          text: 'Drive Folder',
+          text: 'Lore Pages',
           sortable: false,
           width: '15%',
-          class: 'info',
           align: 'center'
         },
-        {
-          text: 'Edit',
-          sortable: false,
-          width: '10%',
-          class: 'info',
-          align: 'center'
-        }
+        { text: 'Edit', sortable: false, width: '10%', align: 'center' }
       ],
       currentEdit: {
         title: '',
@@ -200,19 +150,38 @@ export default {
     }
   },
   created() {
-    this.refreshLore()
+    this.refresh()
   },
   methods: {
+    refresh() {
+      this.data.loading = true
+      this.lore = []
+      this.$api
+        .get('/lore/all')
+        .then(res => {
+          this.data.loading = false
+          this.lore.push(...res.data)
+        })
+        .catch(err => {
+          console.error(err)
+          this.data.loading = false
+          this.data.error = false
+        })
+    },
+    openNew() {
+      if (!this.checkRole(['Admin'])) return
+      this.dialogs.new = true
+    },
     update(event) {
       this.currentHaveWiki = event.join(', ')
     },
-    onClose(type, value) {
-      this.show[type] = false
+    close(type, value) {
+      this.dialogs[type] = false
       switch (value) {
         case 'success':
           this.snack.color = 'success'
           this.snack.text = 'Successfully updated lore!'
-          this.refreshLore()
+          this.refresh()
           break
         case 'error':
           this.snack.color = 'error'
@@ -220,21 +189,6 @@ export default {
           break
       }
       if (value) this.snack.show = true
-    },
-    refreshLore() {
-      this.loading = true
-      this.lore = []
-      this.$api
-        .get('/lore/all')
-        .then(res => {
-          this.lore.push(...res.data)
-          this.loading = false
-        })
-        .catch(err => {
-          console.error(err)
-          this.lore = []
-          this.loading = false
-        })
     },
     checkRole(roles) {
       if (!this.$store.state.loggedIn || !this.$auth.userProfile) {
@@ -251,11 +205,6 @@ export default {
       }
       return true
     },
-    openNewLore() {
-      if (!this.checkRole(['Admin'])) return
-      this.$refs.newStory.$refs.newLore.reset()
-      this.show.newLore = true
-    },
     editStory(item) {
       if (!this.checkRole(['Admin', 'Collector'])) return
       const pageCount = parseInt(item.onWiki.split('/')[1])
@@ -270,7 +219,7 @@ export default {
           haveWiki.push(String(i))
       }
       this.currentHaveWiki = haveWiki.join(', ')
-      this.show.editLore = true
+      this.dialogs.edit = true
     },
     getClasses(item) {
       if (item.missingWiki === 'COMPLETED') return 'green lighten-2'
@@ -328,14 +277,17 @@ export default {
 </script>
 <style lang="scss">
 #lore-table table {
-  table-layout: fixed;
-  overflow: hidden;
-  min-width: 1200px;
+  //   table-layout: fixed;
+  //   overflow: hidden;
+  //   min-width: 1200px;
   thead tr {
     border-bottom: 1px solid black !important;
   }
-  tbody tr {
-    border: 1px solid black !important;
+  tbody {
+    tr {
+      border-top: 1px solid black !important;
+      border-bottom: 1px solid black !important;
+    }
   }
 }
 .upload-btn.v-btn--disabled {

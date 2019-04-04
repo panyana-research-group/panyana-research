@@ -39,7 +39,6 @@
             :no-title-update="!!item.flavor"
             title="Uploaded"
             :label-class="`primary--text ${item.flavor ? '' : 'accent'}`"
-            width="100%"
             block
             class="px-1"
             @file-update="formData['flavor'] = $event"
@@ -61,7 +60,6 @@
             :no-title-update="!!item.base"
             title="Uploaded"
             label-class="primary--text accent"
-            width="100%"
             block
             class="px-1"
             @file-update="formData['base'] = $event"
@@ -97,7 +95,7 @@
 </template>
 <script>
 import EditData from '@/components/data/EditData'
-import UploadButton from '@/components/Upload'
+import UploadButton from '@/components/UploadButton'
 
 import { rules } from '@/components/mixins/rules'
 export default {

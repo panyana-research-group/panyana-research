@@ -4,6 +4,7 @@
       <v-layout row wrap justify-center>
         <v-flex xs12 md6 px-1>
           <v-text-field
+            ref="clothingNameField"
             v-model="formData.name"
             :rules="[rules.required]"
             label="Clothing Name"
@@ -51,7 +52,6 @@
 </template>
 <script>
 import NewData from '@/components/data/NewData'
-
 import { rules } from '@/components/mixins/rules'
 export default {
   name: 'NewClothing',
@@ -73,8 +73,20 @@ export default {
       }
     }
   },
+  watch: {
+    show: function(newVal, oldVal) {
+      if (newVal && localStorage.getItem('clothingTypeSelected') !== 'all')
+        this.formData.type =
+          localStorage.getItem('clothingTypeSelected') || null
+
+      if (newVal) {
+        this.$nextTick(() => this.$refs.clothingNameField.focus())
+      }
+    }
+  },
   mounted() {
     this.reset()
+    this.formData.type = localStorage.getItem('clothingTypeSelected') || null
   },
   methods: {
     add() {
@@ -82,13 +94,13 @@ export default {
       this.$api
         .post('/clothing', this.formData)
         .then(res => {
-          this.reset()
           this.$emit('close', 'success')
+          this.reset()
         })
         .catch(err => {
           console.error(err)
-          this.reset()
           this.$emit('close', 'error')
+          this.reset()
         })
     },
     reset() {

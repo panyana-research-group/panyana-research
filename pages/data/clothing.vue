@@ -17,6 +17,7 @@
             style="max-width: 200px"
             hide-details
             dark
+            @change="storage('clothingTypeSelected', $event)"
           />
           <v-select
             v-model="rarityFilter"
@@ -29,7 +30,7 @@
             clearable
             multiple
             dark
-            @change="rarityFilter.sort()"
+            @change="rarityFilter.sort(); storage('clothingRaritiesSelected', JSON.stringify($event))"
           />
         </template>
 
@@ -59,11 +60,16 @@
             <td>{{ props.item.cultures.join(', ') || 'unknown' }}</td>
             <td v-if="props.item.flavor" class="text-xs-center">
               <v-dialog :value="props.item.dialog" max-width="200px">
-                <template v-slot:activator="{ on }">
+                <template v-slot:activator="{ on: dialog }">
                   <span>
-                    <v-btn color="info" class="primary--text" small v-on="on">
-                      Image
-                    </v-btn>
+                    <v-tooltip top>
+                      Flavor text image
+                      <template v-slot:activator="{ on: tooltip }">
+                        <v-btn color="info" class="primary--text" small v-on="{ ...dialog, ...tooltip }">
+                          Image
+                        </v-btn>
+                      </template>
+                    </v-tooltip>
                   </span>
                 </template>
                 <v-img :src="`https://drive.google.com/uc?id=${props.item.flavor}`" class="primary lighten-2" />
@@ -106,21 +112,15 @@
       </data-table>
       <new-clothing :show="dialogs.new" @close="close('new', $event)" />
       <edit-clothing :show="dialogs.edit" :item="currentEdit" @close="close('edit', $event)" />
-      <v-snackbar v-model="snack.show" :timeout="5000" :color="snack.color">
-        {{ snack.text }}
-        <v-btn dark flat @click.native="snack.show = false">
-          Close
-        </v-btn>
-      </v-snackbar>
     </v-flex>
   </v-layout>
 </template>
 <script>
+import _ from 'lodash'
+
 import DataTable from '@/components/DataTable'
 import NewClothing from '@/components/data/clothing/NewClothing'
 import EditClothing from '@/components/data/clothing/EditClothing'
-
-import _ from 'lodash'
 export default {
   name: 'Clothing',
   head() {
@@ -156,11 +156,6 @@ export default {
         torso: [],
         legs: []
       },
-      snack: {
-        text: 'none',
-        color: 'error',
-        show: false
-      },
       typeSelected: 'Head',
       rarityFilter: ['Common', 'Uncommon', 'Rare', 'Exotic', 'Stash'],
       currentEdit: null,
@@ -195,26 +190,13 @@ export default {
   },
   mounted() {
     this.refresh()
+    this.typeSelected = localStorage.getItem('clothingTypeSelected') || 'Head'
+    if (localStorage.getItem('clothingRaritiesSelected'))
+      this.rarityFilter = JSON.parse(
+        localStorage.getItem('clothingRaritiesSelected')
+      )
   },
   methods: {
-    close(type, value) {
-      this.currentEdit = null
-      this.dialogs[type] = false
-      switch (value) {
-        case 'success': {
-          this.snack.color = 'success'
-          this.snack.text = 'Successfully updated clothing!'
-          this.refresh()
-          break
-        }
-        case 'error': {
-          this.snack.color = 'error'
-          this.snack.text = 'Error updating clothing!'
-          break
-        }
-      }
-      if (value) this.snack.show = true
-    },
     refresh() {
       this.data.loading = true
       this.clothing = {
@@ -236,14 +218,32 @@ export default {
           this.data.error = true
         })
     },
+    openNew() {
+      if (!this.checkRole(['Admin'])) return
+      this.dialogs.new = true
+    },
+    close(type, value) {
+      this.currentEdit = null
+      this.dialogs[type] = false
+      switch (value) {
+        case 'success': {
+          this.snack.color = 'success'
+          this.snack.text = 'Successfully updated clothing!'
+          this.refresh()
+          break
+        }
+        case 'error': {
+          this.snack.color = 'error'
+          this.snack.text = 'Error updating clothing!'
+          break
+        }
+      }
+      if (value) this.snack.show = true
+    },
     edit(item) {
       if (!this.checkRole(['Admin'])) return
       this.dialogs.edit = true
       this.currentEdit = item
-    },
-    openNew() {
-      if (!this.checkRole(['Admin'])) return
-      this.dialogs.new = true
     },
     checkRole(roles) {
       if (!this.$store.state.loggedIn || !this.$auth.userProfile) {
@@ -269,6 +269,9 @@ export default {
         case 'legs':
           return '50px'
       }
+    },
+    storage(key, value) {
+      localStorage.setItem(key, value)
     }
   }
 }
