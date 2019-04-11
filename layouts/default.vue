@@ -102,6 +102,7 @@
 import { calculators, materials, data } from '@/components/mixins/pages'
 export default {
   name: 'App',
+  middleware: 'drawer',
   mixins: [calculators, materials, data],
   computed: {
     buttonInfo() {
