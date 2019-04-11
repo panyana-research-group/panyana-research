@@ -1,7 +1,7 @@
 <template>
-  <v-layout row wrap>
-    <v-flex>
-      <v-card color="primary" max-width="700px" class="mx-auto">
+  <v-layout row wrap :justify-start="embed">
+    <v-flex :shrink="embed">
+      <v-card color="primary" max-width="700px" class="mx-auto" :flat="embed">
         <v-card-text class="headline text-xs-center secondary--text">
           {{ type }} Material Boosts
         </v-card-text>
@@ -65,7 +65,8 @@ export default {
     headers: {
       type: Object,
       default: () => {}
-    }
+    },
+    embed: Boolean
   },
   head() {
     return {
