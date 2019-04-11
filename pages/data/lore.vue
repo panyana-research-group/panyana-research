@@ -149,7 +149,7 @@ export default {
       currentHaveWiki: ''
     }
   },
-  created() {
+  mounted() {
     this.refresh()
   },
   methods: {

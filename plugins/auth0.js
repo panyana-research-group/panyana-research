@@ -45,8 +45,8 @@ class AuthService {
     this.expiresAt = authResult.expiresIn * 1000 + new Date().getTime()
     this.userProfile = authResult.idTokenPayload
     this.userProfile.roles =
-      authResult.idTokenPayload['http://example.com/roles']
-    delete this.userProfile['http://example.com/roles']
+      authResult.idTokenPayload['https://example.com/roles']
+    delete this.userProfile['https://example.com/roles']
 
     this.authNotifier.emit('authChange', { authenticated: true })
 
