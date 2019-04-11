@@ -7,6 +7,13 @@ module.exports = {
     middleware: 'drawer'
   },
   /*
+  ** Env
+  */
+  env: {
+    baseUrl:
+      process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000'
+  },
+  /*
   ** Headers of the page
   */
   head: {
