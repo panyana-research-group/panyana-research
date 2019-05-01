@@ -50,7 +50,9 @@ export default ({ app }, inject) => {
 
       this.authNotifier.emit('authChange', { authenticated: true })
 
-      app.$cookies.set('loggedIn', true, { path: '/' })
+      app.$cookies.set('user', authResult.idTokenPayload.sub, {
+        maxAge: authResult.expiresIn
+      })
     }
 
     renewSession() {
@@ -76,28 +78,34 @@ export default ({ app }, inject) => {
       this.userProfile = null
       this.authNotifier.emit('authChange', { authenticated: false })
 
-      app.$cookies.remove('loggedIn')
+      app.$cookies.remove('user')
     }
 
     isAuthenticated() {
-      return (
-        new Date().getTime() < this.expiresAt && app.$cookies.get('loggedIn')
-      )
+      return new Date().getTime() < this.expiresAt && app.$cookies.get('user')
     }
 
     getUserRoles() {
-      if (app.$cookies.get('loggedIn')) {
-        this.renewSession()
-          .then(res => {
-            app.$api
-              .get(`/auth/users/${res.idTokenPayload.sub}/roles`)
-              .then(roles => {
-                return roles.data
-              })
-              .catch(console.error)
-          })
-          .catch(console.error)
-      }
+      return new Promise((resolve, reject) => {
+        if (app.$cookies.get('user')) {
+          this.renewSession()
+            .then(res => {
+              app.$api
+                .get(`/auth/users/${res.idTokenPayload.sub}/roles`)
+                .then(roles => {
+                  resolve(roles.data)
+                })
+                .catch(err => {
+                  console.error(err)
+                  reject(err)
+                })
+            })
+            .catch(err => {
+              console.error(err)
+              reject(err)
+            })
+        }
+      })
     }
   }
 

@@ -61,7 +61,7 @@
               If you have permissions, logging in with Auth0 allows you to change certain data
             </v-card-text>
             <v-card-text v-if="$store.state.loggedIn" class="py-0 text-xs-center">
-              Roles: {{ $auth.userProfile.roles ? $auth.userProfile.roles.join(",") : "None" }}
+              Roles: {{ roles ? roles.join(', ') : 'None' }}
             </v-card-text>
             <v-card-actions class="justify-center">
               <v-btn v-if="!$store.state.loggedIn" color="success" @click="$auth.login()">
@@ -69,6 +69,9 @@
               </v-btn>
               <v-btn v-if="$store.state.loggedIn" color="warning" @click="logout">
                 Logout
+              </v-btn>
+              <v-btn v-if="$store.state.loggedIn" color="success" to="/admin" nuxt>
+                Admin
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -104,6 +107,11 @@ export default {
   name: 'App',
   middleware: 'drawer',
   mixins: [calculators, materials, data],
+  data() {
+    return {
+      roles: []
+    }
+  },
   computed: {
     buttonInfo() {
       return [
@@ -126,9 +134,15 @@ export default {
       this.$store.commit('changeAuth', authState.authenticated)
     })
 
-    if (process.browser && this.$cookies.get('loggedIn')) {
+    if (process.browser && this.$cookies.get('user')) {
       this.$auth.renewSession()
     }
+
+    this.$auth.getUserRoles().then(res => {
+      res.forEach(r => {
+        this.roles.push(r.name)
+      })
+    })
   },
   methods: {
     logout() {
