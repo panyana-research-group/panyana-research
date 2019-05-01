@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap justify-center>
-    <v-flex xs12 lg8>
+    <v-flex xs12 xl8>
       <v-card color="primary" dark>
         <v-card-text class="headline text-xs-center">
           Users
@@ -22,6 +22,18 @@
               <td>{{ props.item.logins_count }}</td>
               <td>{{ props.item.roles.join(', ') }}</td>
               <td>{{ parseTime(props.item.last_login) }}</td>
+              <td class="text-xs-center">
+                <v-tooltip top>
+                  Edit user's info
+                  <template v-slot:activator="{ on }">
+                    <v-btn color="primary" icon v-on="on">
+                      <v-icon color="info">
+                        edit
+                      </v-icon>
+                    </v-btn>
+                  </template>
+                </v-tooltip>
+              </td>
             </template>
           </v-data-table>
         </v-card-text>
@@ -44,7 +56,8 @@ export default {
         { text: 'Email', value: 'email' },
         { text: '# of Logins', value: 'logins_count' },
         { text: 'Roles', sortable: false },
-        { text: 'Last Login', value: 'last_login' }
+        { text: 'Last Login', value: 'last_login' },
+        { text: 'Edit', sortable: false, align: 'center' }
       ],
       users: [],
       roles: []
