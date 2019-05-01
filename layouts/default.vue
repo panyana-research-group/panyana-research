@@ -67,7 +67,7 @@
               <v-btn v-if="!$store.state.loggedIn" color="success" @click="$auth.login()">
                 Login
               </v-btn>
-              <v-btn v-if="$store.state.loggedIn" color="warning" @click="$auth.logout(); $store.commit('changeAuth', false)">
+              <v-btn v-if="$store.state.loggedIn" color="warning" @click="logout">
                 Logout
               </v-btn>
             </v-card-actions>
@@ -126,8 +126,15 @@ export default {
       this.$store.commit('changeAuth', authState.authenticated)
     })
 
-    if (process.browser && this.$auth.getAuthenticatedFlag() === 'true') {
+    if (process.browser && this.$cookies.get('loggedIn')) {
       this.$auth.renewSession()
+    }
+  },
+  methods: {
+    logout() {
+      this.$auth.logout()
+      this.$store.commit('changeAuth', false)
+      window.location.reload(true)
     }
   }
 }

@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import axios from 'axios'
 
 const api = axios.create({
@@ -8,8 +7,6 @@ const api = axios.create({
       : 'https://panyana-api.glitch.me'
 })
 
-Vue.use({
-  install: Vue => {
-    Vue.prototype.$api = api
-  }
-})
+export default ({ app }, inject) => {
+  inject('api', api)
+}
