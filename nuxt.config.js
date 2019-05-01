@@ -95,6 +95,7 @@ module.exports = {
   */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
+    '@nuxtjs/moment',
     '@nuxtjs/axios',
     'cookie-universal-nuxt'
   ],
