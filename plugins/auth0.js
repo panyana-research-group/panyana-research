@@ -51,7 +51,8 @@ export default ({ app }, inject) => {
       this.authNotifier.emit('authChange', { authenticated: true })
 
       app.$cookies.set('user', authResult.idTokenPayload.sub, {
-        maxAge: authResult.expiresIn
+        maxAge: authResult.expiresIn,
+        path: '/'
       })
     }
 
