@@ -11,3 +11,9 @@ export const mutations = {
     state.navDrawer = drawer
   }
 }
+
+export const getters = {
+  isAuthenticated(state) {
+    return !!state.loggedIn
+  }
+}

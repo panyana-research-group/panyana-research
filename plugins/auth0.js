@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import auth0 from 'auth0-js'
 import EventEmitter from 'eventemitter3'
 
@@ -87,8 +86,8 @@ class AuthService {
   }
 }
 
-Vue.use({
-  install: Vue => {
-    Vue.prototype.$auth = new AuthService()
-  }
-})
+const auth = new AuthService()
+
+export default ({ app }, inject) => {
+  inject('auth', auth)
+}
