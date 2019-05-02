@@ -1,7 +1,15 @@
 <template>
   <v-layout row wrap justify-center>
     <v-flex xs12 lg11 xl8>
-      <data-table name="Clothing" :search.sync="search" add use-search @add="openNew">
+      <data-table
+        name="Clothing"
+        :search.sync="search"
+        :loading.sync="newLoading"
+        :snack="snack"
+        add
+        use-search
+        @add="openNew"
+      >
         <template v-slot:buttons>
           <v-btn :loading="data.loading" color="accent" class="primary--text" small @click="refresh">
             Refresh
@@ -143,9 +151,15 @@ export default {
   },
   data() {
     return {
+      newLoading: false,
       data: {
         loading: true,
         error: false
+      },
+      snack: {
+        text: 'none',
+        color: 'error',
+        show: false
       },
       dialogs: {
         new: false,
@@ -207,20 +221,26 @@ export default {
       this.$api
         .get('/clothing/all')
         .then(res => {
-          this.data.loading = false
           res.data.forEach(cloth => {
             this.clothing[cloth.type].push(cloth)
           })
         })
         .catch(err => {
           console.error(err)
-          this.data.loading = false
           this.data.error = true
         })
+        .finally(() => (this.data.loading = false))
     },
     openNew() {
-      if (!this.checkRole(['Admin'])) return
-      this.dialogs.new = true
+      this.newLoading = true
+      this.$auth.getUserRoles().then(res => {
+        if (res.find(r => r.name === 'Collector')) this.dialogs.new = true
+        else {
+          this.snack.text = 'Insufficient permissions or not logged in!'
+          this.snack.show = true
+        }
+        this.newLoading = false
+      })
     },
     close(type, value) {
       this.currentEdit = null
@@ -241,9 +261,15 @@ export default {
       if (value) this.snack.show = true
     },
     edit(item) {
-      if (!this.checkRole(['Admin'])) return
-      this.dialogs.edit = true
-      this.currentEdit = item
+      this.$auth.getUserRoles().then(res => {
+        if (res.find(r => r.name === 'Collector')) {
+          this.dialogs.edit = true
+          this.currentEdit = item
+        } else {
+          this.snack.text = 'Insufficient permissions or not logged in!'
+          this.snack.show = true
+        }
+      })
     },
     checkRole(roles) {
       if (!this.$store.state.loggedIn || !this.$auth.userProfile) {

@@ -6,7 +6,14 @@
       </v-toolbar-title>
       <v-spacer />
       <slot name="buttons" />
-      <v-btn v-if="add" color="success" class="secondary--text" small @click="$emit('add')">
+      <v-btn
+        v-if="add"
+        :loading="loading"
+        color="success"
+        class="secondary--text"
+        small
+        @click="$emit('add')"
+      >
         Add{{ name ? ' ' + name : '' }}
       </v-btn>
       <template v-if="useSearch" v-slot:extension>
@@ -47,14 +54,16 @@ export default {
     search: {
       type: String,
       default: null
-    }
-  },
-  data() {
-    return {
-      snack: {
-        text: 'none',
-        color: 'error',
-        show: false
+    },
+    loading: Boolean,
+    snack: {
+      type: Object,
+      default: () => {
+        return {
+          text: 'none',
+          color: 'error',
+          show: false
+        }
       }
     }
   },

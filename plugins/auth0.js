@@ -105,6 +105,8 @@ export default ({ app }, inject) => {
               console.error(err)
               reject(err)
             })
+        } else {
+          resolve([])
         }
       })
     }
