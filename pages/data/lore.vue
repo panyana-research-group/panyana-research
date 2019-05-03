@@ -1,7 +1,14 @@
 <template>
   <v-layout row wrap justify-center>
     <v-flex xs12 lg11 xl8>
-      <data-table name="Lore" :search.sync="search" add use-search @add="openNew">
+      <data-table
+        name="Lore"
+        :search.sync="search"
+        :snack="snack"
+        add
+        use-search
+        @add="openNew"
+      >
         <template v-slot:buttons>
           <v-btn :loading="data.loading" color="accent" class="primary--text" small @click="refresh">
             Refresh
@@ -123,6 +130,11 @@ export default {
       dialogs: {
         new: false,
         edit: false
+      },
+      snack: {
+        text: 'none',
+        color: 'error',
+        show: false
       },
       headers: [
         { text: 'Title', value: 'title', width: '23%' },

@@ -1,7 +1,7 @@
 import auth0 from 'auth0-js'
 import EventEmitter from 'eventemitter3'
 
-export default ({ app }, inject) => {
+export default ({ app, redirect }, inject) => {
   class AuthService {
     accessToken
     idToken
@@ -63,7 +63,7 @@ export default ({ app }, inject) => {
             this.setSession(authResult)
             resolve(authResult)
           } else if (err) {
-            this.logout()
+            // this.logout()
             console.log(err)
             reject(err)
           }
@@ -80,6 +80,14 @@ export default ({ app }, inject) => {
       this.authNotifier.emit('authChange', { authenticated: false })
 
       app.$cookies.remove('user')
+      this.auth0.logout({
+        clientID: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7',
+        returnTo:
+          process.env.NODE_ENV === 'production'
+            ? 'https://panyanaresearch.com'
+            : 'http://localhost:3000',
+        federated: true
+      })
     }
 
     isAuthenticated() {

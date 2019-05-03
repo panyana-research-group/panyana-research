@@ -106,6 +106,7 @@
 import DataTable from '@/components/DataTable'
 import NewMaterial from '@/components/data/materials/NewMaterial'
 import EditMaterial from '@/components/data/materials/EditMaterial'
+import { auth } from '@/components/mixins/auth'
 export default {
   name: 'Materials',
   head() {
@@ -126,6 +127,7 @@ export default {
     NewMaterial,
     EditMaterial
   },
+  mixins: [auth],
   data() {
     return {
       newLoading: false,
@@ -133,11 +135,6 @@ export default {
       data: {
         loading: true,
         error: false
-      },
-      snack: {
-        text: 'none',
-        color: 'error',
-        show: false
       },
       pagination: null,
       search: '',
@@ -175,16 +172,19 @@ export default {
         })
         .finally(() => (this.data.loading = false))
     },
-    openNew() {
+    async openNew() {
       this.newLoading = true
-      this.$auth.getUserRoles().then(res => {
-        if (res.find(r => r.name === 'Admin')) this.dialogs.new = true
-        else {
-          this.snack.text = 'Insufficient permissions or not logged in!'
-          this.snack.show = true
-        }
-        this.newLoading = false
-      })
+      if (await this.checkRole('Admin')) this.dialogs.new = true
+      else this.noPerms()
+      this.newLoading = false
+      // this.$auth.getUserRoles().then(res => {
+      //   if (res.find(r => r.name === 'Admin')) this.dialogs.new = true
+      //   else {
+      //     this.snack.text = 'Insufficient permissions or not logged in!'
+      //     this.snack.show = true
+      //   }
+      //   this.newLoading = false
+      // })
     },
     close(type, value) {
       this.currentEdit = null
