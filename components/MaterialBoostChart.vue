@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap :justify-start="embed">
     <v-flex :shrink="embed">
-      <v-card color="primary" width="650px" class="mx-auto" :flat="embed">
+      <v-card color="primary" :width="embed ? '550px' : '650px'" class="mx-auto" :flat="embed">
         <v-card-text class="headline text-xs-center secondary--text">
           {{ type }} Material Boosts
         </v-card-text>
@@ -123,4 +123,7 @@ export default {
 }
 </script>
 <style lang="scss">
+table.v-table thead th.column {
+  padding: 0 16px;
+}
 </style>
