@@ -76,7 +76,9 @@ jobs:
             rm -rf dist || true
             yarn generate
             cp -R .circleci dist/
-            cd dist
+            mv dist/ ../dist/dev
+            cd ..
+            rm -rf .git/
             git init
             git add .
             git commit -am "Automated deployment to GitHub Pages: ${CIRCLE_SHA1}" --allow-empty
