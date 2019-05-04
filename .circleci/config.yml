@@ -77,7 +77,7 @@ jobs:
             yarn generate
             cp -R .circleci dist/
             mv dist/ ../dist/dev
-            cd ..
+            cd ../dist
             rm -rf .git/
             git init
             git add .
