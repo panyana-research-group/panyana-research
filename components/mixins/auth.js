@@ -23,6 +23,22 @@ export const auth = {
           })
       })
     },
+    checkRoles(roles) {
+      return new Promise((resolve, reject) => {
+        this.$auth
+          .getUserRoles()
+          .then(res => {
+            roles.forEach(role => {
+              if (res.find(r => r.name === role || r.id === role)) resolve(true)
+              else resolve(false)
+            })
+          })
+          .catch(err => {
+            console.error(err)
+            reject(err)
+          })
+      })
+    },
     noPerms() {
       this.snack.text = 'Not logged in or insufficient permissions!'
       this.snack.color = 'error'

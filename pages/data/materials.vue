@@ -164,7 +164,9 @@ export default {
       this.$api
         .get('/materials/all')
         .then(res => {
-          this.materials = res.data
+          res.data.forEach(mat => {
+            this.materials.push(this.flattenObject(mat))
+          })
         })
         .catch(err => {
           console.error(err)
@@ -172,19 +174,27 @@ export default {
         })
         .finally(() => (this.data.loading = false))
     },
-    async openNew() {
+    openNew() {
       this.newLoading = true
-      if (await this.checkRole('Admin')) this.dialogs.new = true
-      else this.noPerms()
-      this.newLoading = false
-      // this.$auth.getUserRoles().then(res => {
-      //   if (res.find(r => r.name === 'Admin')) this.dialogs.new = true
-      //   else {
-      //     this.snack.text = 'Insufficient permissions or not logged in!'
-      //     this.snack.show = true
-      //   }
-      //   this.newLoading = false
-      // })
+      this.checkRole('Admin').then(check => {
+        this.newLoading = false
+        if (check) this.dialogs.new = true
+        else this.noPerms()
+      })
+    },
+    flattenObject(obj) {
+      const toReturn = {}
+      for (const i in obj) {
+        if (!obj.hasOwnProperty(i)) continue
+        if (typeof obj[i] === 'object') {
+          const flatObj = this.flattenObject(obj[i])
+          for (const x in flatObj) {
+            if (!flatObj.hasOwnProperty(x)) continue
+            toReturn[i + '.' + x] = flatObj[x]
+          }
+        } else toReturn[i] = obj[i]
+      }
+      return toReturn
     },
     close(type, value) {
       this.currentEdit = null
@@ -206,14 +216,11 @@ export default {
       }
     },
     edit(item) {
-      this.$auth.getUserRoles().then(res => {
-        if (res.find(r => r.name === 'Admin')) {
+      this.checkRole('Admin').then(check => {
+        if (check) {
           this.dialogs.edit = true
           this.currentEdit = item
-        } else {
-          this.snack.text = 'Insufficient permissions or not logged in!'
-          this.snack.show = true
-        }
+        } else this.noPerms()
       })
     }
   }

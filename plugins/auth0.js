@@ -50,6 +50,7 @@ export default ({ app, redirect }, inject) => {
 
       this.authNotifier.emit('authChange', { authenticated: true })
 
+      console.log(this.isAuthenticated())
       app.$cookies.set('user', authResult.idTokenPayload.sub, {
         maxAge: authResult.expiresIn,
         path: '/'
@@ -63,7 +64,7 @@ export default ({ app, redirect }, inject) => {
             this.setSession(authResult)
             resolve(authResult)
           } else if (err) {
-            // this.logout()
+            this.logout()
             console.log(err)
             reject(err)
           }
@@ -91,7 +92,7 @@ export default ({ app, redirect }, inject) => {
     }
 
     isAuthenticated() {
-      return new Date().getTime() < this.expiresAt && app.$cookies.get('user')
+      return new Date().getTime() < this.expiresAt && !!app.$cookies.get('user')
     }
 
     getUserRoles() {

@@ -124,11 +124,10 @@
   </v-layout>
 </template>
 <script>
-import _ from 'lodash'
-
 import DataTable from '@/components/DataTable'
 import NewClothing from '@/components/data/clothing/NewClothing'
 import EditClothing from '@/components/data/clothing/EditClothing'
+import { auth } from '@/components/mixins/auth'
 export default {
   name: 'Clothing',
   head() {
@@ -149,6 +148,7 @@ export default {
     NewClothing,
     EditClothing
   },
+  mixins: [auth],
   data() {
     return {
       newLoading: false,
@@ -233,13 +233,10 @@ export default {
     },
     openNew() {
       this.newLoading = true
-      this.$auth.getUserRoles().then(res => {
-        if (res.find(r => r.name === 'Collector')) this.dialogs.new = true
-        else {
-          this.snack.text = 'Insufficient permissions or not logged in!'
-          this.snack.show = true
-        }
+      this.checkRole('Collector').then(check => {
         this.newLoading = false
+        if (check) this.dialogs.new = true
+        else this.noPerms()
       })
     },
     close(type, value) {
@@ -261,30 +258,12 @@ export default {
       if (value) this.snack.show = true
     },
     edit(item) {
-      this.$auth.getUserRoles().then(res => {
-        if (res.find(r => r.name === 'Collector')) {
+      this.checkRole('Collector').then(check => {
+        if (check) {
           this.dialogs.edit = true
           this.currentEdit = item
-        } else {
-          this.snack.text = 'Insufficient permissions or not logged in!'
-          this.snack.show = true
-        }
+        } else this.noPerms()
       })
-    },
-    checkRole(roles) {
-      if (!this.$store.state.loggedIn || !this.$auth.userProfile) {
-        this.snack.text = 'Not logged in!'
-        this.snack.show = true
-        return false
-      } else if (
-        !this.$auth.userProfile.roles ||
-        _.intersection(this.$auth.userProfile.roles, roles).length === 0
-      ) {
-        this.snack.text = 'Insufficient permissions!'
-        this.snack.show = true
-        return false
-      }
-      return true
     },
     width(type) {
       switch (type) {

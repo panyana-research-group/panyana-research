@@ -16,6 +16,7 @@ module.exports = {
   ],
   rules: {
     "no-console": "off",
-    "no-unused-vars": "warn"
+    "no-unused-vars": "warn",
+    "vue/no-unused-components": "warn"
   }
 }
