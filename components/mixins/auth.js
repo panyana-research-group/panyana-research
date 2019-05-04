@@ -11,6 +11,7 @@ export const auth = {
   methods: {
     checkRole(role) {
       return new Promise((resolve, reject) => {
+        if (!this.$auth.isAuthenticated()) resolve(false)
         this.$auth
           .getUserRoles()
           .then(res => {
@@ -25,6 +26,7 @@ export const auth = {
     },
     checkRoles(roles) {
       return new Promise((resolve, reject) => {
+        if (!this.$auth.isAuthenticated()) resolve(false)
         this.$auth
           .getUserRoles()
           .then(res => {

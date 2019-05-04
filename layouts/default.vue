@@ -134,6 +134,7 @@ export default {
       this.$store.commit('changeAuth', authState.authenticated)
     })
 
+    console.log(this.$auth.isAuthenticated())
     this.$auth.getUserRoles().then(res => {
       res.forEach(r => {
         this.roles.push(r.name)
