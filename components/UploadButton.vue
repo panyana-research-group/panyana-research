@@ -152,6 +152,7 @@ export default {
   },
   methods: {
     fileChanged(e) {
+      console.log('test')
       if (e) {
         if (e.target.files.length > 0) {
           if (!this.multiple) {

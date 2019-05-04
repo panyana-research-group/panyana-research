@@ -1,7 +1,15 @@
 <template>
   <v-layout row wrap justify-center>
     <v-flex xs12 lg11 xl8>
-      <data-table name="Clothing" :search.sync="search" add use-search @add="openNew">
+      <data-table
+        name="Clothing"
+        :search.sync="search"
+        :loading.sync="newLoading"
+        :snack="snack"
+        add
+        use-search
+        @add="openNew"
+      >
         <template v-slot:buttons>
           <v-btn :loading="data.loading" color="accent" class="primary--text" small @click="refresh">
             Refresh
@@ -116,11 +124,10 @@
   </v-layout>
 </template>
 <script>
-import _ from 'lodash'
-
 import DataTable from '@/components/DataTable'
 import NewClothing from '@/components/data/clothing/NewClothing'
 import EditClothing from '@/components/data/clothing/EditClothing'
+import { auth } from '@/components/mixins/auth'
 export default {
   name: 'Clothing',
   head() {
@@ -141,11 +148,18 @@ export default {
     NewClothing,
     EditClothing
   },
+  mixins: [auth],
   data() {
     return {
+      newLoading: false,
       data: {
         loading: true,
         error: false
+      },
+      snack: {
+        text: 'none',
+        color: 'error',
+        show: false
       },
       dialogs: {
         new: false,
@@ -207,20 +221,23 @@ export default {
       this.$api
         .get('/clothing/all')
         .then(res => {
-          this.data.loading = false
           res.data.forEach(cloth => {
             this.clothing[cloth.type].push(cloth)
           })
         })
         .catch(err => {
           console.error(err)
-          this.data.loading = false
           this.data.error = true
         })
+        .finally(() => (this.data.loading = false))
     },
     openNew() {
-      if (!this.checkRole(['Admin'])) return
-      this.dialogs.new = true
+      this.newLoading = true
+      this.checkRole('Collector').then(check => {
+        this.newLoading = false
+        if (check) this.dialogs.new = true
+        else this.noPerms()
+      })
     },
     close(type, value) {
       this.currentEdit = null
@@ -241,24 +258,12 @@ export default {
       if (value) this.snack.show = true
     },
     edit(item) {
-      if (!this.checkRole(['Admin'])) return
-      this.dialogs.edit = true
-      this.currentEdit = item
-    },
-    checkRole(roles) {
-      if (!this.$store.state.loggedIn || !this.$auth.userProfile) {
-        this.snack.text = 'Not logged in!'
-        this.snack.show = true
-        return false
-      } else if (
-        !this.$auth.userProfile.roles ||
-        _.intersection(this.$auth.userProfile.roles, roles).length === 0
-      ) {
-        this.snack.text = 'Insufficient permissions!'
-        this.snack.show = true
-        return false
-      }
-      return true
+      this.checkRole('Collector').then(check => {
+        if (check) {
+          this.dialogs.edit = true
+          this.currentEdit = item
+        } else this.noPerms()
+      })
     },
     width(type) {
       switch (type) {

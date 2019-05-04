@@ -1,35 +1,13 @@
 <template>
-  <new-data :show="show" name="Clothing">
+  <new-data :show="show" name="Material">
     <v-form ref="form" v-model="form">
       <v-layout row wrap justify-center>
         <v-flex xs12 md6 px-1>
           <v-text-field
-            ref="clothingNameField"
+            ref="materialNameField"
             v-model="formData.name"
             :rules="[rules.required]"
-            label="Clothing Name"
-            color="accent"
-            box
-            persistent-hint
-          />
-        </v-flex>
-        <v-flex xs12 md6 px-1>
-          <v-select
-            v-model="formData.type"
-            :rules="[rules.required]"
-            :items="['Head', 'Torso', 'Legs']"
-            label="Type"
-            color="accent"
-            box
-            persistent-hint
-          />
-        </v-flex>
-        <v-flex xs12 md6 px-1>
-          <v-select
-            v-model="formData.rarity"
-            :items="['Common', 'Uncommon', 'Rare', 'Exotic', 'Stash', 'unknown']"
-            :rules="[rules.required]"
-            label="Item Rarity"
+            label="Material Name"
             color="accent"
             box
             persistent-hint
@@ -54,7 +32,7 @@
 import NewData from '@/components/data/NewData'
 import { rules } from '@/components/mixins/rules'
 export default {
-  name: 'NewClothing',
+  name: 'NewMaterial',
   components: {
     NewData
   },
@@ -68,38 +46,33 @@ export default {
       loading: false,
       formData: {
         name: null,
-        type: null,
-        rarity: null
+        weight: null,
+        rarity: null,
+        color: null
       }
     }
   },
   watch: {
     show: function(newVal, oldVal) {
-      if (newVal && localStorage.getItem('clothingTypeSelected') !== 'all')
-        this.formData.type =
-          localStorage.getItem('clothingTypeSelected') || null
-
-      if (newVal) this.$nextTick(() => this.$refs.clothingNameField.focus())
+      if (newVal) this.$nextTick(() => this.$refs.materialNameField.focus())
     }
   },
   mounted() {
     this.reset()
-    this.formData.type = localStorage.getItem('clothingTypeSelected') || null
   },
   methods: {
     add() {
       this.loading = true
       this.$api
-        .post('/clothing', this.formData)
+        .post('/materials', this.formData)
         .then(res => {
           this.$emit('close', 'success')
-          this.reset()
         })
         .catch(err => {
           console.error(err)
           this.$emit('close', 'error')
-          this.reset()
         })
+        .finally(() => this.reset())
     },
     reset() {
       this.loading = false

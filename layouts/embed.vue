@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-content>
+    <v-content style="background: transparent;">
       <nuxt />
     </v-content>
   </v-app>

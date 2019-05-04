@@ -1,7 +1,15 @@
 <template>
   <v-layout row wrap justify-center>
     <v-flex xs12 lg11 xl8>
-      <data-table name="Lore" :search.sync="search" add use-search @add="openNew">
+      <data-table
+        name="Lore"
+        :search.sync="search"
+        :loading.sync="newLoading"
+        :snack="snack"
+        add
+        use-search
+        @add="openNew"
+      >
         <template v-slot:buttons>
           <v-btn :loading="data.loading" color="accent" class="primary--text" small @click="refresh">
             Refresh
@@ -91,6 +99,7 @@ import _ from 'lodash'
 import DataTable from '@/components/DataTable'
 import NewLore from '@/components/data/lore/NewLore'
 import EditLore from '@/components/data/lore/EditLore'
+import { auth } from '@/components/mixins/auth'
 export default {
   name: 'Lore',
   head() {
@@ -111,8 +120,10 @@ export default {
     NewLore,
     EditLore
   },
+  mixins: [auth],
   data() {
     return {
+      newLoading: false,
       data: {
         loading: true,
         error: false
@@ -123,6 +134,11 @@ export default {
       dialogs: {
         new: false,
         edit: false
+      },
+      snack: {
+        text: 'none',
+        color: 'error',
+        show: false
       },
       headers: [
         { text: 'Title', value: 'title', width: '23%' },
@@ -169,8 +185,12 @@ export default {
         })
     },
     openNew() {
-      if (!this.checkRole(['Admin'])) return
-      this.dialogs.new = true
+      this.newLoading = true
+      this.checkRole('Collector').then(check => {
+        this.newLoading = false
+        if (check) this.dialogs.new = true
+        else this.noPerms()
+      })
     },
     update(event) {
       this.currentHaveWiki = event.join(', ')
@@ -190,36 +210,24 @@ export default {
       }
       if (value) this.snack.show = true
     },
-    checkRole(roles) {
-      if (!this.$store.state.loggedIn || !this.$auth.userProfile) {
-        this.snack.text = 'Not logged in!'
-        this.snack.show = true
-        return false
-      } else if (
-        !this.$auth.userProfile.roles ||
-        _.intersection(this.$auth.userProfile.roles, roles).length === 0
-      ) {
-        this.snack.text = 'Insufficient permissions!'
-        this.snack.show = true
-        return false
-      }
-      return true
-    },
     editStory(item) {
-      if (!this.checkRole(['Admin', 'Collector'])) return
-      const pageCount = parseInt(item.onWiki.split('/')[1])
-      this.currentEdit = Object.assign({}, item)
-      this.currentEdit.pages = [{ page: 'title' }]
-      _.range(1, pageCount + 1).forEach(p => {
-        this.currentEdit.pages.push({ page: p })
+      this.checkRole('Collector').then(check => {
+        if (check) {
+          const pageCount = parseInt(item.onWiki.split('/')[1])
+          this.currentEdit = Object.assign({}, item)
+          this.currentEdit.pages = [{ page: 'title' }]
+          _.range(1, pageCount + 1).forEach(p => {
+            this.currentEdit.pages.push({ page: p })
+          })
+          const haveWiki = ['title']
+          for (let i = 1; i <= pageCount; i++) {
+            if (this.currentEdit.missingWiki.split(', ').indexOf(String(i)) < 0)
+              haveWiki.push(String(i))
+          }
+          this.currentHaveWiki = haveWiki.join(', ')
+          this.dialogs.edit = true
+        } else this.noPerms()
       })
-      const haveWiki = ['title']
-      for (let i = 1; i <= pageCount; i++) {
-        if (this.currentEdit.missingWiki.split(', ').indexOf(String(i)) < 0)
-          haveWiki.push(String(i))
-      }
-      this.currentHaveWiki = haveWiki.join(', ')
-      this.dialogs.edit = true
     },
     getClasses(item) {
       if (item.missingWiki === 'COMPLETED') return 'green lighten-2'

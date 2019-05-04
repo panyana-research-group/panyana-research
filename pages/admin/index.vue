@@ -56,6 +56,7 @@
             :items="roles"
             label="User Roles"
             hide-details
+            persistent-hint
             multiple
             small-chips
             @change="editDisabled = false"

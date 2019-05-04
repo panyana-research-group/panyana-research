@@ -134,10 +134,6 @@ export default {
       this.$store.commit('changeAuth', authState.authenticated)
     })
 
-    if (process.browser && this.$cookies.get('user')) {
-      this.$auth.renewSession()
-    }
-
     this.$auth.getUserRoles().then(res => {
       res.forEach(r => {
         this.roles.push(r.name)
