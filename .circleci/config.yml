@@ -78,7 +78,7 @@ jobs:
             cp -R .circleci dist/
             mv dist/ ../dist/dev
             cd ../dist
-            rm -rf .git/
+            rm -rf .git/ || true
             git init
             git add .
             git commit -am "Automated deployment to GitHub Pages: ${CIRCLE_SHA1}" --allow-empty
