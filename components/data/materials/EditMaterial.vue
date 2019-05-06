@@ -56,6 +56,7 @@
                     :disabled="!!item.flavor"
                     :no-title-update="!!item.flavor"
                     :label-class="`primary--text accent`"
+                    :title="!!item.flavor ? 'Uploaded' : 'Upload'"
                     block
                     class="px-1"
                     @file-update="formData.flavor = $event"
@@ -76,6 +77,7 @@
                     :disabled="!!item.icon"
                     :no-title-update="!!item.icon"
                     :label-class="`primary--text accent`"
+                    :title="item.icon ? 'Uploaded' : 'Upload'"
                     block
                     class="px-1"
                     @file-update="formData.icon = $event"

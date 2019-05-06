@@ -37,7 +37,7 @@
             ref="flavor"
             :disabled="!!item.flavor"
             :no-title-update="!!item.flavor"
-            title="Uploaded"
+            :title="!!item.flavor ? 'Uploaded' : 'Upload'"
             :label-class="`primary--text ${item.flavor ? '' : 'accent'}`"
             block
             class="px-1"
@@ -58,7 +58,7 @@
             ref="base"
             :disabled="!!item.base"
             :no-title-update="!!item.base"
-            title="Uploaded"
+            :title="!!item.base ? 'Uploaded' : 'Upload'"
             label-class="primary--text accent"
             block
             class="px-1"

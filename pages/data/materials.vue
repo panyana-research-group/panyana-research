@@ -77,13 +77,13 @@
               </td>
             </tr>
           </template>
-          <template v-slot:expand="props">
+          <!-- <template v-slot:expand="props">
             <v-card flat>
               <v-card-text>
                 HEY
               </v-card-text>
             </v-card>
-          </template>
+          </template> -->
           <template v-slot:no-data>
             <v-alert v-if="!data.loading && data.error" type="error" class="primary--text" :value="true">
               Error loading clothing data. Probably a network issue.

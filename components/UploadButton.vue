@@ -202,6 +202,10 @@ export default {
   overflow: hidden;
 }
 
+.upload-btn.v-btn--disabled {
+  background-color: gray !important;
+}
+
 .upload-btn-hover {
   cursor: pointer;
 }

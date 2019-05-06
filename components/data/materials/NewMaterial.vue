@@ -119,7 +119,6 @@ export default {
       this.$api
         .post('/materials', this.formData)
         .then(res => {
-          console.log(res)
           this.$emit('close', 'success')
         })
         .catch(err => {

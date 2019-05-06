@@ -281,8 +281,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.upload-btn.v-btn--disabled {
-  background-color: gray !important;
-}
-</style>
