@@ -33,7 +33,7 @@
           <template v-slot:items="props">
             <tr class="data-row" @click="props.expanded = !props.expanded">
               <td class="text-xs-center">
-                <img :src="props.item.icon" alt="missing">
+                <img :src="props.item.icon ? `https://drive.google.com/uc?id=${props.item.icon}` : ''" alt="missing">
               </td>
               <td :style="`color: ${props.item.color};`">
                 {{ props.item.name }}
@@ -66,7 +66,7 @@
                     slot="activator"
                     color="primary"
                     icon
-                    @click.stop="edit(props.item)"
+                    @click.stop="edit(props)"
                   >
                     <v-icon color="info">
                       edit
@@ -215,11 +215,11 @@ export default {
         this.snack.show = true
       }
     },
-    edit(item) {
+    edit(props) {
       this.checkRole('Admin').then(check => {
         if (check) {
           this.dialogs.edit = true
-          this.currentEdit = item
+          this.currentEdit = props.item
         } else this.noPerms()
       })
     }

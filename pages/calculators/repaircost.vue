@@ -143,7 +143,7 @@ export default {
     }
   },
   mounted() {
-    this.$api.get('/materials').then(res => {
+    this.$api.get('/materials/all').then(res => {
       res.data.forEach(mat => {
         this.materials.push({
           text: mat.name,

@@ -92,7 +92,8 @@ module.exports = {
     '@/plugins/vuetify',
     '@/plugins/auth0',
     '@/plugins/api',
-    '@/plugins/globalMixins'
+    '@/plugins/globalMixins',
+    '@/plugins/vuetify-confirm'
   ],
 
   /*

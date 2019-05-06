@@ -13,6 +13,52 @@
             persistent-hint
           />
         </v-flex>
+        <v-flex xs12 md6 px-1>
+          <v-select
+            v-model="formData.type"
+            :items="[{ t: 'Metal', v: 'metal' }, { t: 'Wood', v: 'wood'}]"
+            :rules="[rules.required]"
+            item-text="t"
+            item-value="v"
+            label="Type"
+            color="accent"
+            box
+            persistent-hint
+          />
+        </v-flex>
+        <v-flex xs12 md6 px-1>
+          <v-select
+            v-model="formData.rarity"
+            :items="rarities"
+            :rules="[rules.required]"
+            item-text="t"
+            item-value="v"
+            label="Rarity"
+            color="accent"
+            box
+            persistent-hint
+          />
+        </v-flex>
+        <v-flex xs12 md6 px-1>
+          <v-text-field
+            v-model.number="formData.weight"
+            :rules="[rules.required, rules.number]"
+            label="Weight"
+            color="accent"
+            box
+            persistent-hint
+          />
+        </v-flex>
+        <v-flex xs12 md6 px-1>
+          <v-text-field
+            v-model="formData.color"
+            :rules="[rules.required]"
+            label="Color"
+            color="accent"
+            box
+            persistent-hint
+          />
+        </v-flex>
       </v-layout>
     </v-form>
     <template v-slot:actions>
@@ -48,8 +94,15 @@ export default {
         name: null,
         weight: null,
         rarity: null,
-        color: null
-      }
+        color: null,
+        type: null
+      },
+      rarities: [
+        { t: 'Common', v: 'common' },
+        { t: 'Uncommon', v: 'uncommon' },
+        { t: 'Rare', v: 'rare' },
+        { t: 'Exotic', v: 'exotic' }
+      ]
     }
   },
   watch: {
@@ -66,13 +119,17 @@ export default {
       this.$api
         .post('/materials', this.formData)
         .then(res => {
+          console.log(res)
           this.$emit('close', 'success')
         })
         .catch(err => {
           console.error(err)
           this.$emit('close', 'error')
         })
-        .finally(() => this.reset())
+        .finally(() => {
+          this.loading = false
+          this.reset()
+        })
     },
     reset() {
       this.loading = false

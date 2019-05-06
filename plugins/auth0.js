@@ -91,12 +91,6 @@ export default ({ app, redirect }, inject) => {
     }
 
     isAuthenticated() {
-      // if (new Date().getTime() < this.expiresAt && !!app.$cookies.get('user'))
-      //   return true
-      // else {
-      //   this.logout()
-      //   return false
-      // }
       return new Date().getTime() < this.expiresAt && !!app.$cookies.get('user')
     }
 

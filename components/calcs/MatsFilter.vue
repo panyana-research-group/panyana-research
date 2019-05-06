@@ -237,7 +237,7 @@ export default {
   mounted() {
     this.data.loading = true
     this.$api
-      .get('/materials')
+      .get('/materials/all')
       .then(res => {
         this.materials = res.data
         this.materials.forEach(mat => {

@@ -61,7 +61,7 @@ export default {
   },
   mounted() {
     this.$api
-      .get('/materials')
+      .get('/materials/all')
       .then(res => {
         this.materials = res.data
         this.materials.forEach(mat => {

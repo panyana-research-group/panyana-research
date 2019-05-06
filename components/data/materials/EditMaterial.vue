@@ -155,7 +155,7 @@
             </v-flex>
             <v-flex xs12 md6 px-1>
               <v-text-field
-                v-model="formData.cf"
+                v-model="formData['boosts.cf']"
                 :rules="[rules.number]"
                 label="Cooling Factor"
                 color="accent"
@@ -197,6 +197,9 @@
       <v-btn :loading="loading" color="success" class="secondary--text" @click="edit">
         Edit
       </v-btn>
+      <v-btn :loading="delLoading" color="warning" class="secondary--text" @click="del">
+        Delete
+      </v-btn>
     </template>
   </edit-data>
 </template>
@@ -223,6 +226,7 @@ export default {
       tab: 'info',
       tabs: ['info', 'engines', 'wings', 'cannons/swivel guns', 'other'],
       loading: false,
+      delLoading: false,
       formData: {},
       rarities: [
         { text: 'Common', value: 'common' },
@@ -278,7 +282,47 @@ export default {
       this.$nextTick(() => Object.assign(this.formData, this.item))
     },
     edit() {
-      console.log('edit')
+      this.loading = true
+      const formData = new FormData()
+      for (const prop in this.formData)
+        if (this.formData.hasOwnProperty(prop))
+          formData.append(prop, this.formData[prop])
+
+      this.$api
+        .put(`/materials/${this.item._id}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        })
+        .then(res => {
+          this.$emit('close', 'success')
+        })
+        .catch(err => {
+          console.error(err)
+          this.$emit('close', 'error')
+        })
+        .finally(() => {
+          this.loading = false
+          this.reset()
+        })
+    },
+    async del() {
+      const confirm = await this.$confirm(
+        `Do you really want to delete the material ${this.item.name}?`
+      )
+      if (!confirm) return
+      this.delLoading = true
+      this.$api
+        .delete(`/materials/${this.item._id}`)
+        .then(res => {
+          this.$emit('close', 'success')
+        })
+        .catch(err => {
+          console.error(err)
+          this.$emit('close', 'error')
+        })
+        .finally(() => {
+          this.delLoading = false
+          this.reset()
+        })
     },
     resetObj(obj) {
       const copy = Object.assign({}, obj)

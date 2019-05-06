@@ -73,7 +73,7 @@ export default {
   },
   created() {
     this.$api
-      .get('/materials')
+      .get('/materials/all')
       .then(res => {
         this.materials = res.data
       })
