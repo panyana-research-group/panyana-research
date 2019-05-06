@@ -33,7 +33,7 @@
           <template v-slot:items="props">
             <tr class="data-row" @click="props.expanded = !props.expanded">
               <td class="text-xs-center">
-                <img :src="props.item.icon ? `https://drive.google.com/uc?id=${props.item.icon}` : ''" alt="missing">
+                <img :src="props.item.icon ? `https://drive.google.com/uc?id=${props.item.icon}` : ''" alt="missing" height="50px">
               </td>
               <td :style="`color: ${props.item.color};`">
                 {{ props.item.name }}
