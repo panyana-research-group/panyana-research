@@ -21,7 +21,7 @@
         <v-data-table
           :headers="headers"
           :items="materials"
-          :loading="true"
+          :loading="data.loading ? 'info' : false"
           :search="search"
           :expand="expand"
           class="pa-2"

@@ -45,7 +45,7 @@
         <v-data-table
           :headers="typeSelected === 'all' ? [{ text: 'Type', value: 'type' }, ...headers] : headers"
           :items="compClothing.filter(c => rarityFilter.indexOf(c.rarity) > -1)"
-          :loading="data.loading"
+          :loading="data.loading ? 'info' : false"
           :search="search"
           class="pa-2"
           dark
