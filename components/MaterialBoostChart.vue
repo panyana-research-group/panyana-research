@@ -69,18 +69,19 @@ export default {
     embed: Boolean
   },
   head() {
+    const type = this.type
     return {
-      title: `${this.type} Materials`,
+      title: `${type} Materials`,
       meta: [
         {
           hid: 'og:title',
           name: 'og:title',
-          content: `${this.type} Material Boosts`
+          content: `${type} Material Boosts`
         },
         {
           hid: 'og:description',
           name: 'og:description',
-          content: `Shows various materials effects on crafting ${this.type.toLowerCase()}s`
+          content: `Shows various materials effects on crafting ${type.toLowerCase()}s`
         }
       ]
     }

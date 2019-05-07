@@ -33,7 +33,7 @@
           <template v-slot:items="props">
             <tr class="data-row" @click="props.expanded = !props.expanded">
               <td class="text-xs-center">
-                <img :src="props.item.icon ? `https://drive.google.com/uc?id=${props.item.icon}` : ''" alt="missing" height="50px">
+                <img :src="props.item.icon ? `https://drive.google.com/uc?id=${props.item.icon}` : ''" class="mat-icon" alt="missing" height="50px">
               </td>
               <td :style="`color: ${props.item.color};`">
                 {{ props.item.name }}
@@ -144,7 +144,7 @@ export default {
         edit: false
       },
       headers: [
-        { text: 'Icon', sortable: false, align: 'center' },
+        { text: 'Icon', sortable: false, align: 'center', width: '100px' },
         { text: 'Name', value: 'name' },
         { text: 'Weight', value: 'weight' },
         { text: 'Rarity', value: 'rarity' },
@@ -229,5 +229,10 @@ export default {
 <style lang="scss">
 .data-row:hover {
   cursor: pointer;
+}
+img.mat-icon {
+  vertical-align: middle;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 </style>
