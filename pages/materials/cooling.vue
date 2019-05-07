@@ -39,8 +39,8 @@
             <td class="material left-column" :class="mat.name.toLowerCase()">
               {{ mat.name }}
             </td>
-            <td v-for="mat2 in materials" :key="mat2.name+'Item'" class="number" :class="cfClass(mat2.cf+mat.cf*(2/3)*(10+quality)/20)">
-              {{ mat2.cf+mat.cf*(2/3)*(10+quality)/20 }}
+            <td v-for="mat2 in materials" :key="mat2.name+'Item'" class="number" :class="cfClass(mat2.boosts.cf+mat.boosts.cf*(2/3)*(10+quality)/20)">
+              {{ mat2.boosts.cf+mat.boosts.cf*(2/3)*(10+quality)/20 }}
             </td>
           </tr>
         </table>
