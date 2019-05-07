@@ -26,6 +26,25 @@ export default {
         }
       ]
     }
+  },
+  data() {
+    return {
+      materials: [],
+      headers: [{ text: 'Boost', value: 'boosts.core' }]
+    }
+  },
+  mounted() {
+    this.$api.get('/materials/all').then(res => {
+      this.materials = res.data
+      this.materials.forEach(mat => {
+        if (!this.max.weightMax) this.max.weightMax = mat.weight
+        else this.max.weightMax = Math.max(this.max.weightMax, mat.weight)
+        if (!this.max.weightMin) this.max.weightMin = mat.weight
+        else this.max.weightMin = Math.min(this.max.weightMin, mat.weight)
+        if (!this.max.c) this.max.core = mat.boosts.core
+        // else this.max.res
+      })
+    })
   }
 }
 </script>
