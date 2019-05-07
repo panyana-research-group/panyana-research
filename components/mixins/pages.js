@@ -63,6 +63,11 @@ export const materials = {
             name: 'Resilience',
             icon: 'mdi-hard-hat',
             to: '/materials/resilience'
+          },
+          {
+            name: 'Atlas Core Boosts',
+            icon: 'mdi-arrow-up-bold-circle',
+            to: '/materials/skycore'
           }
         ]
       }
