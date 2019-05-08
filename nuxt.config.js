@@ -2,7 +2,7 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 const pkg = require('./package')
 
 module.exports = {
-  mode: 'spa',
+  mode: 'universal',
   /*
   ** Env
   */
@@ -17,7 +17,7 @@ module.exports = {
     titleTemplate: title => {
       return title
         ? `${title} | Panyana Research Group`
-        : 'Panyana Research Group'
+        : 'Panyana Research Groupddd'
     },
     meta: [
       { charset: 'utf-8' },

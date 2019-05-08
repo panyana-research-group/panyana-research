@@ -60,7 +60,7 @@
           <v-flex>
             <v-text-field
               v-model="output.casing"
-              :disabled="true"
+              readonly
               outline
               hide-details
               label="Casing"
@@ -69,7 +69,7 @@
           <v-flex>
             <v-text-field
               v-model="output.mech"
-              :disabled="true"
+              readonly
               outline
               hide-details
               label="Mech. Internals"
@@ -78,7 +78,7 @@
           <v-flex>
             <v-text-field
               v-model="output.comb"
-              :disabled="true"
+              readonly
               outline
               hide-details
               label="Comb. Internals"
@@ -87,7 +87,7 @@
           <v-flex>
             <v-text-field
               v-model="output.prop"
-              :disabled="true"
+              readonly
               outline
               hide-details
               label="Propeller"
@@ -96,7 +96,7 @@
           <v-flex>
             <v-text-field
               v-model="output.speed"
-              :disabled="true"
+              readonly
               outline
               hide-details
               label="Speed"
@@ -105,7 +105,7 @@
           <v-flex>
             <v-text-field
               v-model="output.weight"
-              :disabled="true"
+              readonly
               outline
               hide-details
               label="Weight"
@@ -115,7 +115,7 @@
             <v-flex xs4>
               <v-text-field
                 v-model="output.crafted.cf"
-                :disabled="true"
+                readonly
                 outline
                 hide-details
                 label="CF"
@@ -124,7 +124,7 @@
             <v-flex xs4>
               <v-text-field
                 v-model="output.crafted.oh"
-                :disabled="true"
+                readonly
                 outline
                 hide-details
                 label="Overheat"
@@ -133,7 +133,7 @@
             <v-flex xs4>
               <v-text-field
                 v-model="output.crafted.pwr"
-                :disabled="true"
+                readonly
                 outline
                 hide-details
                 label="Power"

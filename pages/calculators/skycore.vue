@@ -38,6 +38,7 @@
                 v-model="selected"
                 :headers="headers.input"
                 :items="parts"
+                :loading="data.loading ? 'info': false"
                 item-key="name"
                 select-all="accent"
                 disable-initial-sort
@@ -112,10 +113,10 @@
                 </v-data-table>
               </v-flex>
               <v-flex>
-                <v-text-field :disabled="true" :value="totalCapacity" label="Total Sky Core Capacity" outline hide-details />
+                <v-text-field readonly :value="totalCapacity" label="Total Sky Core Capacity" outline hide-details />
               </v-flex>
               <v-flex>
-                <v-text-field :disabled="true" :value="usableCapacity" label="Usable Sky Core Capacity" outline hide-details />
+                <v-text-field readonly :value="usableCapacity" label="Usable Sky Core Capacity" outline hide-details />
               </v-flex>
               <v-flex xs12 text-xs-center>
                 <v-btn color="warning" class="primary--text" @click="clear">

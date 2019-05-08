@@ -20,15 +20,32 @@
           <v-flex grow>
             <v-text-field v-model="stats.cf" :rules="[rules.required, rules.number]" color="primary" label="Cooling Factor" box />
           </v-flex>
-          <template v-if="output.sec">
+          <template v-if="output.min">
             <v-flex xs12>
               <v-divider />
             </v-flex>
             <v-flex grow>
-              <v-text-field v-model="output.sec" :disabled="true" outline label="Overheat Time (seconds)" hide-details />
+              <v-text-field v-model="output.sec" readonly outline label="Overheat Time (seconds)" hide-details />
             </v-flex>
             <v-flex grow>
-              <v-text-field v-model="output.min" :disabled="true" outline label="Overheat Time (minutes)" hide-details />
+              <v-text-field v-model="output.min" readonly outline label="Overheat Time (minutes)" hide-details />
+            </v-flex>
+          </template>
+          <template v-if="output.min === 0">
+            <v-flex xs12>
+              <v-divider />
+            </v-flex>
+            <v-flex
+              style="border-radius: 3px;"
+              grow
+              text-xs-center
+              headline
+              success--text
+              primary
+              mx-5
+              py-2
+            >
+              This engine will not overheat ever!
             </v-flex>
           </template>
         </v-layout>
@@ -72,9 +89,10 @@ export default {
           this.loading = false
           this.output = {
             sec: `${res.data.time} seconds`,
-            min: `${Math.floor(res.data.time / 60)} minutes and ${res.data
-              .time -
-              Math.floor(res.data.time / 60) * 60} seconds`
+            min: res.data.time
+              ? `${Math.floor(res.data.time / 60)} minutes and ${res.data.time -
+                  Math.floor(res.data.time / 60) * 60} seconds`
+              : 0
           }
         })
     },

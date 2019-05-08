@@ -1,4 +1,4 @@
-<template>
+readonly<template>
   <base-calc name="Optimal Power/OH Ciphering" author="Ziwix" :loading="loading" :form="engine.form" @calc="calc">
     <template v-slot:buttons>
       <span v-if="$refs.options" class="body-1 text-xs-right secondary--text text-no-wrap">
@@ -51,10 +51,10 @@
               </v-card>
             </v-flex>
             <v-flex>
-              <v-text-field v-model="output.points.pwr" :disabled="true" outline hide-details label="Power" />
+              <v-text-field v-model="output.points.pwr" readonly outline hide-details label="Power" />
             </v-flex>
             <v-flex>
-              <v-text-field v-model="output.points.oh" :disabled="true" outline hide-details label="Overheat Limit" />
+              <v-text-field v-model="output.points.oh" readonly outline hide-details label="Overheat Limit" />
             </v-flex>
           </template>
         </v-layout>

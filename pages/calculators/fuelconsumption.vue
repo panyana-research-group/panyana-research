@@ -65,7 +65,7 @@
             <v-flex shrink class="mx-auto">
               <v-text-field
                 v-model="usage.sec"
-                :disabled="true"
+                readonly
                 label="Fuel Usage per Second"
                 outline
               />
@@ -73,7 +73,7 @@
             <v-flex shrink class="mx-auto">
               <v-text-field
                 v-model="usage.min"
-                :disabled="true"
+                readonly
                 label="Fuel Usage per Minute"
                 outline
               />

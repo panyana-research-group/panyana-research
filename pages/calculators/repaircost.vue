@@ -78,10 +78,10 @@
               </v-card>
             </v-flex>
             <v-flex xs12 sm6>
-              <v-text-field v-model="result.salvage" outline :disabled="true" hide-details label="Salvage per tick" />
+              <v-text-field v-model="result.salvage" outline readonly hide-details label="Salvage per tick" />
             </v-flex>
             <v-flex xs12 sm6>
-              <v-text-field v-model="result.repair" outline :disabled="true" hide-details label="Repair per tick" />
+              <v-text-field v-model="result.repair" outline readonly hide-details label="Repair per tick" />
             </v-flex>
           </v-layout>
         </v-container>
