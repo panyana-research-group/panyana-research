@@ -63,7 +63,7 @@ export default ({ app, store }, inject) => {
       })
     }
 
-    renewTokens() {
+    renewTokens(roles) {
       return new Promise((resolve, reject) => {
         if (localStorage.getItem(localStorageKey) !== 'true')
           return reject(new Error('Not logged in'))
@@ -71,7 +71,7 @@ export default ({ app, store }, inject) => {
         webAuth.checkSession({}, (err, authResult) => {
           if (err) reject(err)
           else {
-            this.localLogin(authResult)
+            if (!roles) this.localLogin(authResult)
             resolve(authResult)
           }
         })
@@ -104,7 +104,7 @@ export default ({ app, store }, inject) => {
 
     getUserRoles() {
       return new Promise((resolve, reject) => {
-        this.renewTokens()
+        this.renewTokens(true)
           .then(res => {
             app.$api
               .get(`/auth/users/${res.idTokenPayload.sub}/roles`)
