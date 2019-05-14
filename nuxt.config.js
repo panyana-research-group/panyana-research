@@ -3,11 +3,31 @@ const pkg = require('./package')
 
 module.exports = {
   /*
+  ** Auth
+  */
+  auth: {
+    redirect: {
+      home: '/',
+      login: '/',
+      logout: '/',
+      callback: '/callback'
+    },
+    resetOnError: true,
+    localStorage: false,
+    strategies: {
+      auth0: {
+        domain: 'machinemaker.auth0.com',
+        client_id: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7'
+      }
+    }
+  },
+  /*
   ** Env
   */
   env: {
     baseUrl:
-      process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000'
+      process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000',
+    CLIENT_ID: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7'
   },
   /*
   ** Headers of the page
@@ -89,7 +109,6 @@ module.exports = {
   */
   plugins: [
     '@/plugins/vuetify',
-    '@/plugins/auth0',
     '@/plugins/api',
     '@/plugins/globalMixins',
     '@/plugins/vuetify-confirm'
@@ -102,6 +121,7 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/moment',
     '@nuxtjs/axios',
+    '@nuxtjs/auth',
     'cookie-universal-nuxt'
   ],
   /*

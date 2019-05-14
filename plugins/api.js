@@ -7,8 +7,6 @@ export default ({ app }, inject) => {
         : 'https://panyana-api.glitch.me'
   })
 
-  // api.defaults.headers.post['Authorization']
-
   api.interceptors.request.use(
     config => {
       if (config.method === 'post' || config.method === 'put') {

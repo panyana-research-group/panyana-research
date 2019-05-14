@@ -47,9 +47,9 @@
         <v-menu :close-on-content-click="false" offset-y>
           <v-btn slot="activator" color="secondary" flat class="title" dark>
             <span class="hidden-xs-only">
-              {{ $store.state.loggedIn ? $auth.userProfile.name : "Guest" }}
+              {{ $auth.loggedIn ? $auth.user.name : "Guest" }}
             </span>
-            <v-icon :color="$store.state.loggedIn ? 'green' : 'red'" class="pl-1" large>
+            <v-icon :color="$auth.loggedIn ? 'green' : 'red'" class="pl-1" large>
               account_circle
             </v-icon>
           </v-btn>
@@ -57,20 +57,20 @@
             <v-card-title class="title justify-center">
               Account
             </v-card-title>
-            <v-card-text v-if="!$store.state.loggedIn" class="py-0 text-xs-center">
-              If you have permissions, logging in with Auth0 allows you to change certain data
+            <v-card-text v-if="!$auth.loggedIn" class="py-0 text-xs-center">
+              If you have permissions,<br>logging in with Auth0 allows<br>you to change certain data
             </v-card-text>
-            <v-card-text v-if="$store.state.loggedIn" class="py-0 text-xs-center">
+            <v-card-text v-if="$auth.loggedIn" class="py-0 text-xs-center">
               Roles: {{ $store.state.roles ? $store.state.roles.join(', ') : 'None' }}
             </v-card-text>
             <v-card-actions class="justify-center">
-              <v-btn v-if="!$store.state.loggedIn" color="success" @click="$auth.login()">
+              <v-btn v-if="!$auth.loggedIn" color="success" @click="$auth.loginWith('auth0')">
                 Login
               </v-btn>
-              <v-btn v-if="$store.state.loggedIn" color="warning" @click="logout">
+              <v-btn v-if="$auth.loggedIn" color="warning" @click="logout">
                 Logout
               </v-btn>
-              <v-btn v-if="$store.state.loggedIn" color="success" to="/admin" nuxt>
+              <v-btn v-if="$auth.loggedIn" color="success" to="/admin" nuxt>
                 Admin
               </v-btn>
             </v-card-actions>
@@ -129,33 +129,12 @@ export default {
       }
     }
   },
-  created() {
-    this.$auth.authNotifier.on('authChange', authState => {
-      this.$store.commit('changeAuth', authState.authenticated)
-    })
-
-    // this.$auth.getUserRoles().then(res => {
-    //   res.forEach(r => {
-    //     this.roles.push(r.name)
-    //   })
-    // })
-  },
-  mounted() {
-    window.addEventListener('load', () => {
-      // if (this.$cookies.get('user')) this.$auth.renewSession()
-      this.$auth
-        .renewSession()
-        .then(() => {
-          this.$auth.scheduleRenewal()
-        })
-        .catch(() => {})
-    })
-  },
   methods: {
     logout() {
       this.$auth.logout()
-      this.$store.commit('changeAuth', false)
-      window.location.reload(true)
+      window.location = `https://machinemaker.auth0.com/v2/logout?client_id=${
+        process.env.CLIENT_ID
+      }`
     }
   }
 }

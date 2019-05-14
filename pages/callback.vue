@@ -1,22 +1,18 @@
 <template>
-  <div class="callback">
-    Logging in...
-  </div>
+  <v-layout row wrap justify-center>
+    <v-flex shrink mt-5>
+      <v-progress-circular indeterminate size="200" width="20" color="info" />
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
 export default {
-  name: 'Callback',
+  name: 'LogCallback',
   head() {
     return {
       title: 'Login'
     }
-  },
-  mounted() {
-    this.$auth.handleAuthentication().then(() => {
-      this.$router.push({ path: localStorage.getItem('prev_path') })
-      localStorage.removeItem('prev_path')
-    })
   }
 }
 </script>

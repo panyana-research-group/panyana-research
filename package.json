@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@mdi/font": "^3.4.93",
+    "@nuxtjs/auth": "^4.5.3",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/moment": "^1.2.0",
     "auth0-js": "^9.10.0",
