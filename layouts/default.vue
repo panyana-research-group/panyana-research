@@ -131,10 +131,14 @@ export default {
   },
   methods: {
     logout() {
+      let returnTo = ''
+      if (process.env.NODE_ENV === 'development')
+        returnTo = 'http%3A%2F%2Flocalhost%3A3000'
+      else returnTo = window.location.origin
       this.$auth.logout()
       window.location = `https://machinemaker.auth0.com/v2/logout?client_id=${
         process.env.CLIENT_ID
-      }`
+      }&returnTo=${returnTo}`
     }
   }
 }

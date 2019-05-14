@@ -15,9 +15,16 @@ module.exports = {
     resetOnError: true,
     localStorage: false,
     strategies: {
+      local: false,
       auth0: {
         domain: 'machinemaker.auth0.com',
-        client_id: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7'
+        client_id: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7',
+        redirectUri:
+          process.env.NODE_ENV === 'development'
+            ? 'http://localhost:3000/callback'
+            : 'https://panyanaresearch.com/callback',
+        responseType: 'token id_token',
+        scope: 'openid profile email'
       }
     }
   },
