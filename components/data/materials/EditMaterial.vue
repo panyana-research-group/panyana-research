@@ -2,6 +2,7 @@
   <edit-data :show="show" name="Material" :item="item || null">
     <template v-if="!isEmpty(formData)">
       <v-tabs
+        ref="test"
         v-model="tab"
         color="accent"
         class="mb-2"
@@ -303,7 +304,6 @@ export default {
         })
         .finally(() => {
           this.loading = false
-          this.reset()
         })
     },
     async del() {
@@ -315,15 +315,16 @@ export default {
       this.$api
         .delete(`/materials/${this.item._id}`)
         .then(res => {
+          this.reset()
           this.$emit('close', 'success')
         })
         .catch(err => {
           console.error(err)
+          this.reset()
           this.$emit('close', 'error')
         })
         .finally(() => {
           this.delLoading = false
-          this.reset()
         })
     },
     resetObj(obj) {

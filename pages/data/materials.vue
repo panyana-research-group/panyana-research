@@ -75,6 +75,9 @@
                   Edit the material
                 </v-tooltip>
               </td>
+              <td class="text-xs-center">
+                {{ props.item.enabled }}
+              </td>
             </tr>
           </template>
           <!-- <template v-slot:expand="props">
@@ -149,7 +152,8 @@ export default {
         { text: 'Weight', value: 'weight' },
         { text: 'Rarity', value: 'rarity' },
         { text: 'Flavor Text', sortable: false, align: 'center' },
-        { text: 'Edit', sortable: false, align: 'center' }
+        { text: 'Edit', sortable: false, align: 'center' },
+        { text: 'State', sortable: false, align: 'center' }
       ],
       currentEdit: null
     }

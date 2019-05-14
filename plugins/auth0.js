@@ -1,7 +1,7 @@
 import auth0 from 'auth0-js'
 import EventEmitter from 'eventemitter3'
 
-export default ({ app, redirect }, inject) => {
+export default ({ app, redirect, store }, inject) => {
   class AuthService {
     accessToken
     idToken
@@ -25,11 +25,41 @@ export default ({ app, redirect }, inject) => {
       this.auth0.authorize()
     }
 
+    localLogin(authResult) {
+      this.accessToken = authResult.accessToken
+      this.idToken = authResult.idToken
+      this.expiresAt = authResult.expiresIn * 1000 + new Date().getTime()
+      this.userProfile = authResult.idTokenPayload
+
+      this.authNotifier.emit('authChange', { authenticated: true })
+
+      app.$cookies.set('user', authResult.idTokenPayload.sub, {
+        maxAge: authResult.expiresIn,
+        path: '/'
+      })
+      app.$api
+        .get(`/auth/users/${authResult.idTokenPayload.sub}/roles`)
+        .then(roles => {
+          const rs = roles.data.length > 0 ? roles.data.map(r => r.name) : null
+          store.commit('setRoles', rs)
+        })
+        .catch(console.error)
+    }
+
+    scheduleRenewal() {
+      const delay = this.expiresAt - Date.now()
+      if (delay > 0) {
+        this.tokenRenewalTimeout = setTimeout(() => {
+          this.renewSession()
+        }, delay)
+      }
+    }
+
     handleAuthentication() {
       return new Promise((resolve, reject) => {
         this.auth0.parseHash((err, authResult) => {
           if (authResult && authResult.accessToken && authResult.idToken) {
-            this.setSession(authResult)
+            this.localLogin(authResult)
             resolve(authResult)
           } else if (err) {
             console.log(err)
@@ -39,28 +69,11 @@ export default ({ app, redirect }, inject) => {
       })
     }
 
-    setSession(authResult) {
-      this.accessToken = authResult.accessToken
-      this.idToken = authResult.idToken
-      this.expiresAt = authResult.expiresIn * 1000 + new Date().getTime()
-      this.userProfile = authResult.idTokenPayload
-      this.userProfile.roles =
-        authResult.idTokenPayload['https://example.com/roles']
-      delete this.userProfile['https://example.com/roles']
-
-      this.authNotifier.emit('authChange', { authenticated: true })
-
-      app.$cookies.set('user', authResult.idTokenPayload.sub, {
-        maxAge: authResult.expiresIn,
-        path: '/'
-      })
-    }
-
     renewSession() {
       return new Promise((resolve, reject) => {
         this.auth0.checkSession({}, (err, authResult) => {
           if (authResult && authResult.accessToken && authResult.idToken) {
-            this.setSession(authResult)
+            this.localLogin(authResult)
             resolve(authResult)
           } else if (err) {
             this.logout()

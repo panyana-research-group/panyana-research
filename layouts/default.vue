@@ -61,7 +61,7 @@
               If you have permissions, logging in with Auth0 allows you to change certain data
             </v-card-text>
             <v-card-text v-if="$store.state.loggedIn" class="py-0 text-xs-center">
-              Roles: {{ roles ? roles.join(', ') : 'None' }}
+              Roles: {{ $store.state.roles ? $store.state.roles.join(', ') : 'None' }}
             </v-card-text>
             <v-card-actions class="justify-center">
               <v-btn v-if="!$store.state.loggedIn" color="success" @click="$auth.login()">
@@ -134,10 +134,16 @@ export default {
       this.$store.commit('changeAuth', authState.authenticated)
     })
 
-    this.$auth.getUserRoles().then(res => {
-      res.forEach(r => {
-        this.roles.push(r.name)
-      })
+    // this.$auth.getUserRoles().then(res => {
+    //   res.forEach(r => {
+    //     this.roles.push(r.name)
+    //   })
+    // })
+  },
+  mounted() {
+    window.addEventListener('load', () => {
+      if (this.$cookies.get('user')) this.$auth.renewSession()
+      this.$auth.scheduleRenewal()
     })
   },
   methods: {
