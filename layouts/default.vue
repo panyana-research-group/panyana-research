@@ -142,8 +142,13 @@ export default {
   },
   mounted() {
     window.addEventListener('load', () => {
-      if (this.$cookies.get('user')) this.$auth.renewSession()
-      this.$auth.scheduleRenewal()
+      // if (this.$cookies.get('user')) this.$auth.renewSession()
+      this.$auth
+        .renewSession()
+        .then(() => {
+          this.$auth.scheduleRenewal()
+        })
+        .catch(() => {})
     })
   },
   methods: {

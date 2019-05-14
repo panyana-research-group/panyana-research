@@ -62,7 +62,7 @@ export default ({ app, redirect, store }, inject) => {
             this.localLogin(authResult)
             resolve(authResult)
           } else if (err) {
-            console.log(err)
+            this.logout(true)
             reject(err)
           }
         })
@@ -76,15 +76,14 @@ export default ({ app, redirect, store }, inject) => {
             this.localLogin(authResult)
             resolve(authResult)
           } else if (err) {
-            this.logout()
-            console.log(err)
+            this.logout(true)
             reject(err)
           }
         })
       })
     }
 
-    logout() {
+    logout(onlyClear) {
       this.accessToken = null
       this.idToken = null
       this.expiresAt = null
@@ -93,14 +92,11 @@ export default ({ app, redirect, store }, inject) => {
       this.authNotifier.emit('authChange', { authenticated: false })
 
       app.$cookies.remove('user')
-      this.auth0.logout({
-        clientID: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7',
-        returnTo:
-          process.env.NODE_ENV === 'production'
-            ? 'https://panyanaresearch.com'
-            : 'http://localhost:3000',
-        federated: true
-      })
+      if (!onlyClear) {
+        redirect(
+          `https://machinemaker.auth0.com/v2/logout?client_id=5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7`
+        )
+      }
     }
 
     isAuthenticated() {
