@@ -5,29 +5,29 @@ module.exports = {
   /*
   ** Auth
   */
-  auth: {
-    redirect: {
-      home: '/',
-      login: '/',
-      logout: '/',
-      callback: '/callback'
-    },
-    resetOnError: true,
-    localStorage: false,
-    strategies: {
-      local: false,
-      auth0: {
-        domain: 'machinemaker.auth0.com',
-        client_id: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7',
-        redirectUri:
-          process.env.NODE_ENV === 'development'
-            ? 'http://localhost:3000/callback'
-            : 'https://panyanaresearch.com/callback',
-        responseType: 'token id_token',
-        scope: 'openid profile email'
-      }
-    }
-  },
+  // auth: {
+  //   redirect: {
+  //     home: '/',
+  //     login: '/',
+  //     logout: '/',
+  //     callback: '/callback'
+  //   },
+  //   resetOnError: true,
+  //   localStorage: false,
+  //   strategies: {
+  //     local: false,
+  //     auth0: {
+  //       domain: 'machinemaker.auth0.com',
+  //       client_id: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7',
+  //       redirectUri:
+  //         process.env.NODE_ENV === 'development'
+  //           ? 'http://localhost:3000/callback'
+  //           : 'https://panyanaresearch.com/callback',
+  //       responseType: 'token id_token',
+  //       scope: 'openid profile email'
+  //     }
+  //   }
+  // },
   /*
   ** Env
   */
@@ -117,6 +117,7 @@ module.exports = {
   plugins: [
     '@/plugins/vuetify',
     '@/plugins/api',
+    '@/plugins/auth',
     '@/plugins/globalMixins',
     '@/plugins/vuetify-confirm'
   ],
@@ -128,7 +129,7 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/moment',
     '@nuxtjs/axios',
-    '@nuxtjs/auth',
+    // '@nuxtjs/auth',
     'cookie-universal-nuxt'
   ],
   /*

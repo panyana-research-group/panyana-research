@@ -8,10 +8,15 @@ export const auth = {
       }
     }
   },
+  computed: {
+    auth() {
+      return this.$store.state.auth
+    }
+  },
   methods: {
     checkRole(role) {
       return new Promise((resolve, reject) => {
-        if (!this.$auth.loggedIn) resolve(false)
+        if (!this.auth.loggedIn) resolve(false)
         this.$auth
           .getUserRoles()
           .then(res => {
@@ -26,7 +31,7 @@ export const auth = {
     },
     checkRoles(roles) {
       return new Promise((resolve, reject) => {
-        if (!this.$auth.loggedIn) resolve(false)
+        if (!this.auth.loggedIn) resolve(false)
         this.$auth
           .getUserRoles()
           .then(res => {

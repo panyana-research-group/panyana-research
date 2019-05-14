@@ -44,12 +44,12 @@
       </v-toolbar-title>
       <v-spacer />
       <v-toolbar-items>
-        <v-menu :close-on-content-click="false" offset-y>
+        <v-menu v-if="auth" :close-on-content-click="false" offset-y>
           <v-btn slot="activator" color="secondary" flat class="title" dark>
             <span class="hidden-xs-only">
-              {{ $auth.loggedIn ? $auth.user.name : "Guest" }}
+              {{ auth.loggedIn ? auth.user.name : "Guest" }}
             </span>
-            <v-icon :color="$auth.loggedIn ? 'green' : 'red'" class="pl-1" large>
+            <v-icon :color="auth.loggedIn ? 'green' : 'red'" class="pl-1" large>
               account_circle
             </v-icon>
           </v-btn>
@@ -57,20 +57,20 @@
             <v-card-title class="title justify-center">
               Account
             </v-card-title>
-            <v-card-text v-if="!$auth.loggedIn" class="py-0 text-xs-center">
+            <v-card-text v-if="!auth.loggedIn" class="py-0 text-xs-center">
               If you have permissions,<br>logging in with Auth0 allows<br>you to change certain data
             </v-card-text>
-            <v-card-text v-if="$auth.loggedIn" class="py-0 text-xs-center">
-              Roles: {{ $store.state.roles ? $store.state.roles.join(', ') : 'None' }}
+            <v-card-text v-if="auth.loggedIn" class="py-0 text-xs-center">
+              Roles: {{ auth.roles && auth.roles.length > 0 ? auth.roles.map(r => r.name).join(', ') : 'None' }}
             </v-card-text>
             <v-card-actions class="justify-center">
-              <v-btn v-if="!$auth.loggedIn" color="success" @click="$auth.loginWith('auth0')">
+              <v-btn v-if="!auth.loggedIn" color="success" @click="$auth.login()">
                 Login
               </v-btn>
-              <v-btn v-if="$auth.loggedIn" color="warning" @click="logout">
+              <v-btn v-if="auth.loggedIn" color="warning" @click="$auth.logout()">
                 Logout
               </v-btn>
-              <v-btn v-if="$auth.loggedIn" color="success" to="/admin" nuxt>
+              <v-btn v-if="auth.loggedIn && auth.roles && auth.roles.find(r => r.name === 'Admin')" color="success" to="/admin" nuxt>
                 Admin
               </v-btn>
             </v-card-actions>
@@ -113,6 +113,9 @@ export default {
     }
   },
   computed: {
+    auth() {
+      return this.$store.state.auth
+    },
     buttonInfo() {
       return [
         this.calculatorsButtonInfo,
@@ -130,15 +133,8 @@ export default {
     }
   },
   methods: {
-    logout() {
-      let returnTo = ''
-      if (process.env.NODE_ENV === 'development')
-        returnTo = 'http%3A%2F%2Flocalhost%3A3000'
-      else returnTo = window.location.origin
-      this.$auth.logout()
-      window.location = `https://machinemaker.auth0.com/v2/logout?client_id=${
-        process.env.CLIENT_ID
-      }&returnTo=${returnTo}`
+    handleLoginEvent(data) {
+      console.log(data)
     }
   }
 }

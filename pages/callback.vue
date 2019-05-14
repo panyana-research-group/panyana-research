@@ -8,11 +8,12 @@
 
 <script>
 export default {
-  name: 'LogCallback',
-  head() {
-    return {
-      title: 'Login'
-    }
+  name: 'LoginCallback',
+  mounted() {
+    this.$auth.handleAuthentication()
+    this.$auth.on('loginEvent', data => {
+      this.$router.push('/')
+    })
   }
 }
 </script>
