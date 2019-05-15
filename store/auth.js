@@ -1,7 +1,11 @@
 export const state = () => ({
   loggedIn: false,
   user: {},
-  roles: null
+  roles: null,
+  loading: {
+    roles: false,
+    user: false
+  }
 })
 
 export const mutations = {
@@ -13,6 +17,9 @@ export const mutations = {
     state.loggedIn = false
     state.user = {}
     state.roles = null
+  },
+  loading(state, { t, v }) {
+    state.loading[t] = v
   },
   setRoles(state, roles) {
     state.roles = roles
