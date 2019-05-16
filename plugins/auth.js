@@ -6,7 +6,9 @@ const webAuth = new auth0.WebAuth({
   redirectUri:
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3000/callback'
-      : 'https://panyanaresearch.com/callback',
+      : `https://${
+          process.env.DEV_BRANCH ? 'dev.' : ''
+        }panyanaresearch.com/callback`,
   clientID: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7',
   responseType: 'id_token',
   scope: 'openid profile email'
@@ -48,6 +50,7 @@ export default ({ app, store }, inject) => {
       localStorage.setItem(localStorageKey, 'true')
       store.commit('auth/login', this.user)
 
+      store.commit('auth/loading', { t: 'roles', v: true })
       this.getUserRoles()
         .then(roles => {
           store.commit('auth/setRoles', roles)
@@ -55,6 +58,7 @@ export default ({ app, store }, inject) => {
         .catch(() => {
           store.commit('auth/setRoles', [])
         })
+        .finally(() => store.commit('auth/loading', { t: 'roles', v: false }))
 
       this.emit(loginEvent, {
         loggedIn: true,
@@ -104,13 +108,13 @@ export default ({ app, store }, inject) => {
 
     getUserRoles() {
       return new Promise((resolve, reject) => {
-        this.renewTokens(true)
-          .then(res => {
-            app.$api
-              .get(`/auth/users/${res.idTokenPayload.sub}/roles`)
-              .then(roles => resolve(roles.data))
-              .catch(err => reject(err))
-          })
+        if (!this.user || !this.isAuthenticated())
+          return reject(new Error('Not authenticated'))
+
+        app.$api
+          .get(`/auth/users/${this.user.sub}/roles`)
+          .then(roles => resolve(roles.data))
+
           .catch(err => reject(err))
       })
     }
@@ -121,7 +125,11 @@ export default ({ app, store }, inject) => {
 
   app.router.onReady(async () => {
     try {
+      store.commit('auth/loading', { t: 'user', v: true })
       await auth.renewTokens()
-    } catch {}
+    } catch {
+    } finally {
+      store.commit('auth/loading', { t: 'user', v: false })
+    }
   })
 }

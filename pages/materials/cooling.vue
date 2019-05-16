@@ -77,9 +77,7 @@ export default {
       .then(res => {
         this.materials = res.data
       })
-      .catch(err => {
-        console.log(err)
-      })
+      .catch(console.error)
   },
   methods: {
     cfClass(value) {

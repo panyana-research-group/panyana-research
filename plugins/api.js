@@ -9,7 +9,11 @@ export default ({ app }, inject) => {
 
   api.interceptors.request.use(
     config => {
-      if (config.method === 'post' || config.method === 'put') {
+      if (
+        config.method === 'post' ||
+        config.method === 'put' ||
+        config.url.startsWith('/auth')
+      ) {
         config.headers.Authorization = `Bearer ${app.$auth.idToken}`
       }
       return config
