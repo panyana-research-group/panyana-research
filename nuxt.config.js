@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 const pkg = require('./package')
 
@@ -8,7 +10,8 @@ module.exports = {
   env: {
     baseUrl:
       process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000',
-    CLIENT_ID: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7'
+    CLIENT_ID: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7',
+    DEV_BRANCH: !!process.env.DEV_BRANCH
   },
   /*
   ** Headers of the page
@@ -103,7 +106,7 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/moment',
     '@nuxtjs/axios',
-    // '@nuxtjs/auth',
+    '@nuxtjs/dotenv',
     'cookie-universal-nuxt'
   ],
   /*

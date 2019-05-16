@@ -9,13 +9,13 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "dev_generate": "DEV_BRANCH=true nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "yarn run lint"
   },
   "dependencies": {
     "@mdi/font": "^3.4.93",
     "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/dotenv": "^1.3.0",
     "@nuxtjs/moment": "^1.2.0",
     "auth0-js": "^9.10.0",
     "chartjs": "^0.3.24",
