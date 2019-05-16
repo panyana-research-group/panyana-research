@@ -9,7 +9,6 @@ export default ({ app }, inject) => {
 
   api.interceptors.request.use(
     config => {
-      console.log(config.url.startsWith('/auth'))
       if (
         config.method === 'post' ||
         config.method === 'put' ||

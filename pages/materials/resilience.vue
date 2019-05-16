@@ -73,9 +73,7 @@ export default {
           else this.max.res = Math.max(this.max.res, mat.boosts.res)
         })
       })
-      .catch(err => {
-        console.error(err)
-      })
+      .catch(console.error)
   },
   methods: {
     getBoostStyle(value) {

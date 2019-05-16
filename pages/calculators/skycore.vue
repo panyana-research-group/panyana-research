@@ -226,9 +226,7 @@ export default {
               this.selected.push(part)
             })
           })
-          .catch(err => {
-            console.error(err)
-          })
+          .catch(console.error)
       })
       .catch(err => {
         this.data.loading = false
@@ -255,7 +253,7 @@ export default {
           this.haveResult = true
           this.$nextTick(() => this.$vuetify.goTo('#resultsHeader'))
         })
-        .catch(err => console.error(err))
+        .catch(console.error)
     },
     copy() {
       const material = this.parts[0].material

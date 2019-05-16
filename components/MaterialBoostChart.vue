@@ -117,9 +117,7 @@ export default {
           }
         })
       })
-      .catch(err => {
-        console.error(err)
-      })
+      .catch(console.error)
   }
 }
 </script>

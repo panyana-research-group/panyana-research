@@ -50,44 +50,6 @@
             account_circle
           </v-icon>
         </v-btn>
-        <!-- <v-menu v-if="auth" :close-on-content-click="false" offset-y>
-          <v-btn slot="activator" color="secondary" flat class="title" dark>
-            <span class="hidden-xs-only">
-              {{ auth.loggedIn ? auth.user.name : "Guest" }}
-            </span>
-            <v-icon :color="auth.loggedIn ? 'green' : 'red'" class="pl-1" large>
-              account_circle
-            </v-icon>
-          </v-btn>
-          <v-card color="secondary">
-            <v-card-title class="title justify-center">
-              Account
-            </v-card-title>
-            <v-card-text v-if="!auth.loggedIn" class="py-0 text-xs-center">
-              If you have permissions,<br>logging in with Auth0 allows<br>you to change certain data
-            </v-card-text>
-            <v-card-text v-if="auth.loggedIn" class="py-0 text-xs-center">
-              Roles:
-              <template v-if="auth.loading.roles">
-                <v-progress-circular indeterminate color="primary" />
-              </template>
-              <template v-else>
-                {{ auth.roles && auth.roles.length > 0 ? auth.roles.map(r => r.name).join(', ') : 'None' }}
-              </template>
-            </v-card-text>
-            <v-card-actions class="justify-center">
-              <v-btn v-if="!auth.loggedIn" color="success" @click="$auth.login()">
-                Login
-              </v-btn>
-              <v-btn v-if="auth.loggedIn" color="warning" @click="$auth.logout()">
-                Logout
-              </v-btn>
-              <v-btn v-if="auth.loggedIn && auth.roles && auth.roles.find(r => r.name === 'Admin')" color="success" to="/admin" nuxt>
-                Admin
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu> -->
       </v-toolbar-items>
     </v-toolbar>
     <v-dialog
@@ -101,8 +63,10 @@
         <v-toolbar color="primary" class="account">
           <template v-if="auth.loggedIn">
             <v-img :src="auth.user.picture" max-width="50px" style="border-radius: 4px;" class="mr-2" contain />
-            <span class="subheading">{{ auth.user.name }}</span>
-            <span class="body-2">{{ auth.user.email }}</span>
+            <span class="d-inline-block">
+              <span class="title">{{ auth.user.name }}</span><br>
+              <span class="body-1">{{ auth.user.email }}</span>
+            </span>
           </template>
           <template v-else>
             <span class="subheading pl-2">Guest</span>
@@ -114,14 +78,28 @@
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <v-card-title v-if="auth.loggedIn" class="headline" primary-title />
+        <v-card-text v-if="auth.loggedIn && auth.roles && auth.roles.length" class="text-xs-center">
+          <span class="subheading">Roles</span>
+          <v-divider class="mx-5" />
+          <span v-for="r in auth.roles" :key="r.name">{{ r.name }}<br></span>
+        </v-card-text>
         <v-card-actions v-if="!auth.loggedIn" class="justify-center">
-          <v-btn color="success" @click="$auth.login()">
+          <v-btn color="success" @click="$auth.login(); drawer.acct = false">
             Login
           </v-btn>
         </v-card-actions>
-        <v-card-actions v-else>
-          <v-btn color="warning" @click="$auth.logout()">
+        <v-card-actions v-else class="justify-center">
+          <v-btn
+            v-if="auth.roles && auth.roles.length && auth.roles.find(r => r.name === 'Admin')"
+            color="info"
+            class="primary--text"
+            to="/admin"
+            nuxt
+            @click="drawer.acct = false"
+          >
+            Admin
+          </v-btn>
+          <v-btn color="warning" @click="$auth.logout(); drawer.acct = false">
             Logout
           </v-btn>
         </v-card-actions>
@@ -202,5 +180,6 @@ export default {
 
 .account > .v-toolbar__content {
   padding-left: 8px;
+  padding-right: 8px;
 }
 </style>

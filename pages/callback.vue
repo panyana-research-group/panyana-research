@@ -11,9 +11,15 @@ export default {
   name: 'LoginCallback',
   mounted() {
     this.$auth.handleAuthentication()
-    this.$auth.on('loginEvent', data => {
+    this.$auth.on('loginEvent', this.login)
+  },
+  beforeDestroy() {
+    this.$auth.off('loginEvent', this.login)
+  },
+  methods: {
+    login(data) {
       this.$router.push('/')
-    })
+    }
   }
 }
 </script>

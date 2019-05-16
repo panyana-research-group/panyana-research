@@ -239,11 +239,11 @@ export default {
     this.$api
       .get('/materials/all')
       .then(res => {
+        this.data.loading = false
         this.materials = res.data
         this.materials.forEach(mat => {
           this.selectMats.push(mat.name)
         })
-        this.data.loading = true
         this.filter = JSON.parse(localStorage.getItem(this.name + 'filter'))
         if (!this.filter) {
           this.resetFilter()

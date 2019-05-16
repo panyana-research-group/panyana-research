@@ -100,7 +100,7 @@ export default {
           this.reset()
         })
         .catch(err => {
-          console.log(err)
+          console.error(err)
           this.$emit('close', 'error')
           this.reset()
         })
