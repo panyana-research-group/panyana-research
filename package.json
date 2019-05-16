@@ -8,7 +8,8 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "NODE_ENV=production nuxt generate",
+    "generate": "nuxt generate",
+    "dev_generate": "DEV_BRANCH=true nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "yarn run lint"
   },
