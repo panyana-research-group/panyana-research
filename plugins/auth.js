@@ -7,7 +7,7 @@ const webAuth = new auth0.WebAuth({
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3000/callback'
       : `https://${
-          process.env.DEV_BRANCH ? 'dev.' : 'dev.'
+          process.env.DEV_BRANCH ? 'dev.' : ''
         }panyanaresearch.com/callback`,
   clientID: '5vjD6k0SCE6JzTQATqwkoixBDJTtp3C7',
   responseType: 'id_token',
