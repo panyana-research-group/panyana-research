@@ -74,7 +74,7 @@ jobs:
             git config --global user.email $GH_EMAIL
             git config --global user.name $GH_NAME
             rm -rf dist || true
-            DEV_BRANCH=true yarn dev_generate
+            yarn dev_generate
             cp -R .circleci dist/
             cd dist
             echo "dev.panyanaresearch.com" > ./CNAME
