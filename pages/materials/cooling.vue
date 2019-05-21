@@ -40,7 +40,7 @@
               {{ mat.name }}
             </td>
             <td v-for="mat2 in materials" :key="mat2.name+'Item'" class="number" :class="cfClass(mat2.boosts.cf+mat.boosts.cf*(2/3)*(10+quality)/20)">
-              {{ mat2.boosts.cf+mat.boosts.cf*(2/3)*(10+quality)/20 }}
+              {{ round((mat2.boosts.cf*(10+quality)/20)+(mat.boosts.cf*(2/3)*(10+quality)/20), 2) }}
             </td>
           </tr>
         </table>
@@ -91,6 +91,9 @@ export default {
       else if (value >= 20) return 'value-20'
       else if (value >= 10) return 'value-10'
       else return 'value-0'
+    },
+    round(value, decs) {
+      return Number(Math.round(value + 'e' + decs) + 'e-' + decs)
     }
   }
 }
