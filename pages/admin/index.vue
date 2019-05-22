@@ -15,7 +15,7 @@
           >
             <template v-slot:items="props">
               <td>
-                <img :src="props.item.picture" alt="No Image" width="50px">
+                <img :src="props.item.picture" alt="No Image" height="50px" class="d-block mx-auto">
               </td>
               <td>{{ props.item.name }}</td>
               <td>{{ props.item.email }}</td>
@@ -161,8 +161,7 @@ export default {
           this.snack.color = 'success'
           this.snack.text = 'Successfully updated users!'
         })
-        .catch(err => {
-          console.error(err)
+        .catch(() => {
           this.snack.color = 'error'
           this.snack.text = 'Something went wrong...'
         })
@@ -176,7 +175,7 @@ export default {
       this.editUserMenu = false
       this.editUser = null
       this.editDisabled = true
-      this.refresh()
+      if (!cancel) this.refresh()
     }
   }
 }

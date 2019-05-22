@@ -19,12 +19,12 @@
           id="lore-table"
           :headers="headers"
           :items="lore"
-          :loading="data.loading"
+          :loading="data.loading ? 'info' : false"
           :search="search"
           :custom-sort="customSort"
           :pagination.sync="pagination"
           item-key="title"
-          class="ma-2"
+          class="pa-2"
           dark
           must-sort
           hide-actions
