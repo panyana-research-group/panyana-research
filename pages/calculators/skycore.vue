@@ -1,6 +1,6 @@
 <template>
   <v-layout justify-center row wrap>
-    <v-flex xs12 md12 lg6>
+    <v-flex xs12 md12 lg9 xl6>
       <base-calc
         id="inputHeader"
         name="Atlas Sky Core Capacity"
@@ -171,7 +171,7 @@ export default {
           { text: 'Part Name', value: 'name', sortable: false },
           { text: 'Base Lift', value: 'base', sortable: false },
           { text: 'Material', sortable: false },
-          { text: 'Quality', sortable: false, width: '80px' }
+          { text: 'Quality', sortable: false, width: '120px' }
         ],
         result: [
           { text: 'Part Name', value: 'name' },
