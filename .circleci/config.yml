@@ -1,0 +1,99 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:latest
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - add_ssh_keys:
+          fingerprints:
+            - '20:2d:3c:8d:bc:d0:95:f3:75:40:41:ed:6e:f0:e7:a8'
+
+      - deploy:
+          name: Deploy
+          command: |
+            git config --global user.email $GH_EMAIL
+            git config --global user.name $GH_NAME
+            rm -rf dist || true
+            yarn generate
+            cp -R .circleci dist/
+            cd dist
+            git init
+            git add .
+            git commit -am "Automated deployment to GitHub Pages: ${CIRCLE_SHA1}" --allow-empty
+            git push --force --quiet $CIRCLE_REPOSITORY_URL master:gh-pages
+
+  dev:
+    docker:
+      - image: circleci/node:latest
+
+    working_directory: ~/repo/dev
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - add_ssh_keys:
+          fingerprints:
+            - '20:2d:3c:8d:bc:d0:95:f3:75:40:41:ed:6e:f0:e7:a8'
+
+      - deploy:
+          name: Deploy
+          command: |
+            git config --global user.email $GH_EMAIL
+            git config --global user.name $GH_NAME
+            rm -rf dist || true
+            touch .env
+            echo "DEV_BRANCH=true" > ./.env
+            yarn generate
+            cp -R .circleci dist/
+            cd dist
+            echo "dev.panyanaresearch.com" > ./CNAME
+            git init
+            git add .
+            git commit -am "Automated deployment to GitHub Pages (DEV): ${CIRCLE_SHA1}" --allow-empty
+            git push --force --quiet $DEV_REPOSITORY_URL master:gh-pages
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master
+      - dev:
+          filters:
+            branches:
+              only: dev
